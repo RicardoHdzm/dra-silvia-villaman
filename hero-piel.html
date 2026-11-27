@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototipo · hero sobre piel — Dra. Silvia Villaman</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script>
+document.documentElement.className += " js";
+setTimeout(function(){ document.documentElement.className += " listo"; }, 1200);
+</script>
+<style>
+:root{
+  --ink:#1B2F57; --ink-2:#44507A; --dim:#A49FC0; --bg:#F5F1FB;
+  --lav:#7E6FC4; --lav-deep:#5B4FA3; --amber:#E2A13C; --amber-deep:#C9871F;
+  --line:rgba(27,47,87,.12);
+  --mx:0; --my:0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(100% - 48px,1060px);margin-inline:auto}
+
+header{position:relative;z-index:3;padding:18px 0}
+.bar{display:flex;align-items:center;gap:28px}
+.logo img{height:38px;width:auto;display:block;mix-blend-mode:multiply}
+nav{display:flex;gap:26px;margin-left:auto;font-size:14.5px;font-weight:500;color:var(--ink-2)}
+.btn{display:inline-flex;align-items:center;gap:9px;justify-content:center;
+  font:inherit;font-weight:700;font-size:15px;letter-spacing:-.01em;
+  padding:13px 22px;border-radius:999px;border:1.5px solid transparent;cursor:pointer}
+.btn-top{background:var(--ink);color:#fff;padding:11px 20px;font-size:14.5px}
+
+/* ---------- el hero sobre piel ---------- */
+.hero{position:relative;isolation:isolate;overflow:hidden;
+  min-height:calc(100svh - 76px);display:flex;align-items:center;
+  padding:48px 0 60px;text-align:center}
+
+/* La superficie. No es una foto de piel: es su geometria. El microrelieve
+   cutaneo es un campo de poligonos irregulares, o sea ruido celular. */
+#piel{position:absolute;inset:0;width:100%;height:100%;z-index:-2;
+  display:block;filter:blur(.7px)}
+
+/* Velo: sin esto el texto sobre textura es una apuesta, no una decision. */
+.velo{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(64% 52% at 50% 44%,
+      rgba(245,241,251,.86) 0%, rgba(245,241,251,.52) 58%, rgba(245,241,251,.12) 100%),
+    linear-gradient(to bottom, rgba(245,241,251,.78), rgba(245,241,251,.04) 28%,
+      rgba(245,241,251,.04) 72%, rgba(245,241,251,.86))}
+
+/* La lupa: el gesto del dermatoscopio, sin necesitar una dermatoscopia. */
+.lupa{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(260px 260px at calc(50% + var(--mx)*48%) calc(50% + var(--my)*48%),
+    rgba(255,255,255,.60), rgba(255,255,255,0) 70%)}
+
+.eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:12.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--lav-deep);margin-bottom:20px}
+.eyebrow::before,.eyebrow::after{content:"";width:26px;height:1.5px;background:var(--lav)}
+
+h1{margin:0 auto;max-width:14ch;font-size:clamp(44px,7.6vw,98px);line-height:.96;
+  letter-spacing:-.042em;font-weight:800}
+h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;
+  color:var(--lav-deep);font-size:1.04em}
+.hero-sub{margin:22px auto 0;max-width:46ch;font-size:17px;line-height:1.55;color:var(--ink-2)}
+
+.probe{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin:40px auto 0;max-width:880px;text-align:left}
+.probe a{display:flex;align-items:center;gap:14px;padding:15px 17px;border-radius:16px;
+  background:rgba(255,255,255,.80);backdrop-filter:blur(8px);
+  border:1.5px solid rgba(27,47,87,.08);box-shadow:0 8px 26px rgba(27,47,87,.06);
+  font-size:15.5px;font-weight:700;letter-spacing:-.012em;line-height:1.25;color:var(--ink);
+  transition:transform .16s ease, border-color .16s ease,
+             box-shadow .16s ease, background-color .16s ease}
+.probe a:hover{transform:translateY(-3px);background:#fff;border-color:var(--lav);
+  box-shadow:0 14px 34px rgba(27,47,87,.11)}
+.probe a:focus-visible{outline:2px solid var(--lav);outline-offset:3px}
+.probe svg{width:30px;height:30px;flex:none;color:var(--lav-deep)}
+.probe small{display:block;font-weight:500;font-size:12.5px;line-height:1.35;
+  color:var(--ink-2);margin-top:3px}
+
+.hero-mas{margin:24px 0 0;font-size:14.5px;color:var(--ink-2)}
+.hero-mas a{font-weight:700;color:var(--lav-deep);border-bottom:1.5px solid rgba(126,111,196,.4)}
+.next-date{display:inline-flex;align-items:center;gap:10px;margin:30px auto 0;
+  font-size:14px;font-weight:600;color:var(--ink-2)}
+.next-date b{color:var(--ink)}
+.next-date::before{content:"";width:7px;height:7px;flex:none;border-radius:50%;
+  background:var(--amber);box-shadow:0 0 0 4px rgba(226,161,60,.22)}
+.trust{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;font-size:13px;color:var(--ink-2)}
+.trust b{font-weight:700;color:var(--ink)}
+.trust .sep{color:var(--dim)}
+
+@keyframes entra{ from{ opacity:0; transform:translateY(14px) } }
+.js .eyebrow,.js h1,.js .hero-sub,.js .probe a,
+.js .hero-mas,.js .next-date,.js .trust{animation:entra .38s cubic-bezier(.22,1,.36,1) backwards}
+.js .eyebrow{animation-delay:.01s} .js h1{animation-delay:.04s}
+.js .hero-sub{animation-delay:.09s}
+.js .probe a:nth-child(1){animation-delay:.13s} .js .probe a:nth-child(2){animation-delay:.16s}
+.js .probe a:nth-child(3){animation-delay:.19s} .js .probe a:nth-child(4){animation-delay:.22s}
+.js .probe a:nth-child(5){animation-delay:.25s} .js .probe a:nth-child(6){animation-delay:.28s}
+.js .hero-mas{animation-delay:.31s} .js .next-date{animation-delay:.34s}
+.js .trust{animation-delay:.37s}
+.listo .eyebrow,.listo h1,.listo .hero-sub,.listo .probe a,
+.listo .hero-mas,.listo .next-date,.listo .trust{
+  animation:none !important;opacity:1 !important;transform:none !important}
+
+/* nota del prototipo */
+.nota{padding:60px 0 80px;background:#fff}
+.nota h2{margin:0 0 14px;font-size:24px;letter-spacing:-.025em}
+.nota p{margin:0 0 12px;font-size:16px;line-height:1.6;color:var(--ink-2);max-width:62ch}
+.nota a{font-weight:700;color:var(--lav-deep);border-bottom:1.5px solid rgba(126,111,196,.4)}
+.nota .ctrl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:22px}
+.nota button{font:inherit;font-size:14px;font-weight:700;padding:9px 15px;border-radius:10px;
+  border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.nota button:hover{border-color:var(--lav)}
+
+@media (max-width:980px){ .probe{grid-template-columns:1fr 1fr;max-width:620px} }
+@media (max-width:620px){ .probe{grid-template-columns:1fr} }
+@media (max-width:900px){
+  .hero{min-height:auto;padding:32px 0 40px}
+  nav{display:none}
+  h1{font-size:clamp(38px,10.5vw,58px);max-width:none}
+  .trust{justify-content:flex-start;text-align:left}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition-duration:.001ms !important}
+  .lupa{display:none}
+  .listo .eyebrow,.listo h1,.listo .hero-sub,.listo .probe a,
+  .listo .hero-mas,.listo .next-date,.listo .trust{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="index.html"><img src="img/logo.png" alt="Dra. Silvia Villaman"></a>
+    <nav><a href="index.html">Volver al sitio</a></nav>
+    <a class="btn btn-top" href="index.html#agendar">Agendar cita</a>
+  </div>
+</header>
+
+<main class="hero" id="inicio">
+  <canvas id="piel" aria-hidden="true"></canvas>
+  <div class="velo" aria-hidden="true"></div>
+  <div class="lupa" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <div class="eyebrow">Dermatóloga pediátrica · Culiacán</div>
+
+    <h1>¿Qué le ves <em>a la piel</em>?</h1>
+
+    <p class="hero-sub">De tus hijos o la tuya. Elige lo que estás viendo y te lleva a pedir
+      cita con el motivo ya puesto.</p>
+
+    <div class="probe">
+      <a href="index.html#agendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3.8c3.5 0 6.8 2.3 6.8 5.6 0 2-1 3.2-1 4.9 0 2.3-2.3 5.7-5.8 5.7-4 0-6.8-3.2-6.8-7.2C5.2 8.6 8.1 3.8 12 3.8Z"/>
+        </svg>
+        <span>Una mancha<small>nueva, o que cambió de color</small></span>
+      </a>
+      <a href="index.html#agendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="9" cy="8.8" r="3.1"/><circle cx="16.2" cy="13" r="2.2"/><circle cx="8.6" cy="16.4" r="1.8"/>
+        </svg>
+        <span>Ronchas o comezón<small>brotes que van y vienen</small></span>
+      </a>
+      <a href="index.html#agendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 8h5M12.5 8h7.5M4 12.5h9M16.5 12.5h3.5M4 17h6M13.5 17h6.5"/>
+        </svg>
+        <span>Resequedad que vuelve<small>piel áspera, se parte, pica</small></span>
+      </a>
+      <a href="index.html#agendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/>
+          <circle cx="12" cy="12" r="3.1" fill="currentColor" stroke="none"/>
+        </svg>
+        <span>Un lunar<small>quiero que lo revisen</small></span>
+      </a>
+      <a href="index.html#agendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="8.2" cy="8" r="2.1"/><circle cx="15.6" cy="10.2" r="1.4"/>
+          <circle cx="11" cy="15.4" r="2.6"/><circle cx="17.2" cy="16.4" r="1.1"/>
+        </svg>
+        <span>Granos o acné<small>en la cara o en la espalda</small></span>
+      </a>
+      <a href="index.html#agendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <path d="M5.5 4.2c0 6 1.4 9.2 2.9 12.3M11.3 3.6c.5 5.9.2 9.6-.7 13"/>
+          <path d="M17.2 5.6c-.7 3.9-1.1 6-2.8 8.9"/><path d="M19.4 17.2c-1.7 1-2.7 2.1-3.3 3.2"/>
+        </svg>
+        <span>Se cae el cabello<small>en parches o en general</small></span>
+      </a>
+    </div>
+
+    <p class="hero-mas">¿Otra cosa? <a href="index.html#atiende">Mira todo lo que atiende</a>.</p>
+    <p class="next-date" id="proxima" hidden></p>
+
+    <div class="trust">
+      <span>Especialidad en el <b>Hospital Infantil de México Federico Gómez</b></span>
+      <span class="sep">·</span>
+      <span><b>Pedro María Anaya 2188</b>, Culiacán</span>
+      <span class="sep">·</span>
+      <span>WhatsApp <b>667 751 2919</b></span>
+    </div>
+  </div>
+</main>
+
+<section class="nota">
+  <div class="wrap">
+    <h2>Esto es un prototipo</h2>
+    <p>Mismo contenido y misma estructura que el hero actual. Lo único que cambia es el
+      fondo: en vez del campo lavanda plano, una superficie generada por código.</p>
+    <p>No es una foto de piel, es <b>su geometría</b>. El microrelieve cutáneo es un campo
+      de polígonos irregulares, así que la superficie es ruido celular (Worley) dibujado en
+      un canvas de baja resolución y estirado. Pesa cero kilobytes de imagen, no puede
+      resultar desagradable, y nadie más la tiene.</p>
+    <p>El velo encima no es decoración: sin él, poner texto sobre textura es una apuesta.
+      Y la luz que sigue al cursor es el gesto del dermatoscopio, sin necesitar una
+      dermatoscopía real.</p>
+    <p class="ctrl">
+      <button type="button" id="otra">Generar otra superficie</button>
+      <button type="button" id="crudo">Ver sin velo</button>
+      <a href="index.html">Comparar con el hero actual</a>
+    </p>
+  </div>
+</section>
+
+<script>
+(function(){
+  var cv = document.getElementById('piel');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d');
+
+  /* Una octava de ruido celular. ANISO estira las celdas: la piel no son
+     circulos, son rombos alargados, y de ahi viene que lea como piel y no
+     como plastico de burbujas. */
+  function octava(W, H, cols, aniso){
+    var cellW = W / cols;
+    var cellH = cellW * aniso;
+    var rows = Math.max(3, Math.round(H / cellH));
+    cellH = H / rows;
+
+    var n = cols * rows;
+    var px = new Float32Array(n), py = new Float32Array(n);
+    for (var gy = 0; gy < rows; gy++){
+      for (var gx = 0; gx < cols; gx++){
+        var k = gy * cols + gx;
+        /* filas alternas corridas: evita la retícula cuadrada delatora */
+        var sesgo = (gy % 2) * 0.5;
+        px[k] = ((gx + sesgo) % cols + 0.15 + Math.random() * 0.7) * cellW;
+        py[k] = (gy + 0.15 + Math.random() * 0.7) * cellH;
+      }
+    }
+
+    var out = new Float32Array(W * H);
+    var esc = Math.min(cellW, cellH) * 0.85;
+    for (var y = 0; y < H; y++){
+      var gy0 = Math.floor(y / cellH);
+      for (var x = 0; x < W; x++){
+        var gx0 = Math.floor(x / cellW);
+        var f1 = 1e9, f2 = 1e9;
+        /* solo las nueve celdas vecinas: sin esto serian millones de distancias */
+        for (var jy = gy0 - 1; jy <= gy0 + 1; jy++){
+          if (jy < 0 || jy >= rows) continue;
+          for (var jx = gx0 - 1; jx <= gx0 + 1; jx++){
+            if (jx < 0 || jx >= cols) continue;
+            var k2 = jy * cols + jx;
+            var dx = x - px[k2], dy = (y - py[k2]) / aniso;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < f1){ f2 = f1; f1 = dist; }
+            else if (dist < f2){ f2 = dist; }
+          }
+        }
+        var v = (f2 - f1) / esc;        /* 0 en los surcos, 1 en el centro */
+        if (v > 1) v = 1;
+        out[y * W + x] = v * v * (3 - 2 * v);
+      }
+    }
+    return out;
+  }
+
+  function dibuja(){
+    var t0 = performance.now();
+    var vw = window.innerWidth, vh = Math.max(360, cv.clientHeight || window.innerHeight);
+    /* El alto se topa en 420: en movil el hero es muy alto y sin tope esto se
+       vuelve medio segundo de hilo principal bloqueado al cargar. El CSS
+       estira lo que falte y no se nota. */
+    var W = 300, H = Math.min(420, Math.max(140, Math.round(W * vh / vw)));
+    cv.width = W; cv.height = H;
+
+    /* dos escalas: los surcos grandes y el grano fino encima */
+    var grande = octava(W, H, 30, 0.62);
+    var fino   = octava(W, H, 74, 0.70);
+
+    var img = ctx.createImageData(W, H), d = img.data;
+    for (var i = 0, p = 0; i < W * H; i++, p += 4){
+      var v = grande[i] * 0.72 + fino[i] * 0.28;
+      d[p]     = 224 + (248 - 224) * v;
+      d[p + 1] = 216 + (245 - 216) * v;
+      d[p + 2] = 239 + (252 - 239) * v;
+      d[p + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    cv.dataset.ms = Math.round(performance.now() - t0);
+    cv.dataset.px = W + 'x' + H;
+  }
+
+  dibuja();
+  var t;
+  addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(dibuja, 250); });
+  document.getElementById('otra').addEventListener('click', dibuja);
+
+  var velo = document.querySelector('.velo');
+  document.getElementById('crudo').addEventListener('click', function(){
+    var oculto = velo.style.display === 'none';
+    velo.style.display = oculto ? '' : 'none';
+    this.textContent = oculto ? 'Ver sin velo' : 'Ver con velo';
+  });
+})();
+
+/* la lupa sigue al cursor */
+(function(){
+  var root = document.documentElement, hero = document.getElementById('inicio');
+  if (!hero) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  var tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
+  function tick(){
+    cx += (tx - cx) * 0.16; cy += (ty - cy) * 0.16;
+    root.style.setProperty('--mx', cx.toFixed(4));
+    root.style.setProperty('--my', cy.toFixed(4));
+    if (Math.abs(tx - cx) < 0.002 && Math.abs(ty - cy) < 0.002){ raf = null; return; }
+    raf = requestAnimationFrame(tick);
+  }
+  hero.addEventListener('pointermove', function(e){
+    if (e.pointerType !== 'mouse') return;
+    var r = hero.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    tx = Math.max(-1, Math.min(1, (e.clientX - r.left) / r.width * 2 - 1));
+    ty = Math.max(-1, Math.min(1, (e.clientY - r.top) / r.height * 2 - 1));
+    if (!raf) raf = requestAnimationFrame(tick);
+  });
+  hero.addEventListener('pointerleave', function(){
+    tx = 0; ty = 0; if (!raf) raf = requestAnimationFrame(tick);
+  });
+})();
+
+/* la misma linea viva del sitio, con el mismo horario */
+(function(){
+  var MANANA = ['10:00','10:30','11:00','11:30','12:00','12:30','13:00'];
+  var TARDE  = ['16:00','16:30','17:00','17:30','18:00','18:30'];
+  var HORARIOS = {0:[],1:MANANA.concat(TARDE),2:MANANA.concat(TARDE),3:MANANA.concat(TARDE),
+                  4:MANANA.concat(TARDE),5:MANANA.concat(TARDE),6:MANANA};
+  var p = document.getElementById('proxima');
+  if (!p) return;
+  var hoy = new Date(); hoy.setHours(0,0,0,0);
+  for (var i = 1; i <= 60; i++){
+    var d = new Date(hoy); d.setDate(d.getDate() + i);
+    if (!(HORARIOS[d.getDay()] || []).length) continue;
+    p.innerHTML = 'Puedes pedir cita desde el <b>' +
+      d.toLocaleDateString('es-MX',{weekday:'long', day:'numeric'}) + '</b>.';
+    p.hidden = false;
+    return;
+  }
+})();
+</script>
+</body>
+</html>
