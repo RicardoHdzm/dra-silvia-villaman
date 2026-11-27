@@ -191,10 +191,10 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
    el navegador corrige el scroll antes de que el codigo pueda reaccionar.
    Lo que impide saltarse una parada es scroll-snap-stop, no la dureza. */
 html{scroll-snap-type:y proximity}
-/* La seccion que sigue al hero tambien es destino: al pasar la ultima parada,
-   un movimiento mas te deja en ella y no en los 100vh muertos que tarda el
-   escenario en despegarse. Con proximity esto no atrapa. */
-#doctora{scroll-snap-align:start;scroll-snap-stop:always}
+/* La seccion que sigue al hero NO es destino de anclaje a proposito: se probo
+   y el salto automatico al salir del recorrido se sentia brusco. El anclaje
+   vive solo dentro del hero; al pasar la ultima parada el scroll sigue
+   normal. */
 /* El sitio de cada ancla lo calcula el JS, no el CSS. Expresarlo en vh estaba
    mal: el alto pegajoso real es la seccion menos el escenario, y el escenario
    mide 100svh, que en movil no es 100vh. Cuando no coinciden, las ultimas

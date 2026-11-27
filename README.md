@@ -68,8 +68,13 @@ encimados; escalonado se lee como un relevo y no como un parpadeo.
 en el punto exacto del recorrido donde cada parada queda centrada, con
 `scroll-snap-align`. Un movimiento corto regresa a la parada actual y uno
 decidido pasa a la siguiente, así que ya no te quedas en los huecos donde no
-hay texto. Es `proximity` y no `mandatory`, y fuera del hero no hay anclas: el
-resto de la página scrollea normal.
+hay texto. Es `proximity` y no `mandatory`, y **fuera del hero no hay anclas**:
+el resto de la página scrollea normal.
+
+Hubo un momento en que `#doctora` también era destino, para que al pasar la
+última parada un movimiento te dejara ya en la sección siguiente. Se quitó: el
+salto automático al salir del recorrido se sentía brusco. Si se quiere
+recuperar, es una regla de una línea — pero se probó y no gustó.
 
 La posición sale de `calc(var(--at) * var(--rango))`, donde `--rango` es la
 altura útil del recorrido (420vh en escritorio, 320vh en móvil, porque la
