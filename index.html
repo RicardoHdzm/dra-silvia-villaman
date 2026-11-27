@@ -1093,18 +1093,18 @@ html{scroll-behavior:smooth}
      inflamacion, el pigmento es terroso, la resequedad es fria. Asi cada
      parada se distingue de un vistazo y no solo por lo que dice el texto. */
   var COLOR = {
-    seca:    '168,216,232',
-    mancha:  '212,160,112',
-    lunar:   '150,132,245',
-    ronchas: '236,96,106',
-    acne:    '232,158,62',
-    cabello: '196,178,255'
+    seca:    '150,224,250',
+    mancha:  '232,158,92',
+    lunar:   '158,130,255',
+    ronchas: '255,84,96',
+    acne:    '255,168,48',
+    cabello: '208,188,255'
   };
   var COLOR_BASE = '167,139,250';
 
   var glifo = {
     seca: function(g, x, y, k, t, C){
-      g.save(); g.lineCap = 'round'; g.strokeStyle = 'rgba(' + C + ',.40)';
+      g.save(); g.lineCap = 'round'; g.strokeStyle = 'rgba(' + C + ',.58)';
       for (var i = 0; i < 6; i++){
         var ang = i * 1.05 + 0.3, cx = x + Math.cos(ang + 2) * 90 * k, cy = y + Math.sin(ang + 2) * 70 * k;
         g.lineWidth = (1.2 + (i % 2) * .8) * Math.max(1, k * .6);
@@ -1117,19 +1117,19 @@ html{scroll-behavior:smooth}
         g.stroke();
       }
       g.restore();
-      halo(g, x, y, 170 * k, 'rgba(' + C + ',A)', '.14');
+      halo(g, x, y, 185 * k, 'rgba(' + C + ',A)', '.24');
     },
     mancha: function(g, x, y, k, t, C){
       var lat = 1 + 0.05 * Math.sin(t * 0.0009);
-      halo(g, x, y, 260 * k * lat, 'rgba(' + C + ',A)', '.26');
-      halo(g, x, y, 155 * k * lat, 'rgba(' + C + ',A)', '.30');
-      halo(g, x, y, 72 * k, 'rgba(96,62,44,A)', '.46');
+      halo(g, x, y, 265 * k * lat, 'rgba(' + C + ',A)', '.56');
+      halo(g, x, y, 158 * k * lat, 'rgba(' + C + ',A)', '.46');
+      halo(g, x, y, 74 * k, 'rgba(110,66,40,A)', '.52');
     },
     lunar: function(g, x, y, k, t, C){
-      halo(g, x, y, 180 * k, 'rgba(' + C + ',A)', '.30');
+      halo(g, x, y, 190 * k, 'rgba(' + C + ',A)', '.44');
       g.fillStyle = 'rgba(240,236,255,.95)';
       g.beginPath(); g.arc(x, y, 7 * k, 0, 6.3); g.fill();
-      g.strokeStyle = 'rgba(' + C + ',.5)'; g.lineWidth = Math.max(1, k * .7);
+      g.strokeStyle = 'rgba(' + C + ',.68)'; g.lineWidth = Math.max(1, k * .8);
       for (var m = 1; m <= 3; m++){
         var rr = 30 * m * k * (1 + 0.05 * Math.sin(t * 0.0011 + m));
         g.beginPath(); g.arc(x, y, rr, 0, 6.3); g.stroke();
@@ -1146,7 +1146,7 @@ html{scroll-behavior:smooth}
       for (var i = 0; i < 5; i++){
         var ox = (i - 2) * 60 * k, oy = Math.sin(i * 1.4) * 40 * k;
         var lat = 1 + 0.2 * Math.sin(t * 0.0019 + i * 2.1);
-        halo(g, x + ox, y + oy, 40 * k * lat, 'rgba(' + C + ',A)', '.38');
+        halo(g, x + ox, y + oy, 42 * k * lat, 'rgba(' + C + ',A)', '.54');
         g.fillStyle = 'rgba(254,246,230,.92)';
         g.beginPath(); g.arc(x + ox, y + oy, 3.4 * k, 0, 6.3); g.fill();
       }
@@ -1156,7 +1156,7 @@ html{scroll-behavior:smooth}
       for (var i = 0; i < 7; i++){
         var ox = (i - 3) * 34 * k, L = (150 + (i % 3) * 64) * k;
         var mece = Math.sin(t * 0.0007 + i * 0.9) * 20 * k;
-        g.strokeStyle = 'rgba(' + C + ',' + (0.18 + (i % 2) * 0.14) + ')';
+        g.strokeStyle = 'rgba(' + C + ',' + (0.28 + (i % 2) * 0.18) + ')';
         g.lineWidth = Math.max(1, (1.2 + (i % 2) * .7) * k * .6);
         g.beginPath(); g.moveTo(x + ox, y + 50 * k);
         g.quadraticCurveTo(x + ox + (i % 2 ? 58 : -58) * k + mece, y - L * 0.4,
@@ -1170,7 +1170,7 @@ html{scroll-behavior:smooth}
   function mira(g, x, y, r, fuerza, t, C){
     g.save(); g.globalAlpha = fuerza;
     g.translate(x, y); g.rotate(t * 0.00016);
-    g.strokeStyle = 'rgba(' + C + ',.55)'; g.lineWidth = 1;
+    g.strokeStyle = 'rgba(' + C + ',.72)'; g.lineWidth = 1.2;
     g.beginPath(); g.arc(0, 0, r, 0, 6.3); g.stroke();
     var d = r * 0.09;
     [[0,-1],[0,1],[-1,0],[1,0]].forEach(function(v){
