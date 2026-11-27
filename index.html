@@ -885,15 +885,18 @@ html{scroll-behavior:smooth}
 (function(){
   var TEL = '526677512919';
 
-  /* PENDIENTE: confirmar el horario real con la doctora. 0 = domingo. */
+  /* HORARIO DE EJEMPLO. PENDIENTE: cambiarlo por el real de la doctora.
+     0 = domingo. Un dia con lista vacia sale deshabilitado en el calendario. */
+  var MANANA = ['10:00','10:30','11:00','11:30','12:00','12:30','13:00'];
+  var TARDE  = ['16:00','16:30','17:00','17:30','18:00','18:30'];
   var HORARIOS = {
-    0: [],
-    1: ['16:00','16:30','17:00','17:30','18:00'],
-    2: ['16:00','16:30','17:00','17:30','18:00'],
-    3: ['16:00','16:30','17:00','17:30','18:00'],
-    4: ['16:00','16:30','17:00','17:30','18:00'],
-    5: ['16:00','16:30','17:00','17:30','18:00'],
-    6: ['10:00','10:30','11:00','11:30']
+    0: [],                        /* domingo: cerrado */
+    1: MANANA.concat(TARDE),
+    2: MANANA.concat(TARDE),
+    3: MANANA.concat(TARDE),
+    4: MANANA.concat(TARDE),
+    5: MANANA.concat(TARDE),
+    6: MANANA                     /* sabado: solo manana */
   };
   var DIAS_MINIMOS = 1;   /* para hoy ya no se agenda */
   var DIAS_MAXIMOS = 60;

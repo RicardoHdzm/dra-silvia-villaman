@@ -52,11 +52,13 @@ No se envía nada a ningún servidor y no se guarda nada en el navegador.
 El horario vive en una sola constante al inicio de ese bloque de JS:
 
 ```js
+var MANANA = ['10:00','10:30','11:00','11:30','12:00','12:30','13:00'];
+var TARDE  = ['16:00','16:30','17:00','17:30','18:00','18:30'];
 var HORARIOS = {
-  0: [],                                              // domingo
-  1: ['16:00','16:30','17:00','17:30','18:00'],       // lunes
+  0: [],                     // domingo: cerrado
+  1: MANANA.concat(TARDE),   // lunes a viernes: dos bloques
   ...
-  6: ['10:00','10:30','11:00','11:30']                // sabado
+  6: MANANA                  // sabado: solo manana
 };
 var DIAS_MINIMOS = 1;   // para hoy ya no se agenda
 var DIAS_MAXIMOS = 60;
@@ -100,11 +102,12 @@ Que dependen de la doctora:
   `13824021` (un dígito menos) más `9532246` y `12820870`. En el sitio quedaron
   las tres de Doctoralia. Confirmar cuál es cuál.
 - **Horario de consulta — urgente.** El calendario de "agendar" muestra horas
-  **inventadas** (tarde de lunes a viernes, mañana el sábado) porque no las
-  tenemos. Son creíbles y por eso mismo peligrosas: si alguien pide las 18:00 y
-  ella no atiende a esa hora, la primera impresión ya se perdió. Cambiar
-  `HORARIOS` antes de enseñar el sitio a nadie. La tarjeta de costos también
-  dice "Por confirmar" en el renglón de horario.
+  **inventadas**: dos bloques de lunes a viernes (10:00–13:00 y 16:00–18:30) y
+  sábado solo por la mañana. Es el patrón más común en consultorio privado, pero
+  sigue siendo un supuesto. Son creíbles y por eso mismo peligrosas: si alguien
+  pide las 18:00 y ella no atiende a esa hora, la primera impresión ya se perdió.
+  Cambiar `MANANA`, `TARDE` y `HORARIOS` antes de enseñar el sitio a nadie.
+  La tarjeta de costos también dice "Por confirmar" en el renglón de horario.
 - **Correo de contacto** para el aviso de privacidad y los derechos ARCO.
 - **Revisión legal del aviso.** La consulta médica maneja datos personales
   sensibles; el borrador sigue la estructura de la LFPDPPP pero necesita abogado.
