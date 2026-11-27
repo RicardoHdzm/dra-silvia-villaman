@@ -26,19 +26,43 @@ npx serve .
 
 O cualquier servidor estático.
 
-## El hero: un recorrido por la piel
+## El hero: cuatro milímetros hacia adentro
 
-El scroll vertical mueve una cámara que avanza **en horizontal** sobre un trozo
-de piel. Lo que te vas encontrando en el camino son los seis motivos de
-consulta: resequedad, mancha, ronchas, lunar, acné y caída de cabello. Cada uno
-es una parada con su texto y su botón, así que el recorrido no solo narra:
-también agenda.
+El scroll **mete la cámara en la piel**. Son planos de tejido apilados en
+profundidad que vienen hacia ti y te atraviesan, y cada parada es una anomalía
+que vive a su profundidad real: 0.02 mm la resequedad, 0.10 el pigmento,
+0.30 los nevos, 1 mm la dermis, 2 mm el folículo, 3.5 la raíz del pelo.
 
-Por qué no es una copia del túnel: el de ellos es un viaje **por dentro de un
-tubo** y dice "nueve metros, ella cuida el último tramo". Este es un viaje
-**sobre una superficie** y dice "esto es lo que puede aparecer". Comparten
-mecánica, como dos películas comparten el travelling, pero no geometría,
-ni métrica, ni mensaje.
+Eso hace que el medidor de la esquina **signifique algo**: marca milímetros de
+verdad y el número coincide con el que dice la parada, porque sale de la misma
+tabla de anclas (`ANCLAS` interpola entre ellas). Cuando el recorrido era
+lateral, la profundidad era decorativa.
+
+La proyección es perspectiva a mano: cada plano se dibuja a `escala = F / z`,
+donde `z` sale de su distancia al progreso actual. Se ven unos 12 a la vez; los
+de atrás llegan tenues y pequeños, los de adelante crecen hasta pasarte por
+encima y desvanecerse. `DELTA` es cuánto se adelanta cada anomalía a su parada:
+cuanto más chico, más cerca y más grande llega.
+
+Lo que te encuentras son los seis motivos de consulta —resequedad, pigmento,
+lunar, ronchas, acné y raíz del pelo—, cada uno con su texto y su botón: el
+recorrido no solo narra, también agenda.
+
+Por qué no es una copia del túnel, aunque ahora también se entre: el de ellos
+es un viaje **por dentro de un tubo**, una sola cavidad recorrida a lo largo,
+y dice "nueve metros, ella cuida el último tramo". Este atraviesa **capas
+apiladas** hacia abajo y dice "todo esto pasa en cuatro milímetros". Comparten
+mecánica, como dos películas comparten el travelling, pero no geometría, ni
+métrica, ni mensaje.
+
+<details><summary>Antes de esto, el recorrido era lateral</summary>
+
+La cámara avanzaba en horizontal sobre un trozo de piel y las lesiones iban
+apareciendo al costado. Se cambió porque la profundidad quedaba decorativa:
+el medidor decía "2 mm de piel" sin que ese número significara nada. Está
+en el historial hasta `a43306e`.
+
+</details>
 
 **El registro es de instrumento, no de ilustración.** Fondo oscuro, la piel
 dibujada como una malla de nodos y aristas, y las lesiones como anomalías de

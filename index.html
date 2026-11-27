@@ -491,55 +491,55 @@ html{scroll-behavior:smooth}
     <div class="bruma" aria-hidden="true"></div>
 
     <div class="titular" data-at="0">
-      <h1>Un recorrido por <em>una piel</em>.</h1>
-      <p>Lo que te vas encontrando es lo que ella atiende. Dermatóloga pediátrica en Culiacán.</p>
+      <h1>Cuatro milímetros <em>hacia adentro</em>.</h1>
+      <p>Todo lo que trata pasa en ese grosor. Baja y ve bajando con la piel. Dermatóloga pediátrica en Culiacán.</p>
     </div>
 
     <div class="parada" data-at="0.16" data-sintoma="seca" hidden>
-      <div class="capa">Superficie</div>
+      <div class="capa">Estrato córneo · 0.02 mm</div>
       <h2>Aquí la piel <em>se parte</em>.</h2>
-      <p>Resequedad que vuelve por temporadas, aspereza, descamación. En niños suele ser eccema, y se controla.</p>
+      <p>Lo que tocas son células muertas. La resequedad que vuelve, la aspereza y la descamación pasan en esta capa.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="seca">Pedir cita por esto</a>
     </div>
 
     <div class="parada" data-at="0.32" data-sintoma="mancha" hidden>
-      <div class="capa">Pigmento</div>
-      <h2>Una mancha que <em>antes no estaba</em>.</h2>
-      <p>El color lo dan los melanocitos. Cuando se desordenan aparecen las manchas y el melasma.</p>
+      <div class="capa">Epidermis · 0.10 mm</div>
+      <h2>Donde nace <em>el color</em>.</h2>
+      <p>Aquí viven los melanocitos. Cuando se desordenan aparecen las manchas y el melasma.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="mancha">Pedir cita por esto</a>
     </div>
 
-    <div class="parada" data-at="0.48" data-sintoma="ronchas" hidden>
-      <div class="capa">Brote</div>
-      <h2>Ronchas que van <em>y vienen</em>.</h2>
-      <p>Salen, pican, se quitan y regresan. Encontrar qué las dispara es la mitad del tratamiento.</p>
-      <a class="btn btn-path" href="#agendar" data-sintoma="ronchas">Pedir cita por esto</a>
-    </div>
-
-    <div class="parada" data-at="0.64" data-sintoma="lunar" hidden>
-      <div class="capa">Lunar</div>
+    <div class="parada" data-at="0.48" data-sintoma="lunar" hidden>
+      <div class="capa">Unión · 0.30 mm</div>
       <h2>El que conviene <em>vigilar</em>.</h2>
-      <p>La mayoría no son nada. Los que cambian de forma, color o tamaño son los que se revisan.</p>
+      <p>A esta profundidad nacen los nevos. La mayoría no son nada; los que cambian son los que se revisan.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="lunar">Pedir cita por esto</a>
     </div>
 
+    <div class="parada" data-at="0.64" data-sintoma="ronchas" hidden>
+      <div class="capa">Dermis · 1 mm</div>
+      <h2>Ronchas que van <em>y vienen</em>.</h2>
+      <p>El brote se ve arriba pero ocurre aquí, en los vasos. Encontrar qué lo dispara es la mitad del tratamiento.</p>
+      <a class="btn btn-path" href="#agendar" data-sintoma="ronchas">Pedir cita por esto</a>
+    </div>
+
     <div class="parada" data-at="0.80" data-sintoma="acne" hidden>
-      <div class="capa">Folículo</div>
+      <div class="capa">Folículo · 2 mm</div>
       <h2>El acné empieza <em>adentro</em>.</h2>
       <p>No en la superficie, sino en el poro. Por eso tallar no sirve y el tratamiento va por otro lado.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="acne">Pedir cita por esto</a>
     </div>
 
     <div class="parada" data-at="0.95" data-sintoma="cabello" hidden>
-      <div class="capa">Raíz</div>
-      <h2>Y de aquí <em>nace el pelo</em>.</h2>
+      <div class="capa">Raíz · 3.5 mm</div>
+      <h2>Y aquí <em>nace el pelo</em>.</h2>
       <p>Cuando se cae, la causa está en la raíz. Se busca antes de recetar nada.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="cabello">Pedir cita por esto</a>
     </div>
 
-    <div class="escala" aria-hidden="true">2 mm de piel</div>
+    <div class="escala" id="escala" aria-hidden="true">0.00 mm</div>
     <div class="riel" id="riel" aria-hidden="true"></div>
-    <div class="baja" id="baja">Baja para recorrerla</div>
+    <div class="baja" id="baja">Baja para entrar</div>
   </div>
 </main>
 
@@ -950,14 +950,15 @@ html{scroll-behavior:smooth}
 
 <script>
 (function(){
-  /* El recorrido, en registro de instrumento. La piel se dibuja como una malla
-     de nodos y aristas —el microrelieve es un campo de celdas, asi que la malla
-     no es un adorno— y las lesiones son anomalias de ese campo, no dibujos.
-     El scroll avanza la camara en horizontal; el tiempo hace lo demas. */
+  /* El hero entra en la piel. El scroll no mueve la camara de lado: la mete
+     hacia adentro. Son planos de tejido apilados en profundidad que vienen
+     hacia ti y te atraviesan, y cada parada es una anomalia que vive a su
+     profundidad real. El medidor marca milimetros de verdad. */
   var sec = document.getElementById('inicio');
   var cv  = document.getElementById('piel');
   var riel = document.getElementById('riel');
   var baja = document.getElementById('baja');
+  var escala = document.getElementById('escala');
   var cabecera = document.querySelector('header');
   if (!sec || !cv || !cv.getContext){ document.documentElement.className += ' sin-viaje'; return; }
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
@@ -972,117 +973,81 @@ html{scroll-behavior:smooth}
   paradas.forEach(function(){ riel.appendChild(document.createElement('span')); });
   var puntos = [].slice.call(riel.children);
 
-  var PASO = 62;
-  var vw = 0, vh = 0, mundo = 0;
-  var nodos = [], cols = 0, filas = 0, anomalias = [], polvo = [];
+  /* ---- optica ---- */
+  var F = 760;          /* distancia focal */
+  var PROF = 5200;      /* todo el viaje, en unidades de proyeccion */
+  var CERCA = 90;       /* donde el plano ya te paso por encima */
+  var LEJOS = 2800;     /* mas alla no se ve */
+  var DU = 0.045;       /* separacion entre planos, en progreso */
+  var DELTA = 0.030;    /* cuanto se adelanta la anomalia: cuanto menos, mas cerca y mas grande llega */
 
-  /* ---- el campo ---- */
-  function siembra(){
-    mundo = vw * 5.5;
-    cols = Math.ceil(mundo / PASO) + 2;
-    filas = Math.ceil(vh / PASO) + 2;
+  var vw = 0, vh = 0, planos = [], polvo = [];
 
-    anomalias = paradas.map(function(p, i){
-      var at = parseFloat(p.dataset.at);
-      var angosto = vw < 780;
-      return { tipo: p.dataset.sintoma, i: i, at: at,
-               x: at * (mundo - vw) + vw * (angosto ? 0.5 : 0.72),
-               y: angosto ? vh * 0.28 : vh * (0.47 + ((i % 3) - 1) * 0.08),
-               r: angosto ? 150 : 215 };
-    });
-
-    nodos = new Array(cols * filas);
-    for (var f = 0; f < filas; f++){
-      for (var c = 0; c < cols; c++){
-        var x = (c - 1) * PASO + (Math.sin(c * 12.9 + f * 7.3) * 0.5 + 0.5) * PASO * 0.55;
-        var y = (f - 1) * PASO + (Math.sin(c * 4.1 + f * 19.7) * 0.5 + 0.5) * PASO * 0.55;
-        var br = 0, dx = 0, dy = 0, rota = 0;
-        for (var k = 0; k < anomalias.length; k++){
-          var a = anomalias[k];
-          var ex = x - a.x, ey = y - a.y;
-          var d = Math.sqrt(ex * ex + ey * ey);
-          if (d > a.r) continue;
-          var t = 1 - d / a.r; t = t * t;
-          br = Math.max(br, t);
-          if (a.tipo === 'ronchas' || a.tipo === 'lunar'){
-            dx += (ex / (d || 1)) * t * 16; dy += (ey / (d || 1)) * t * 16;
-          } else if (a.tipo === 'mancha'){
-            dx -= (ex / (d || 1)) * t * 9;  dy -= (ey / (d || 1)) * t * 9;
-          } else if (a.tipo === 'seca'){
-            rota = Math.max(rota, t);
-          }
-        }
-        nodos[f * cols + c] = { x: x + dx, y: y + dy, br: br, rota: rota,
-                                ph: (c * 1.7 + f * 2.9) % 6.283,
-                                sx: 0, sy: 0 };
+  /* profundidad real: se interpola entre las anclas de cada parada, asi que
+     el numero que marca el medidor es el mismo que dice la parada */
+  var ANCLAS = [[0,0],[0.16,0.02],[0.32,0.10],[0.48,0.30],[0.64,1.0],[0.80,2.0],[0.95,3.5],[1,4.0]];
+  function milimetros(p){
+    for (var i = 1; i < ANCLAS.length; i++){
+      if (p <= ANCLAS[i][0]){
+        var a = ANCLAS[i-1], b = ANCLAS[i];
+        var t = (p - a[0]) / (b[0] - a[0] || 1);
+        return a[1] + (b[1] - a[1]) * t;
       }
     }
+    return 4;
+  }
+
+  function siembra(){
+    var R = Math.max(320, Math.min(vw, vh) * 0.56);
+    var paso = R / 3.4;
+    planos = [];
+
+    /* un plano de tejido: rejilla recortada en disco, con sus aristas */
+    function plano(u, tipo){
+      var giro = Math.sin(u * 91.7) * 3.14;
+      var cg = Math.cos(giro), sg = Math.sin(giro);
+      var pts = [], idx = {}, n = 0;
+      for (var gy = -4; gy <= 4; gy++){
+        for (var gx = -4; gx <= 4; gx++){
+          var x = gx * paso + Math.sin(gx * 7.1 + gy * 3.3 + u * 50) * paso * 0.42;
+          var y = gy * paso + Math.cos(gx * 4.7 + gy * 8.9 + u * 50) * paso * 0.42;
+          if (x * x + y * y > R * R) continue;
+          idx[gx + ',' + gy] = n;
+          pts.push({ x: x * cg - y * sg, y: x * sg + y * cg,
+                     ph: (gx * 1.7 + gy * 2.3 + u * 20) % 6.283 });
+          n++;
+        }
+      }
+      var ar = [];
+      for (var gy2 = -4; gy2 <= 4; gy2++){
+        for (var gx2 = -4; gx2 <= 4; gx2++){
+          var a = idx[gx2 + ',' + gy2];
+          if (a === undefined) continue;
+          var d = idx[(gx2+1) + ',' + gy2];
+          var b = idx[gx2 + ',' + (gy2+1)];
+          if (d !== undefined) ar.push(a, d);
+          if (b !== undefined) ar.push(a, b);
+        }
+      }
+      return { u: u, pts: pts, ar: ar, tipo: tipo || null, R: R };
+    }
+
+    for (var u = -0.02; u < 1.12; u += DU) planos.push(plano(u));
+    paradas.forEach(function(p){
+      planos.push(plano(parseFloat(p.dataset.at) + DELTA, p.dataset.sintoma));
+    });
+    planos.sort(function(a,b){ return b.u - a.u; });   /* del fondo al frente */
 
     polvo = [];
-    for (var i = 0; i < 90; i++){
-      polvo.push({ x0: Math.random() * mundo, y0: Math.random() * vh,
-                   r: 0.6 + Math.random() * 1.6, v: 0.5 + Math.random() * 1.1,
-                   ph: Math.random() * 6.283, a: 0.10 + Math.random() * 0.22 });
+    for (var i = 0; i < 70; i++){
+      polvo.push({ u: Math.random() * 1.1, a: Math.random() * 6.283,
+                   r: Math.random() * R * 1.3, ph: Math.random() * 6.283 });
     }
   }
 
-  /* ---- la malla ----
-     Dos pasadas: primero se calcula la posicion animada de cada nodo visible
-     y se guarda, luego se dibujan las aristas usando esas posiciones. Asi la
-     trigonometria se hace una vez por nodo y no tres. */
-  function malla(camX, ancho, alfa, t, anchoVista){
-    var c0 = Math.max(1, Math.floor(camX / PASO) - 1);
-    var c1 = Math.min(cols - 2, Math.ceil((camX + anchoVista) / PASO) + 1);
-    var f, c, n;
-
-    var o1 = t * 0.00085, o2 = t * 0.00057;
-    for (f = 1; f < filas - 1; f++){
-      for (c = c0; c <= c1 + 1; c++){
-        n = nodos[f * cols + c];
-        if (!n) continue;
-        n.sx = n.x + Math.sin(o1 + n.ph) * 2.8;
-        n.sy = n.y + Math.cos(o2 + n.ph * 1.7) * 2.2;
-      }
-    }
-
-    ctx.lineWidth = ancho;
-    ctx.beginPath();
-    for (f = 1; f < filas - 1; f++){
-      for (c = c0; c <= c1; c++){
-        n = nodos[f * cols + c];
-        if (n.rota > 0.45) continue;
-        var der = nodos[f * cols + c + 1];
-        var aba = nodos[(f + 1) * cols + c];
-        if (der && der.rota <= 0.45){ ctx.moveTo(n.sx, n.sy); ctx.lineTo(der.sx, der.sy); }
-        if (aba && aba.rota <= 0.45){
-          aba.sx = aba.x + Math.sin(o1 + aba.ph) * 2.8;
-          aba.sy = aba.y + Math.cos(o2 + aba.ph * 1.7) * 2.2;
-          ctx.moveTo(n.sx, n.sy); ctx.lineTo(aba.sx, aba.sy);
-        }
-      }
-    }
-    ctx.strokeStyle = 'rgba(146,167,230,' + alfa + ')';
-    ctx.stroke();
-
-    var pulso = 0.5 + 0.5 * Math.sin(t * 0.0016);
-    for (f = 1; f < filas - 1; f++){
-      for (c = c0; c <= c1; c++){
-        var m = nodos[f * cols + c];
-        if (m.rota > 0.45) continue;
-        if (m.br > 0.04){
-          ctx.fillStyle = 'rgba(199,180,255,' + (0.22 + m.br * (0.52 + pulso * 0.22)) + ')';
-          var s = 1.6 + m.br * (2.8 + pulso * 1.2);
-          ctx.fillRect(m.sx - s / 2, m.sy - s / 2, s, s);
-        } else {
-          ctx.fillStyle = 'rgba(170,186,235,' + (alfa * 1.5) + ')';
-          ctx.fillRect(m.sx - 0.9, m.sy - 0.9, 1.8, 1.8);
-        }
-      }
-    }
-  }
-
-  /* ---- las anomalias, abstractas ---- */
+  /* ---- las anomalias ---- */
   function halo(g, x, y, r, col, a){
+    if (r <= 0) return;
     var gr = g.createRadialGradient(x, y, 0, x, y, r);
     gr.addColorStop(0, col.replace('A', a));
     gr.addColorStop(1, col.replace('A', '0'));
@@ -1090,49 +1055,64 @@ html{scroll-behavior:smooth}
   }
 
   var glifo = {
-    seca: function(g, x, y, k){
-      halo(g, x, y, 190 * k, 'rgba(167,139,250,A)', '.12');
-    },
-    mancha: function(g, x, y, k){
-      halo(g, x, y, 200 * k, 'rgba(10,16,32,A)', '.78');
-      halo(g, x, y, 120 * k, 'rgba(10,16,32,A)', '.6');
-    },
-    ronchas: function(g, x, y, k, t){
+    seca: function(g, x, y, k, t){
+      g.save(); g.lineCap = 'round'; g.strokeStyle = 'rgba(199,180,255,.30)';
       for (var i = 0; i < 6; i++){
-        var ox = Math.cos(i * 1.9) * 74, oy = Math.sin(i * 2.6) * 50;
-        var lat = 1 + 0.12 * Math.sin(t * 0.0013 + i * 1.3);
-        halo(g, x + ox, y + oy, (34 + (i % 3) * 10) * k * lat, 'rgba(199,180,255,A)', '.34');
+        var ang = i * 1.05 + 0.3, cx = x + Math.cos(ang + 2) * 90 * k, cy = y + Math.sin(ang + 2) * 70 * k;
+        g.lineWidth = (1.2 + (i % 2) * .8) * Math.max(1, k * .6);
+        g.beginPath(); g.moveTo(cx, cy);
+        for (var j = 0; j < 6; j++){
+          ang += Math.sin(i * 3.1 + j * 1.7 + t * 0.0004) * 0.75;
+          cx += Math.cos(ang) * 34 * k; cy += Math.sin(ang) * 24 * k;
+          g.lineTo(cx, cy);
+        }
+        g.stroke();
       }
+      g.restore();
+      halo(g, x, y, 150 * k, 'rgba(167,139,250,A)', '.10');
+    },
+    mancha: function(g, x, y, k, t){
+      var lat = 1 + 0.05 * Math.sin(t * 0.0009);
+      halo(g, x, y, 230 * k * lat, 'rgba(8,14,28,A)', '.80');
+      halo(g, x, y, 130 * k * lat, 'rgba(8,14,28,A)', '.72');
+      halo(g, x, y, 260 * k, 'rgba(167,139,250,A)', '.10');
     },
     lunar: function(g, x, y, k, t){
-      halo(g, x, y, 150 * k, 'rgba(167,139,250,A)', '.26');
+      halo(g, x, y, 170 * k, 'rgba(167,139,250,A)', '.30');
       g.fillStyle = 'rgba(236,232,255,.95)';
-      g.beginPath(); g.arc(x, y, 5.5, 0, 6.3); g.fill();
-      g.strokeStyle = 'rgba(199,180,255,.4)'; g.lineWidth = 1;
+      g.beginPath(); g.arc(x, y, 7 * k, 0, 6.3); g.fill();
+      g.strokeStyle = 'rgba(199,180,255,.45)'; g.lineWidth = Math.max(1, k * .7);
       for (var m = 1; m <= 3; m++){
-        var rr = 22 * m * k * (1 + 0.05 * Math.sin(t * 0.0011 + m));
+        var rr = 30 * m * k * (1 + 0.05 * Math.sin(t * 0.0011 + m));
         g.beginPath(); g.arc(x, y, rr, 0, 6.3); g.stroke();
+      }
+    },
+    ronchas: function(g, x, y, k, t){
+      for (var i = 0; i < 7; i++){
+        var ox = Math.cos(i * 1.9) * 95 * k, oy = Math.sin(i * 2.6) * 68 * k;
+        var lat = 1 + 0.14 * Math.sin(t * 0.0013 + i * 1.3);
+        halo(g, x + ox, y + oy, (40 + (i % 3) * 14) * k * lat, 'rgba(199,180,255,A)', '.34');
       }
     },
     acne: function(g, x, y, k, t){
       for (var i = 0; i < 5; i++){
-        var ox = (i - 2) * 46, oy = Math.sin(i * 1.4) * 30;
-        var lat = 1 + 0.18 * Math.sin(t * 0.0019 + i * 2.1);
-        halo(g, x + ox, y + oy, 30 * k * lat, 'rgba(226,161,60,A)', '.30');
+        var ox = (i - 2) * 60 * k, oy = Math.sin(i * 1.4) * 40 * k;
+        var lat = 1 + 0.2 * Math.sin(t * 0.0019 + i * 2.1);
+        halo(g, x + ox, y + oy, 38 * k * lat, 'rgba(226,161,60,A)', '.32');
         g.fillStyle = 'rgba(252,240,214,.9)';
-        g.beginPath(); g.arc(x + ox, y + oy, 2.6, 0, 6.3); g.fill();
+        g.beginPath(); g.arc(x + ox, y + oy, 3.4 * k, 0, 6.3); g.fill();
       }
     },
     cabello: function(g, x, y, k, t){
       g.save(); g.lineCap = 'round';
       for (var i = 0; i < 7; i++){
-        var ox = (i - 3) * 27, L = (120 + (i % 3) * 54) * k;
-        var mece = Math.sin(t * 0.0007 + i * 0.9) * 16;
-        g.strokeStyle = 'rgba(199,180,255,' + (0.14 + (i % 2) * 0.12) + ')';
-        g.lineWidth = 1 + (i % 2) * 0.6;
-        g.beginPath(); g.moveTo(x + ox, y + 40);
-        g.quadraticCurveTo(x + ox + (i % 2 ? 46 : -46) + mece, y - L * 0.4,
-                           x + ox + (i % 2 ? 70 : -70) + mece * 1.6, y - L);
+        var ox = (i - 3) * 34 * k, L = (150 + (i % 3) * 64) * k;
+        var mece = Math.sin(t * 0.0007 + i * 0.9) * 20 * k;
+        g.strokeStyle = 'rgba(199,180,255,' + (0.16 + (i % 2) * 0.12) + ')';
+        g.lineWidth = Math.max(1, (1.2 + (i % 2) * .7) * k * .6);
+        g.beginPath(); g.moveTo(x + ox, y + 50 * k);
+        g.quadraticCurveTo(x + ox + (i % 2 ? 58 : -58) * k + mece, y - L * 0.4,
+                           x + ox + (i % 2 ? 88 : -88) * k + mece * 1.6, y - L);
         g.stroke();
       }
       g.restore();
@@ -1140,13 +1120,11 @@ html{scroll-behavior:smooth}
   };
 
   function mira(g, x, y, r, fuerza, t){
-    g.save();
-    g.globalAlpha = fuerza;
-    g.translate(x, y);
-    g.rotate(t * 0.00016);
-    g.strokeStyle = 'rgba(199,180,255,.55)'; g.lineWidth = 1;
+    g.save(); g.globalAlpha = fuerza;
+    g.translate(x, y); g.rotate(t * 0.00016);
+    g.strokeStyle = 'rgba(199,180,255,.5)'; g.lineWidth = 1;
     g.beginPath(); g.arc(0, 0, r, 0, 6.3); g.stroke();
-    var d = 9;
+    var d = r * 0.09;
     [[0,-1],[0,1],[-1,0],[1,0]].forEach(function(v){
       g.beginPath();
       g.moveTo(v[0] * (r - d), v[1] * (r - d));
@@ -1158,64 +1136,70 @@ html{scroll-behavior:smooth}
 
   /* ---- pintar ---- */
   function pinta(p, t){
-    var camX = p * (mundo - vw);
-
-    /* El zoom enfoca: entre paradas la vista va abierta, y al llegar a una
-       se cierra sobre ella. Se amplia alrededor de la propia anomalia para
-       que no se escape de la pantalla al crecer. */
-    var z = 1, fx = vw * 0.5, fy = vh * 0.5, mejor = null, peso = 0;
-    for (var i = 0; i < anomalias.length; i++){
-      var w = 1 - Math.abs(p - anomalias[i].at) / 0.13;
-      if (w > peso){ peso = w; mejor = anomalias[i]; }
-    }
-    if (mejor && peso > 0){
-      var e = peso * peso * (3 - 2 * peso);
-      z = 1 + 0.30 * e;
-      fx = mejor.x - camX; fy = mejor.y;
-    }
-    z *= 1 + 0.008 * Math.sin(t * 0.0004);     /* respiracion lenta de la camara */
-    var zf = 1 + (z - 1) * 0.45;               /* el fondo se acerca menos */
+    var cx = vw * (vw < 780 ? 0.5 : 0.62) + Math.sin(t * 0.00031) * 14;
+    var cy = vh * (vw < 780 ? 0.34 : 0.5) + Math.cos(t * 0.00024) * 11;
 
     ctx.clearRect(0, 0, vw, vh);
 
-    ctx.save();
-    ctx.translate(fx, fy); ctx.scale(zf, zf); ctx.translate(-fx, -fy);
-    ctx.translate(-camX * 0.45, vh * 0.08); ctx.scale(0.62, 0.62);
-    malla(camX * 0.45 / 0.62, 0.7, 0.055, t * 0.7, vw / 0.62);
-    ctx.restore();
+    /* resplandor del punto de fuga: lo que te espera mas adentro */
+    halo(ctx, cx, cy, Math.min(vw, vh) * 0.52, 'rgba(90,110,190,A)', '.16');
 
-    ctx.save();
-    ctx.translate(fx, fy); ctx.scale(z, z); ctx.translate(-fx, -fy);
-    ctx.translate(-camX, 0);
+    for (var i = 0; i < planos.length; i++){
+      var pl = planos[i];
+      var z = (pl.u - p) * PROF + CERCA;
+      if (z <= 150 || z >= LEJOS) continue;
 
-    for (var q = 0; q < polvo.length; q++){
-      var o = polvo[q];
-      var px = o.x0 + t * 0.012 * o.v;
-      px = ((px % mundo) + mundo) % mundo;
-      if (px < camX - 10 || px > camX + vw + 10) continue;
-      var py = o.y0 + Math.sin(t * 0.0005 + o.ph) * 14;
-      ctx.fillStyle = 'rgba(199,180,255,' + o.a + ')';
-      ctx.fillRect(px, py, o.r, o.r);
+      var k = F / z;
+      var lejania = 1 - z / LEJOS;
+      var alfa = lejania * lejania * 0.58;
+      if (z < 300) alfa *= (z - 150) / 150;        /* se desvanece al pasarte */
+      if (alfa <= 0.004) continue;
+
+      var pts = pl.pts, m = pts.length, sx = new Float32Array(m), sy = new Float32Array(m);
+      var o1 = t * 0.0008;
+      for (var n = 0; n < m; n++){
+        var q = pts[n];
+        sx[n] = cx + (q.x + Math.sin(o1 + q.ph) * 4) * k;
+        sy[n] = cy + (q.y + Math.cos(o1 * 0.7 + q.ph) * 4) * k;
+      }
+
+      ctx.lineWidth = Math.min(1.6, 0.5 + k * 0.45);
+      ctx.strokeStyle = 'rgba(146,167,230,' + alfa.toFixed(3) + ')';
+      ctx.beginPath();
+      for (var e = 0; e < pl.ar.length; e += 2){
+        ctx.moveTo(sx[pl.ar[e]], sy[pl.ar[e]]);
+        ctx.lineTo(sx[pl.ar[e+1]], sy[pl.ar[e+1]]);
+      }
+      ctx.stroke();
+
+      /* los cuerpos celulares solo cuando el plano ya es grande */
+      if (k > 1.05){
+        ctx.fillStyle = 'rgba(170,186,235,' + (alfa * 0.9).toFixed(3) + ')';
+        for (var c = 0; c < m; c++){
+          ctx.beginPath(); ctx.arc(sx[c], sy[c], Math.min(7, 1.2 * k), 0, 6.3); ctx.fill();
+        }
+      }
+
+      if (pl.tipo && glifo[pl.tipo]){
+        glifo[pl.tipo](ctx, cx, cy, k * 1.15, t);
+        var at = pl.u - DELTA;
+        var cerca = 1 - Math.min(1, Math.abs(p - at) / 0.075);
+        if (cerca > 0) mira(ctx, cx, cy, 150 * k * 1.15, cerca * 0.85, t);
+      }
     }
 
-    var k = 1;
-    for (var j = 0; j < anomalias.length; j++){
-      var a = anomalias[j];
-      if (a.x < camX - 460 || a.x > camX + vw + 460) continue;
-      if (a.tipo === 'mancha') glifo.mancha(ctx, a.x, a.y, k, t);
+    /* polvo, tambien en perspectiva */
+    for (var d = 0; d < polvo.length; d++){
+      var o = polvo[d];
+      var uz = ((o.u - p * 0.9) % 1.1 + 1.1) % 1.1;
+      var zz = uz * PROF + CERCA;
+      if (zz <= 160 || zz >= LEJOS) continue;
+      var kk = F / zz, al = (1 - zz / LEJOS) * 0.5;
+      var ang = o.a + t * 0.00006;
+      ctx.fillStyle = 'rgba(199,180,255,' + al.toFixed(3) + ')';
+      var s = Math.min(3, 0.8 * kk);
+      ctx.fillRect(cx + Math.cos(ang) * o.r * kk, cy + Math.sin(ang) * o.r * kk, s, s);
     }
-
-    malla(camX, 1, 0.13, t, vw);
-
-    for (var n = 0; n < anomalias.length; n++){
-      var b = anomalias[n];
-      if (b.x < camX - 460 || b.x > camX + vw + 460) continue;
-      if (b.tipo !== 'mancha' && glifo[b.tipo]) glifo[b.tipo](ctx, b.x, b.y, k, t);
-      var cerca = 1 - Math.min(1, Math.abs(p - b.at) / 0.075);
-      if (cerca > 0) mira(ctx, b.x, b.y, b.r * 0.72, cerca * 0.9, t);
-    }
-
-    ctx.restore();
   }
 
   /* ---- bucle ---- */
@@ -1239,6 +1223,8 @@ html{scroll-behavior:smooth}
       puntos[i].classList.toggle('on', Math.abs(p - parseFloat(b.dataset.at)) < 0.075);
     });
     baja.style.opacity = p > 0.03 ? 0 : 1;
+    var mm = milimetros(p);
+    escala.textContent = (mm < 0.1 ? mm.toFixed(3) : mm.toFixed(2)) + ' mm';
   }
 
   function cuadro(ts){
@@ -1253,7 +1239,6 @@ html{scroll-behavior:smooth}
     estado(p);
     pinta(p, ts);
 
-    /* solo se anima mientras el hero esta en pantalla y la pestania visible */
     if (enPantalla && !document.hidden) raf = requestAnimationFrame(cuadro);
   }
   function arranca(){ if (!raf) raf = requestAnimationFrame(cuadro); }
@@ -1276,8 +1261,6 @@ html{scroll-behavior:smooth}
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     siembra();
     ultimoP = -1;
-    /* un cuadro de inmediato y luego el bucle: si solo se agendara, el hero
-       se quedaria en blanco hasta que llegue el primer requestAnimationFrame */
     cuadro(performance.now());
   }
 
