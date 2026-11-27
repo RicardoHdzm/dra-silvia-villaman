@@ -102,6 +102,13 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
   padding:13px 22px;border-radius:999px;border:1.5px solid transparent;
   cursor:pointer;transition:transform .18s ease, background-color .35s ease, border-color .35s ease, box-shadow .25s ease;
 }
+/* Todos los botones de accion miden lo mismo. Antes cada uno se ajustaba a
+   su texto y la pagina quedaba en escalera: "Como llegar" de 133 px al lado
+   de "Agendar por WhatsApp" de 214 px, y apilados en movil se notaba todavia
+   mas. El del menu se queda compacto a proposito: es un enlace de barra, no
+   una llamada a la accion. El min() evita que se desborde en pantallas
+   angostas o dentro de tarjetas estrechas. */
+.btn:not(.btn-top){min-width:min(224px,100%)}
 .btn:hover{transform:translateY(-2px)}
 .btn-top{background:var(--ink);color:#fff;padding:11px 20px;font-size:14.5px}
 .btn-top:hover{background:#16294d}
@@ -114,8 +121,15 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
 .viaje{position:relative;height:380vh;
   --noche:#0E1A30; --noche2:#16233F;
   --luz:#A78BFA; --tinta-clara:#EDEAF9; --tinta-media:#A7B1CE}
-.stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate;
-  background:var(--noche)}
+/* dvh y no svh. En el telefono la barra del navegador se encoge en cuanto
+   empiezas a scrollear y el viewport crece unos 100 px. Con svh el escenario
+   se quedaba del alto chico y por abajo asomaba la seccion siguiente: eso es
+   lo que se sentia como que "la pagina se desliza" en vez de avanzar el
+   recorrido. svh queda de respaldo para navegadores sin dvh. El alto de la
+   seccion .viaje si se queda en vh, que es estable: si tambien siguiera a la
+   barra, el documento entero cambiaria de alto a media lectura. */
+.stage{position:sticky;top:0;height:100svh;height:100dvh;overflow:hidden;
+  isolation:isolate;background:var(--noche)}
 #piel{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:-2}
 
 /* niebla de profundidad: oscurece arriba y abajo y abre el centro-izquierda */
@@ -1057,7 +1071,7 @@ html{scroll-behavior:smooth}
   var DU = 0.045;       /* separacion entre planos, en progreso */
   var DELTA = 0.030;    /* cuanto se adelanta la anomalia: cuanto menos, mas cerca y mas grande llega */
 
-  var vw = 0, vh = 0, planos = [], polvo = [];
+  var vw = 0, vh = 0, planos = [], polvo = [], Rsem = -1;
 
   /* profundidad real: se interpola entre las anclas de cada parada, asi que
      el numero que marca el medidor es el mismo que dice la parada */
@@ -1075,6 +1089,7 @@ html{scroll-behavior:smooth}
 
   function siembra(){
     var R = Math.max(320, Math.min(vw, vh) * 0.56);
+    Rsem = R;
     var paso = R / 3.4;
     planos = [];
 
@@ -1380,19 +1395,25 @@ html{scroll-behavior:smooth}
     });
   }
 
+  /* Resembrar cuesta ~18 ms y rehace la malla entera. En el telefono la barra
+     del navegador aparece y desaparece al scrollear y eso dispara resize con
+     el mismo ancho; si sembraramos ahi, el tejido daria un salto a media
+     lectura. El tamano de la malla solo depende de min(ancho,alto), asi que
+     se compara eso: si no cambio, basta con volver a medir el lienzo y
+     recolocar las anclas. */
   function mide(){
     var dpr = Math.min(2, window.devicePixelRatio || 1);
     vw = cv.clientWidth; vh = cv.clientHeight;
     cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    siembra();
+    if (Math.abs(Math.max(320, Math.min(vw, vh) * 0.56) - Rsem) > 1) siembra();
     colocaAnclas();
     ultimoP = -1;
     cuadro(performance.now());
   }
 
   mide();
-  var tm; addEventListener('resize', function(){ clearTimeout(tm); tm = setTimeout(mide, 200); });
+  var tm; addEventListener('resize', function(){ clearTimeout(tm); tm = setTimeout(mide, 120); });
 })();
 
 /* aparicion al bajar */
