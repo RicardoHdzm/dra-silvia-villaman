@@ -122,30 +122,35 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
     linear-gradient(to bottom, rgba(10,18,34,.95), rgba(10,18,34,0) 24%,
       rgba(10,18,34,0) 72%, rgba(10,18,34,.96))}
 
-.titular{position:absolute;left:50%;top:50%;width:min(100% - 56px,660px);
-  transform:translate(-50%,-50%);text-align:center;
-  transition:opacity .3s ease, transform .3s ease}
-.parada{position:absolute;left:clamp(28px,7vw,110px);top:50%;width:min(100% - 56px,470px);
-  transform:translateY(-50%);text-align:left;
-  transition:opacity .3s ease, transform .3s ease}
-.titular[hidden],.parada[hidden]{display:none}
+/* Solo un bloque a la vez. Cruzar dos textos en la misma posicion no
+   funciona: al 50 y 50 no se lee ninguno. El scroll elige el ganador y el
+   relevo lo disuelve el CSS en 250 ms de reloj, no a lo largo del scroll,
+   asi que al detenerte siempre hay exactamente un texto entero. */
+.titular,.parada{position:absolute;top:50%;opacity:0;visibility:hidden;
+  transition:opacity .25s ease, visibility 0s linear .25s}
+.titular.activa,.parada.activa{opacity:1;visibility:visible;
+  transition:opacity .25s ease, visibility 0s}
+.titular{left:50%;width:min(100% - 56px,660px);
+  transform:translate(-50%,-50%);text-align:center}
+.parada{left:clamp(28px,7vw,110px);width:min(100% - 56px,560px);
+  transform:translateY(-50%);text-align:left}
 
-.titular h1{margin:0 auto;max-width:13ch;font-size:clamp(42px,6.8vw,88px);line-height:.97;
+.titular h1{margin:0 auto;max-width:13ch;font-size:clamp(46px,7.6vw,104px);line-height:.96;
   letter-spacing:-.042em;font-weight:800;color:var(--tinta-clara)}
 .titular h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
   font-weight:400;color:var(--luz);font-size:1.04em}
-.titular p{margin:20px auto 0;max-width:44ch;font-size:17px;line-height:1.55;
+.titular p{margin:22px auto 0;max-width:42ch;font-size:19px;line-height:1.55;
   color:var(--tinta-media)}
 
-.parada .capa{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;font-weight:700;
+.parada .capa{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;
   letter-spacing:.18em;text-transform:uppercase;color:var(--luz);margin-bottom:14px;
   font-variant-numeric:tabular-nums}
 .parada .capa::before{content:"";width:26px;height:1px;background:var(--luz);opacity:.6}
-.parada h2{margin:0;font-size:clamp(28px,4vw,50px);line-height:1.04;
+.parada h2{margin:0;font-size:clamp(32px,4.9vw,62px);line-height:1.02;
   letter-spacing:-.035em;font-weight:800;color:var(--tinta-clara)}
 .parada h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
   font-weight:400;color:var(--luz);font-size:1.05em}
-.parada p{margin:16px 0 0;max-width:46ch;font-size:16.5px;line-height:1.55;
+.parada p{margin:18px 0 0;max-width:44ch;font-size:19px;line-height:1.5;
   color:var(--tinta-media)}
 .parada .btn{margin-top:24px}
 
@@ -168,9 +173,13 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
    corto regresa a la parada actual y uno decidido pasa a la siguiente, sin
    secuestrar la rueda ni romper el teclado. Fuera del hero no hay anclas,
    asi que el resto de la pagina scrollea normal. */
+/* Blando a proposito. Con "mandatory" la pagina se quedaba clavada en la
+   primera seccion de abajo y no llegaba al pie, y apagarlo desde JS no sirve:
+   el navegador corrige el scroll antes de que el codigo pueda reaccionar.
+   Lo que impide saltarse una parada es scroll-snap-stop, no la dureza. */
 html{scroll-snap-type:y proximity}
 .ancla{position:absolute;left:0;width:1px;height:1px;pointer-events:none;
-  top:calc(var(--at) * var(--rango));scroll-snap-align:start}
+  top:calc(var(--at) * var(--rango));scroll-snap-align:start;scroll-snap-stop:always}
 
 .baja{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;
@@ -248,7 +257,7 @@ body{padding-top:76px}
   nav{display:none}
   .viaje{height:420vh;--rango:320vh}
   .parada{top:63%;left:28px;right:28px;width:auto}
-  .parada p{font-size:15.5px}
+  .parada p{font-size:17px}
   /* la niebla tambien es oscura: la version clara de antes lavaba el hero
      entero y dejaba el texto ilegible */
   .bruma{background:
@@ -990,6 +999,12 @@ html{scroll-behavior:smooth}
   paradas.forEach(function(){ riel.appendChild(document.createElement('span')); });
   var puntos = [].slice.call(riel.children);
 
+  /* El marcado trae las paradas con [hidden] para que sin JS no salgan las
+     seis apiladas. A partir de aqui manda la clase .activa, asi que se
+     retira el atributo: si se queda, es display:none y no se dibuja nada. */
+  bloques.forEach(function(b){ b.hidden = false; });
+
+
   /* ---- optica ---- */
   var F = 760;          /* distancia focal */
   var PROF = 5200;      /* todo el viaje, en unidades de proyeccion */
@@ -1243,17 +1258,13 @@ html{scroll-behavior:smooth}
   function estado(p){
     if (Math.abs(p - ultimoP) < 0.0004) return;
     ultimoP = p;
+    /* gana el bloque mas cercano: siempre hay uno, nunca hay dos */
+    var cercano = null, mejorD = Infinity;
     bloques.forEach(function(b){
-      var at = parseFloat(b.dataset.at);
-      var esTitular = b.classList.contains('titular');
-      var vent = esTitular ? 0.10 : 0.075;
-      var w = 1 - Math.abs(p - at) / vent;
-      if (w <= 0){ b.hidden = true; return; }
-      b.hidden = false;
-      b.style.opacity = w.toFixed(3);
-      b.style.transform = (esTitular ? 'translate(-50%,-50%)' : 'translateY(-50%)') +
-        ' translateY(' + ((1 - w) * 16).toFixed(1) + 'px)';
+      var d = Math.abs(p - parseFloat(b.dataset.at));
+      if (d < mejorD){ mejorD = d; cercano = b; }
     });
+    bloques.forEach(function(b){ b.classList.toggle('activa', b === cercano); });
     paradas.forEach(function(b, i){
       puntos[i].classList.toggle('on', Math.abs(p - parseFloat(b.dataset.at)) < 0.075);
     });
