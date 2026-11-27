@@ -145,12 +145,12 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
    relevo lo disuelve el CSS en 250 ms de reloj, no a lo largo del scroll,
    asi que al detenerte siempre hay exactamente un texto entero. */
 .titular,.parada{position:absolute;top:50%;opacity:0;visibility:hidden;
-  transition:opacity .30s cubic-bezier(.4,0,.6,1), visibility 0s linear .30s}
+  transition:opacity .18s cubic-bezier(.4,0,.6,1), visibility 0s linear .18s}
 /* El que entra espera a que el otro casi termine de irse. Si los dos se
    cruzaran a la vez se verian encimados; escalonado se lee como un relevo
    suave y no como un parpadeo. */
 .titular.activa,.parada.activa{opacity:1;visibility:visible;
-  transition:opacity .42s cubic-bezier(.4,0,.2,1) .22s, visibility 0s}
+  transition:opacity .26s cubic-bezier(.4,0,.2,1) .13s, visibility 0s}
 .titular{left:50%;width:min(100% - 56px,660px);
   transform:translate(-50%,-50%);text-align:center}
 .parada{left:clamp(28px,7vw,110px);width:min(100% - 56px,560px);
@@ -306,12 +306,20 @@ body{padding-top:76px}
   .viaje{height:320vh}
   .parada{top:63%;left:28px;right:28px;width:auto}
   .parada p{font-size:17px}
-  /* la niebla tambien es oscura: la version clara de antes lavaba el hero
-     entero y dejaba el texto ilegible */
+  /* La niebla es oscura a proposito: la version clara de antes lavaba el hero
+     entero y dejaba el texto ilegible. Pero la anterior arrancaba en .55 en su
+     punto mas claro y cubria el lienzo completo, y como el glifo se pinta con
+     un alfa medio de 68/255, del rojo de las ronchas no llegaba a pantalla ni
+     el 20%: por eso en el telefono las anomalias no se veian.
+     Ahora la niebla abre una ventana limpia justo donde vive el grafico (50%
+     de ancho, 30% de alto, que es donde el JS pone el punto de fuga) y guarda
+     la oscuridad para la mitad de abajo, que es donde empieza el texto. */
   .bruma{background:
-    radial-gradient(90% 34% at 50% 26%, rgba(14,26,48,.55) 0%, rgba(14,26,48,.88) 100%),
-    linear-gradient(to bottom, rgba(10,18,34,.92), rgba(10,18,34,.25) 20%,
-      rgba(10,18,34,.82) 52%, rgba(10,18,34,.97) 70%)}
+    radial-gradient(88% 30% at 50% 30%, rgba(14,26,48,.10) 0%,
+      rgba(14,26,48,.52) 68%, rgba(14,26,48,.88) 100%),
+    linear-gradient(to bottom, rgba(10,18,34,.90) 0%, rgba(10,18,34,.08) 15%,
+      rgba(10,18,34,.08) 36%, rgba(10,18,34,.78) 52%,
+      rgba(10,18,34,.95) 70%, rgba(10,18,34,.97) 100%)}
   .riel{right:14px;gap:11px}
   .escala{left:18px;bottom:16px}
   .baja{display:none}   /* chocaba con la barra de escala */
@@ -1064,6 +1072,11 @@ html{scroll-behavior:smooth}
 
 
   /* ---- optica ---- */
+  /* El mismo corte que usa el CSS para pasar a diseno de telefono. Estaba en
+     780 y entre 780 y 900 el texto ya ocupaba todo el ancho mientras el
+     grafico seguia corrido a la derecha, fuera de la ventana limpia que abre
+     la bruma. */
+  var ESTRECHO = 900;
   var F = 760;          /* distancia focal */
   var PROF = 5200;      /* todo el viaje, en unidades de proyeccion */
   var CERCA = 90;       /* donde el plano ya te paso por encima */
@@ -1240,8 +1253,17 @@ html{scroll-behavior:smooth}
 
   /* ---- pintar ---- */
   function pinta(p, t){
-    var cx = vw * (vw < 780 ? 0.5 : 0.62) + Math.sin(t * 0.00031) * 14;
-    var cy = vh * (vw < 780 ? 0.34 : 0.5) + Math.cos(t * 0.00024) * 11;
+    var cx = vw * (vw < ESTRECHO ? 0.5 : 0.62) + Math.sin(t * 0.00031) * 14;
+    var cy = vh * (vw < ESTRECHO ? 0.30 : 0.5) + Math.cos(t * 0.00024) * 11;
+
+    /* Los glifos se dibujaban al mismo tamano en pixeles en cualquier
+       pantalla, porque su escala solo depende de la profundidad. En el
+       escritorio eso da un campo de lesiones que se lee entero; en el telefono
+       una sola roncha media 194-324 px de radio y acababas DENTRO de una, de
+       ahi que pareciera que las anomalias desaparecen. El factor las ata al
+       tamano de la ventana para que ocupen siempre la misma fraccion de
+       pantalla; a partir de 1180x820 vale 1 y no cambia nada. */
+    var escG = Math.min(1, vw / 1180, vh / 820);
 
     ctx.clearRect(0, 0, vw, vh);
 
@@ -1302,14 +1324,14 @@ html{scroll-behavior:smooth}
       ctx.save();
       ctx.globalAlpha = op;
       var C = COLOR[an.tipo] || COLOR_BASE;
-      glifo[an.tipo](ctx, cx, cy, ka * 1.5, t, C);
+      glifo[an.tipo](ctx, cx, cy, ka * 1.5 * escG, t, C);
       /* una parada puede mostrar dos cosas: el foliculo es de donde sale el
          pelo y donde empieza el acne, y el texto habla de las dos */
       if (an.tipo2 && glifo[an.tipo2]){
-        glifo[an.tipo2](ctx, cx, cy, ka * 1.5, t, COLOR[an.tipo2] || COLOR_BASE);
+        glifo[an.tipo2](ctx, cx, cy, ka * 1.5 * escG, t, COLOR[an.tipo2] || COLOR_BASE);
       }
       var cerca = 1 - Math.min(1, Math.abs(p - at) / 0.075);
-      if (cerca > 0) mira(ctx, cx, cy, 160 * ka * 1.5, cerca * 0.8, t, C);
+      if (cerca > 0) mira(ctx, cx, cy, 160 * ka * 1.5 * escG, cerca * 0.8, t, C);
       ctx.restore();
     }
 
