@@ -953,7 +953,7 @@ html{scroll-behavior:smooth}
   /* El recorrido, en registro de instrumento. La piel se dibuja como una malla
      de nodos y aristas —el microrelieve es un campo de celdas, asi que la malla
      no es un adorno— y las lesiones son anomalias de ese campo, no dibujos.
-     El scroll vertical avanza una camara en horizontal. */
+     El scroll avanza la camara en horizontal; el tiempo hace lo demas. */
   var sec = document.getElementById('inicio');
   var cv  = document.getElementById('piel');
   var riel = document.getElementById('riel');
@@ -972,7 +972,7 @@ html{scroll-behavior:smooth}
   paradas.forEach(function(){ riel.appendChild(document.createElement('span')); });
   var puntos = [].slice.call(riel.children);
 
-  var PASO = 62;            /* separacion de la malla */
+  var PASO = 62;
   var vw = 0, vh = 0, mundo = 0;
   var nodos = [], cols = 0, filas = 0, anomalias = [], polvo = [];
 
@@ -991,8 +991,6 @@ html{scroll-behavior:smooth}
                r: angosto ? 150 : 215 };
     });
 
-    /* cada nodo guarda su posicion ya deformada y cuanto lo ilumina la anomalia
-       mas cercana: asi el campo "sabe" donde esta la lesion sin dibujarla */
     nodos = new Array(cols * filas);
     for (var f = 0; f < filas; f++){
       for (var c = 0; c < cols; c++){
@@ -1004,62 +1002,80 @@ html{scroll-behavior:smooth}
           var ex = x - a.x, ey = y - a.y;
           var d = Math.sqrt(ex * ex + ey * ey);
           if (d > a.r) continue;
-          var t = 1 - d / a.r;
-          t = t * t;
+          var t = 1 - d / a.r; t = t * t;
           br = Math.max(br, t);
-          if (a.tipo === 'ronchas' || a.tipo === 'lunar'){      /* empuja hacia afuera */
+          if (a.tipo === 'ronchas' || a.tipo === 'lunar'){
             dx += (ex / (d || 1)) * t * 16; dy += (ey / (d || 1)) * t * 16;
-          } else if (a.tipo === 'mancha'){                       /* atrae y apaga */
+          } else if (a.tipo === 'mancha'){
             dx -= (ex / (d || 1)) * t * 9;  dy -= (ey / (d || 1)) * t * 9;
-          } else if (a.tipo === 'seca'){                         /* rompe la malla */
+          } else if (a.tipo === 'seca'){
             rota = Math.max(rota, t);
           }
         }
-        nodos[f * cols + c] = { x: x + dx, y: y + dy, br: br, rota: rota };
+        nodos[f * cols + c] = { x: x + dx, y: y + dy, br: br, rota: rota,
+                                ph: (c * 1.7 + f * 2.9) % 6.283,
+                                sx: 0, sy: 0 };
       }
     }
 
     polvo = [];
     for (var i = 0; i < 90; i++){
-      polvo.push({ x: Math.random() * mundo, y: Math.random() * vh,
-                   r: 0.6 + Math.random() * 1.6, v: 0.5 + Math.random() * 0.9,
-                   a: 0.10 + Math.random() * 0.22 });
+      polvo.push({ x0: Math.random() * mundo, y0: Math.random() * vh,
+                   r: 0.6 + Math.random() * 1.6, v: 0.5 + Math.random() * 1.1,
+                   ph: Math.random() * 6.283, a: 0.10 + Math.random() * 0.22 });
     }
-    polvo.sort(function(a,b){ return a.x - b.x; });
   }
 
-  /* ---- la malla ---- */
-  function malla(camX, ancho, alfa){
+  /* ---- la malla ----
+     Dos pasadas: primero se calcula la posicion animada de cada nodo visible
+     y se guarda, luego se dibujan las aristas usando esas posiciones. Asi la
+     trigonometria se hace una vez por nodo y no tres. */
+  function malla(camX, ancho, alfa, t, anchoVista){
     var c0 = Math.max(1, Math.floor(camX / PASO) - 1);
-    var c1 = Math.min(cols - 2, Math.ceil((camX + vw) / PASO) + 1);
+    var c1 = Math.min(cols - 2, Math.ceil((camX + anchoVista) / PASO) + 1);
+    var f, c, n;
+
+    var o1 = t * 0.00085, o2 = t * 0.00057;
+    for (f = 1; f < filas - 1; f++){
+      for (c = c0; c <= c1 + 1; c++){
+        n = nodos[f * cols + c];
+        if (!n) continue;
+        n.sx = n.x + Math.sin(o1 + n.ph) * 2.8;
+        n.sy = n.y + Math.cos(o2 + n.ph * 1.7) * 2.2;
+      }
+    }
+
     ctx.lineWidth = ancho;
     ctx.beginPath();
-    for (var f = 1; f < filas - 1; f++){
-      for (var c = c0; c <= c1; c++){
-        var n = nodos[f * cols + c];
-        if (n.rota > 0.45) continue;                  /* aqui la piel esta partida */
+    for (f = 1; f < filas - 1; f++){
+      for (c = c0; c <= c1; c++){
+        n = nodos[f * cols + c];
+        if (n.rota > 0.45) continue;
         var der = nodos[f * cols + c + 1];
         var aba = nodos[(f + 1) * cols + c];
-        if (der && der.rota <= 0.45){ ctx.moveTo(n.x, n.y); ctx.lineTo(der.x, der.y); }
-        if (aba && aba.rota <= 0.45){ ctx.moveTo(n.x, n.y); ctx.lineTo(aba.x, aba.y); }
+        if (der && der.rota <= 0.45){ ctx.moveTo(n.sx, n.sy); ctx.lineTo(der.sx, der.sy); }
+        if (aba && aba.rota <= 0.45){
+          aba.sx = aba.x + Math.sin(o1 + aba.ph) * 2.8;
+          aba.sy = aba.y + Math.cos(o2 + aba.ph * 1.7) * 2.2;
+          ctx.moveTo(n.sx, n.sy); ctx.lineTo(aba.sx, aba.sy);
+        }
       }
     }
     ctx.strokeStyle = 'rgba(146,167,230,' + alfa + ')';
     ctx.stroke();
 
-    /* nodos: cuadritos en vez de arcos, muchisimo mas baratos */
-    for (var f2 = 1; f2 < filas - 1; f2++){
-      for (var c2 = c0; c2 <= c1; c2++){
-        var m = nodos[f2 * cols + c2];
+    var pulso = 0.5 + 0.5 * Math.sin(t * 0.0016);
+    for (f = 1; f < filas - 1; f++){
+      for (c = c0; c <= c1; c++){
+        var m = nodos[f * cols + c];
         if (m.rota > 0.45) continue;
-        var b = m.br;
-        if (b > 0.04){
-          ctx.fillStyle = 'rgba(199,180,255,' + (0.25 + b * 0.65) + ')';
-          var s = 1.6 + b * 3.2;
-          ctx.fillRect(m.x - s / 2, m.y - s / 2, s, s);
+        if (m.br > 0.04){
+          ctx.fillStyle = 'rgba(199,180,255,' + (0.22 + m.br * (0.52 + pulso * 0.22)) + ')';
+          var s = 1.6 + m.br * (2.8 + pulso * 1.2);
+          ctx.fillRect(m.sx - s / 2, m.sy - s / 2, s, s);
         } else {
           ctx.fillStyle = 'rgba(170,186,235,' + (alfa * 1.5) + ')';
-          ctx.fillRect(m.x - 0.9, m.y - 0.9, 1.8, 1.8);
+          ctx.fillRect(m.sx - 0.9, m.sy - 0.9, 1.8, 1.8);
         }
       }
     }
@@ -1074,127 +1090,140 @@ html{scroll-behavior:smooth}
   }
 
   var glifo = {
-    seca: function(g, x, y){
-      halo(g, x, y, 190, 'rgba(167,139,250,A)', '.12');
+    seca: function(g, x, y, k){
+      halo(g, x, y, 190 * k, 'rgba(167,139,250,A)', '.12');
     },
-    mancha: function(g, x, y){
-      halo(g, x, y, 200, 'rgba(10,16,32,A)', '.78');
-      halo(g, x, y, 120, 'rgba(10,16,32,A)', '.6');
+    mancha: function(g, x, y, k){
+      halo(g, x, y, 200 * k, 'rgba(10,16,32,A)', '.78');
+      halo(g, x, y, 120 * k, 'rgba(10,16,32,A)', '.6');
     },
-    ronchas: function(g, x, y){
+    ronchas: function(g, x, y, k, t){
       for (var i = 0; i < 6; i++){
         var ox = Math.cos(i * 1.9) * 74, oy = Math.sin(i * 2.6) * 50;
-        halo(g, x + ox, y + oy, 34 + (i % 3) * 10, 'rgba(199,180,255,A)', '.34');
+        var lat = 1 + 0.12 * Math.sin(t * 0.0013 + i * 1.3);
+        halo(g, x + ox, y + oy, (34 + (i % 3) * 10) * k * lat, 'rgba(199,180,255,A)', '.34');
       }
     },
-    lunar: function(g, x, y){
-      halo(g, x, y, 150, 'rgba(167,139,250,A)', '.26');
+    lunar: function(g, x, y, k, t){
+      halo(g, x, y, 150 * k, 'rgba(167,139,250,A)', '.26');
       g.fillStyle = 'rgba(236,232,255,.95)';
       g.beginPath(); g.arc(x, y, 5.5, 0, 6.3); g.fill();
       g.strokeStyle = 'rgba(199,180,255,.4)'; g.lineWidth = 1;
-      for (var k = 1; k <= 3; k++){
-        g.beginPath(); g.arc(x, y, 22 * k, 0, 6.3); g.stroke();
+      for (var m = 1; m <= 3; m++){
+        var rr = 22 * m * k * (1 + 0.05 * Math.sin(t * 0.0011 + m));
+        g.beginPath(); g.arc(x, y, rr, 0, 6.3); g.stroke();
       }
     },
-    acne: function(g, x, y){
+    acne: function(g, x, y, k, t){
       for (var i = 0; i < 5; i++){
         var ox = (i - 2) * 46, oy = Math.sin(i * 1.4) * 30;
-        halo(g, x + ox, y + oy, 30, 'rgba(226,161,60,A)', '.30');
+        var lat = 1 + 0.18 * Math.sin(t * 0.0019 + i * 2.1);
+        halo(g, x + ox, y + oy, 30 * k * lat, 'rgba(226,161,60,A)', '.30');
         g.fillStyle = 'rgba(252,240,214,.9)';
         g.beginPath(); g.arc(x + ox, y + oy, 2.6, 0, 6.3); g.fill();
       }
     },
-    cabello: function(g, x, y){
+    cabello: function(g, x, y, k, t){
       g.save(); g.lineCap = 'round';
       for (var i = 0; i < 7; i++){
-        var ox = (i - 3) * 27, L = 120 + (i % 3) * 54;
+        var ox = (i - 3) * 27, L = (120 + (i % 3) * 54) * k;
+        var mece = Math.sin(t * 0.0007 + i * 0.9) * 16;
         g.strokeStyle = 'rgba(199,180,255,' + (0.14 + (i % 2) * 0.12) + ')';
         g.lineWidth = 1 + (i % 2) * 0.6;
         g.beginPath(); g.moveTo(x + ox, y + 40);
-        g.quadraticCurveTo(x + ox + (i % 2 ? 46 : -46), y - L * 0.4, x + ox + (i % 2 ? 70 : -70), y - L);
+        g.quadraticCurveTo(x + ox + (i % 2 ? 46 : -46) + mece, y - L * 0.4,
+                           x + ox + (i % 2 ? 70 : -70) + mece * 1.6, y - L);
         g.stroke();
       }
       g.restore();
     }
   };
 
-  /* mira de instrumento sobre la anomalia activa */
-  function mira(g, x, y, r, fuerza){
+  function mira(g, x, y, r, fuerza, t){
     g.save();
     g.globalAlpha = fuerza;
+    g.translate(x, y);
+    g.rotate(t * 0.00016);
     g.strokeStyle = 'rgba(199,180,255,.55)'; g.lineWidth = 1;
-    g.beginPath(); g.arc(x, y, r, 0, 6.3); g.stroke();
-    var t = 9;
-    [[0,-1],[0,1],[-1,0],[1,0]].forEach(function(d){
+    g.beginPath(); g.arc(0, 0, r, 0, 6.3); g.stroke();
+    var d = 9;
+    [[0,-1],[0,1],[-1,0],[1,0]].forEach(function(v){
       g.beginPath();
-      g.moveTo(x + d[0] * (r - t), y + d[1] * (r - t));
-      g.lineTo(x + d[0] * (r + t), y + d[1] * (r + t));
+      g.moveTo(v[0] * (r - d), v[1] * (r - d));
+      g.lineTo(v[0] * (r + d), v[1] * (r + d));
       g.stroke();
     });
     g.restore();
   }
 
   /* ---- pintar ---- */
-  function pinta(p){
+  function pinta(p, t){
     var camX = p * (mundo - vw);
+
+    /* El zoom enfoca: entre paradas la vista va abierta, y al llegar a una
+       se cierra sobre ella. Se amplia alrededor de la propia anomalia para
+       que no se escape de la pantalla al crecer. */
+    var z = 1, fx = vw * 0.5, fy = vh * 0.5, mejor = null, peso = 0;
+    for (var i = 0; i < anomalias.length; i++){
+      var w = 1 - Math.abs(p - anomalias[i].at) / 0.13;
+      if (w > peso){ peso = w; mejor = anomalias[i]; }
+    }
+    if (mejor && peso > 0){
+      var e = peso * peso * (3 - 2 * peso);
+      z = 1 + 0.30 * e;
+      fx = mejor.x - camX; fy = mejor.y;
+    }
+    z *= 1 + 0.008 * Math.sin(t * 0.0004);     /* respiracion lenta de la camara */
+    var zf = 1 + (z - 1) * 0.45;               /* el fondo se acerca menos */
+
     ctx.clearRect(0, 0, vw, vh);
 
-    /* malla lejana: mas chica, mas lenta, apenas visible */
     ctx.save();
-    ctx.translate(-camX * 0.45, vh * 0.08);
-    ctx.scale(0.62, 0.62);
-    malla(camX * 0.45 / 0.62, 0.7, 0.055);
+    ctx.translate(fx, fy); ctx.scale(zf, zf); ctx.translate(-fx, -fy);
+    ctx.translate(-camX * 0.45, vh * 0.08); ctx.scale(0.62, 0.62);
+    malla(camX * 0.45 / 0.62, 0.7, 0.055, t * 0.7, vw / 0.62);
     ctx.restore();
 
-    ctx.save(); ctx.translate(-camX, 0);
+    ctx.save();
+    ctx.translate(fx, fy); ctx.scale(z, z); ctx.translate(-fx, -fy);
+    ctx.translate(-camX, 0);
 
-    /* polvo en suspension */
-    for (var i = 0; i < polvo.length; i++){
-      var q = polvo[i];
-      if (q.x < camX - 10) continue;
-      if (q.x > camX + vw + 10) break;
-      ctx.fillStyle = 'rgba(199,180,255,' + q.a + ')';
-      ctx.fillRect(q.x, q.y, q.r, q.r);
+    for (var q = 0; q < polvo.length; q++){
+      var o = polvo[q];
+      var px = o.x0 + t * 0.012 * o.v;
+      px = ((px % mundo) + mundo) % mundo;
+      if (px < camX - 10 || px > camX + vw + 10) continue;
+      var py = o.y0 + Math.sin(t * 0.0005 + o.ph) * 14;
+      ctx.fillStyle = 'rgba(199,180,255,' + o.a + ')';
+      ctx.fillRect(px, py, o.r, o.r);
     }
 
-    /* las sombras van debajo de la malla, las luces encima */
+    var k = 1;
     for (var j = 0; j < anomalias.length; j++){
       var a = anomalias[j];
-      if (a.x < camX - 420 || a.x > camX + vw + 420) continue;
-      if (a.tipo === 'mancha') glifo.mancha(ctx, a.x, a.y);
+      if (a.x < camX - 460 || a.x > camX + vw + 460) continue;
+      if (a.tipo === 'mancha') glifo.mancha(ctx, a.x, a.y, k, t);
     }
 
-    malla(camX, 1, 0.13);
+    malla(camX, 1, 0.13, t, vw);
 
-    for (var k = 0; k < anomalias.length; k++){
-      var b = anomalias[k];
-      if (b.x < camX - 420 || b.x > camX + vw + 420) continue;
-      if (b.tipo !== 'mancha' && glifo[b.tipo]) glifo[b.tipo](ctx, b.x, b.y);
+    for (var n = 0; n < anomalias.length; n++){
+      var b = anomalias[n];
+      if (b.x < camX - 460 || b.x > camX + vw + 460) continue;
+      if (b.tipo !== 'mancha' && glifo[b.tipo]) glifo[b.tipo](ctx, b.x, b.y, k, t);
       var cerca = 1 - Math.min(1, Math.abs(p - b.at) / 0.075);
-      if (cerca > 0) mira(ctx, b.x, b.y, b.r * 0.72, cerca * 0.9);
+      if (cerca > 0) mira(ctx, b.x, b.y, b.r * 0.72, cerca * 0.9, t);
     }
 
     ctx.restore();
   }
 
-  /* ---- scroll ---- */
-  var ultimo = -1, pendiente = false;
+  /* ---- bucle ---- */
+  var raf = null, enPantalla = true, ultimoP = -1;
 
-  function avanza(){
-    pendiente = false;
-    var r = sec.getBoundingClientRect();
-    var total = r.height - window.innerHeight;
-    var p = total > 0 ? Math.max(0, Math.min(1, -r.top / total)) : 0;
-
-    /* la cabecera se posa cuando el hero deja la pantalla */
-    var sobre = r.bottom > 90;
-    document.documentElement.classList.toggle('sobre-noche', sobre);
-    cabecera.classList.toggle('posado', !sobre);
-
-    if (Math.abs(p - ultimo) < 0.0004) return;
-    ultimo = p;
-    pinta(p);
-
+  function estado(p){
+    if (Math.abs(p - ultimoP) < 0.0004) return;
+    ultimoP = p;
     bloques.forEach(function(b){
       var at = parseFloat(b.dataset.at);
       var esTitular = b.classList.contains('titular');
@@ -1212,7 +1241,33 @@ html{scroll-behavior:smooth}
     baja.style.opacity = p > 0.03 ? 0 : 1;
   }
 
-  function pide(){ if (!pendiente){ pendiente = true; requestAnimationFrame(avanza); } }
+  function cuadro(ts){
+    raf = null;
+    var r = sec.getBoundingClientRect();
+    var sobre = r.bottom > 90;
+    document.documentElement.classList.toggle('sobre-noche', sobre);
+    cabecera.classList.toggle('posado', !sobre);
+
+    var total = r.height - window.innerHeight;
+    var p = total > 0 ? Math.max(0, Math.min(1, -r.top / total)) : 0;
+    estado(p);
+    pinta(p, ts);
+
+    /* solo se anima mientras el hero esta en pantalla y la pestania visible */
+    if (enPantalla && !document.hidden) raf = requestAnimationFrame(cuadro);
+  }
+  function arranca(){ if (!raf) raf = requestAnimationFrame(cuadro); }
+
+  if ('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){
+      enPantalla = es[0].isIntersecting;
+      if (enPantalla) arranca();
+    }, {threshold: 0}).observe(sec);
+  }
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden && enPantalla) arranca();
+  });
+  addEventListener('scroll', arranca, {passive:true});
 
   function mide(){
     var dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -1220,13 +1275,14 @@ html{scroll-behavior:smooth}
     cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     siembra();
-    ultimo = -1;
-    avanza();
+    ultimoP = -1;
+    /* un cuadro de inmediato y luego el bucle: si solo se agendara, el hero
+       se quedaria en blanco hasta que llegue el primer requestAnimationFrame */
+    cuadro(performance.now());
   }
 
   mide();
-  addEventListener('scroll', pide, {passive:true});
-  var t; addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(mide, 200); });
+  var tm; addEventListener('resize', function(){ clearTimeout(tm); tm = setTimeout(mide, 200); });
 })();
 
 /* aparicion al bajar */

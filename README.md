@@ -58,7 +58,19 @@ Lo técnico, en `index.html`:
   y un `stroke`—, y los nodos son `fillRect` y no arcos. Medido: **0.19 ms** por
   cuadro para 900 segmentos y 320 nodos, o sea 16.5 ms de margen a 60 fps.
 - Dos capas a distinta velocidad y escala hacen la profundidad, más polvo en
-  suspensión.
+  suspensión que deriva solo.
+- **El zoom enfoca.** Entre paradas la vista va abierta; al llegar a una se
+  cierra sobre ella hasta 1.30×, y se amplía alrededor de la propia anomalía
+  para que no se salga de pantalla al crecer. El fondo se acerca menos que el
+  frente (0.45 del delta), que es lo que da la sensación de profundidad.
+- **Todo respira.** La malla ondula con dos senos desfasados, los nodos de las
+  anomalías laten, los halos se expanden y contraen, los pelos se mecen y la
+  mira gira despacio. La cámara también respira, un 0.8%.
+- El bucle **se apaga** cuando el hero sale de pantalla (`IntersectionObserver`)
+  y cuando la pestaña deja de estar visible. Animar un hero que nadie está
+  viendo es gastar batería ajena.
+- `mide()` pinta un cuadro de inmediato antes de arrancar el bucle: si solo lo
+  agendara, el hero se quedaría en blanco hasta el primer cuadro.
 - `0 KB` de descarga: todo es generado. Para comparar, drailse baja unos 600 KB
   de three.js solo para su túnel.
 - La cabecera flota sobre el hero con la marca escrita, no con `logo.png`:
