@@ -151,10 +151,13 @@ Lo técnico, en `index.html`:
   agendara, el hero se quedaría en blanco hasta el primer cuadro.
 - `0 KB` de descarga: todo es generado. Para comparar, drailse baja unos 600 KB
   de three.js solo para su túnel.
-- La cabecera flota sobre el hero con la marca escrita, no con `logo.png`:
-  ese archivo es navy sobre blanco **opaco**, y sobre fondo oscuro no hay filtro
-  que lo salve, cualquier inversión pinta la caja entera. Cuando el hero sale de
-  pantalla, la cabecera se posa y vuelve la imagen.
+- **La marca del menú es siempre texto, nunca `logo.png`.** Ese archivo es navy
+  sobre blanco **opaco**: sobre fondo oscuro no hay filtro que lo salve, porque
+  cualquier inversión pinta la caja entera. Y alternar imagen y texto al pasar
+  el hero hacía parpadear la cabecera. El texto solo cambia de color según el
+  fondo: claro sobre el hero, navy cuando la cabecera se posa. De paso, la
+  portada ya no descarga `logo.png` (lo sigue usando el aviso de privacidad).
+  Si algún día llega el logo en SVG o PNG transparente, aquí es donde entra.
 - Contrastes medidos sobre el fondo oscuro: título 14.7:1, cuerpo 8.1:1,
   etiqueta de capa 6.4:1, barra de escala 4.6:1.
 - En pantallas angostas la anomalía se va arriba y el texto baja, porque al

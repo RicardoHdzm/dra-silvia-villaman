@@ -220,15 +220,16 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;padding:18px 0;
   transition:background-color .3s ease, box-shadow .3s ease}
 header.posado{background:rgba(245,241,251,.86);backdrop-filter:blur(12px);
   box-shadow:0 1px 0 rgba(27,47,87,.07)}
-/* El logo es navy sobre fondo blanco opaco: sobre el hero oscuro no hay filtro
-   que lo salve, cualquier inversion pinta la caja entera. Ahi se cambia por
-   la marca escrita, y vuelve la imagen en cuanto la cabecera se posa. */
-.logo-texto{display:none;line-height:1.1;font-weight:800;font-size:17px;
-  letter-spacing:-.025em;color:var(--tinta-clara,#EDEAF9)}
+/* La marca del menu es siempre texto, nunca la imagen. logo.png es navy sobre
+   blanco opaco: sobre el hero oscuro no hay filtro que lo salve y cualquier
+   inversion pinta la caja entera. Ademas, alternar imagen y texto al pasar el
+   hero hacia parpadear la cabecera. Solo cambia de color segun el fondo. */
+.logo-texto{display:block;line-height:1.1;font-weight:800;font-size:17px;
+  letter-spacing:-.025em;color:var(--ink);transition:color .3s ease}
 .logo-texto small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.11em;
-  text-transform:uppercase;color:rgba(167,177,206,.75);margin-top:4px}
-.sobre-noche .logo img{display:none}
-.sobre-noche .logo-texto{display:block}
+  text-transform:uppercase;color:var(--ink-2);margin-top:4px;transition:color .3s ease}
+.sobre-noche .logo-texto{color:#EDEAF9}
+.sobre-noche .logo-texto small{color:rgba(167,177,206,.78)}
 .sobre-noche nav a{color:rgba(237,234,249,.78)}
 .sobre-noche nav a:hover{color:#fff;border-color:var(--luz)}
 .sobre-noche .btn-top{background:rgba(237,234,249,.95);color:#15223C}
@@ -526,11 +527,10 @@ html{scroll-behavior:smooth}
 <header>
   <div class="wrap bar">
     <a class="logo" href="#inicio">
-      <img src="img/logo.png" alt="Dra. Silvia Villaman, médico especialista en dermatología">
-      <span class="logo-texto" aria-hidden="true">Dra. Silvia Villaman<small>Dermatología pediátrica</small></span>
+      <span class="logo-texto">Dra. Silvia Villaman<small>Dermatología pediátrica</small></span>
     </a>
     <nav>
-      <a href="#doctora">La doctora</a>
+      <a href="#doctora">Sobre mí</a>
       <a href="#atiende">Padecimientos</a>
       <a href="#agendar">Agendar</a>
       <a href="#preguntas">Preguntas</a>
@@ -560,35 +560,35 @@ html{scroll-behavior:smooth}
     <div class="parada" data-at="0.18" data-sintoma="seca" hidden>
       <div class="capa">Estrato córneo · 0.02 mm</div>
       <h2>Aquí la piel <em>se parte</em>.</h2>
-      <p>Lo que tocas son células muertas. Aquí atiendo la resequedad que vuelve, la aspereza y la descamación.</p>
+      <p>La capa que ves y tocas ya es tejido muerto. Aquí trato la resequedad que reaparece, la aspereza y la descamación.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="seca">Pedir cita por esto</a>
     </div>
 
     <div class="parada" data-at="0.36" data-sintoma="mancha" hidden>
       <div class="capa">Epidermis · 0.10 mm</div>
       <h2>Donde nace <em>el color</em>.</h2>
-      <p>Aquí viven los melanocitos. Cuando se desordenan aparecen las manchas, los lunares y el melasma, y es donde más reviso.</p>
+      <p>Aquí están los melanocitos, las células que dan color. Cuando se alteran aparecen las manchas, los lunares y el melasma.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="mancha">Pedir cita por esto</a>
     </div>
 
     <div class="parada" data-at="0.54" data-sintoma="ronchas" hidden>
       <div class="capa">Dermis · 1 mm</div>
       <h2>Ronchas que van <em>y vienen</em>.</h2>
-      <p>El brote se ve arriba pero ocurre aquí, en los vasos. Encontrar qué lo dispara es la mitad de mi trabajo.</p>
+      <p>El brote se ve en la superficie, pero ocurre aquí, en los vasos. Identificar qué lo desencadena es buena parte del tratamiento.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="ronchas">Pedir cita por esto</a>
     </div>
 
     <div class="parada" data-at="0.72" data-sintoma="acne" data-sintoma2="cabello" hidden>
       <div class="capa">Folículo · 3.5 mm</div>
       <h2>Donde empieza <em>el acné</em>.</h2>
-      <p>Y de donde nace el pelo. Por eso el acné no se quita tallando, y la caída la trato desde la raíz.</p>
+      <p>Aquí nace también el pelo. Por eso el acné no mejora frotando la piel, y la caída la trato desde la raíz.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="acne">Pedir cita por esto</a>
     </div>
 
     <div class="parada cierre" data-at="0.90" hidden>
       <div class="capa">4 mm</div>
       <h2>Todo eso lo <em>reviso yo</em>.</h2>
-      <p>Soy dermatóloga pediátrica certificada y atiendo en Culiacán. Elige el día que te acomode y pídeme tu cita en un minuto.</p>
+      <p>Soy dermatóloga pediátrica certificada y atiendo en Culiacán. Elige el día que te acomode y te lo confirmo por WhatsApp.</p>
       <a class="btn btn-path" href="#agendar">Agendar cita</a>
     </div>
 
@@ -610,7 +610,7 @@ html{scroll-behavior:smooth}
   <div class="wrap">
     <div class="eyebrow">Dermatóloga pediátrica · Culiacán</div>
     <h2>¿Qué le ves <em>a la piel</em>?</h2>
-    <p class="hero-sub">De tus hijos o la tuya. Elige lo que ves y pídeme cita en un minuto.</p>
+    <p class="hero-sub">De tus hijos o la tuya. Elige lo que estás viendo y te respondo por WhatsApp.</p>
 
     <div class="probe">
       <a href="#agendar" data-sintoma="mancha">
@@ -675,7 +675,7 @@ html{scroll-behavior:smooth}
       <div class="sec-head" style="max-width:none;margin-bottom:20px">
         <h2>La paciencia también es <em>parte del tratamiento</em>.</h2>
       </div>
-      <p class="lead">Es lo que más me dicen mis pacientes: que explico con calma y que los niños no la pasan mal.</p>
+      <p class="lead">Es lo que más mencionan mis pacientes: que explico con calma y que los niños salen tranquilos de la consulta.</p>
       <p>En dermatología pediátrica eso no es un detalle. Buena parte de mi trabajo es lograr que un niño se deje revisar, y eso no se consigue con prisa.</p>
       <p>Estudié medicina en la Universidad Autónoma de Sinaloa e hice la especialidad en el Hospital Infantil de México Federico Gómez. Atiendo niños desde recién nacidos y también adultos. Si no puedes venir al consultorio, te atiendo en línea.</p>
 
@@ -696,7 +696,7 @@ html{scroll-behavior:smooth}
     <div class="sec-head rv">
       <div class="kicker">Padecimientos</div>
       <h2>Lo que reviso en <em>cada piel</em>.</h2>
-      <p>Son dos consultas distintas, y las dos las doy yo.</p>
+      <p>Son dos consultas distintas, y atiendo las dos.</p>
     </div>
 
     <div class="lanes">
@@ -729,7 +729,7 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
-    <p class="lanes-foot rv">¿No ves lo tuyo en la lista? <a href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quisiera%20saber%20si%20atiende%20mi%20caso.">Pregúntamelo por WhatsApp</a> y te digo si amerita consulta.</p>
+    <p class="lanes-foot rv">¿No ves lo tuyo en la lista? <a href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quisiera%20saber%20si%20atiende%20mi%20caso.">Escríbeme por WhatsApp</a> y te digo si amerita una consulta.</p>
   </div>
 </section>
 
@@ -743,7 +743,7 @@ html{scroll-behavior:smooth}
     <div class="sec-head rv">
       <div class="kicker">La consulta</div>
       <h2>Cómo es una cita, <em>paso a paso</em>.</h2>
-      <p>Para que llegues sabiendo qué va a pasar.</p>
+      <p>Para que llegues sabiendo qué esperar.</p>
     </div>
 
     <ol class="steps">
@@ -781,7 +781,7 @@ html{scroll-behavior:smooth}
     <div class="sec-head rv">
       <div class="kicker">Agendar</div>
       <h2>Elige el día y la hora <em>que te acomoden</em>.</h2>
-      <p>Se arma tu mensaje de WhatsApp y tú lo mandas. La cita queda en firme cuando yo te contesto.</p>
+      <p>Se arma tu mensaje de WhatsApp y tú decides si lo envías. La cita queda confirmada cuando yo te respondo.</p>
     </div>
 
     <div class="booking rv">
@@ -838,7 +838,7 @@ html{scroll-behavior:smooth}
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.2-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.3.3c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6 0l.9-1c.2-.2.4-.2.6-.1l2 1c.2.1.4.2.4.3.1.1.1.6-.1 1.1Z"/></svg>
           Enviar por WhatsApp
         </a>
-        <p class="bk-foot">El mensaje se abre en tu WhatsApp. Tú decides si lo mandas.</p>
+        <p class="bk-foot">El mensaje se abre en tu WhatsApp. Tú decides si lo envías.</p>
       </div>
     </div>
   </div>
@@ -919,7 +919,7 @@ html{scroll-behavior:smooth}
       </details>
       <details>
         <summary>¿Puedo mandar una foto antes de agendar?</summary>
-        <p class="ans">Sí. La foto no sustituye la revisión, pero me orienta bastante: con ella te digo si tu caso amerita consulta pronto o puede esperar.</p>
+        <p class="ans">Sí. La foto no sustituye la revisión, pero orienta bastante: con ella puedo decirte si conviene que te vea pronto o si puede esperar.</p>
       </details>
       <details>
         <summary>¿Atiendes adultos o solo niños?</summary>
@@ -935,7 +935,7 @@ html{scroll-behavior:smooth}
       </details>
       <details>
         <summary>¿Aceptas seguro de gastos médicos?</summary>
-        <p class="ans">Sí acepto aseguradoras, aunque la cobertura cambia según el servicio. Lo más rápido es que me preguntes por WhatsApp antes de agendar.</p>
+        <p class="ans">Sí, aunque la cobertura varía según el servicio. Lo más rápido es consultarlo por WhatsApp antes de agendar.</p>
       </details>
     </div>
   </div>
@@ -974,7 +974,7 @@ html{scroll-behavior:smooth}
 <section class="closing">
   <div class="wrap rv">
     <h2>La piel de tu familia, <em>en las mismas manos</em>.</h2>
-    <p>Escríbeme por WhatsApp y agenda. Si vives lejos o no puedes moverte, te atiendo en línea.</p>
+    <p>Escríbeme por WhatsApp para agendar. Si vives lejos o no puedes trasladarte, te atiendo en línea.</p>
     <div class="ctas">
       <a class="btn btn-path" style="--f:1" href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quiero%20agendar%20una%20consulta%20para%20mi%20hijo.">Consulta para mi hijo</a>
       <a class="btn btn-path" style="--f:1" href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quiero%20agendar%20una%20consulta%20de%20dermatolog%C3%ADa%20para%20m%C3%AD.">Consulta para mí</a>
@@ -990,7 +990,7 @@ html{scroll-behavior:smooth}
       </div>
       <div>
         <h4>Consulta</h4>
-        <a href="#doctora">La doctora</a>
+        <a href="#doctora">Sobre mí</a>
         <a href="#atiende">Padecimientos</a>
         <a href="#agendar">Agendar cita</a>
         <a href="#preguntas">Preguntas</a>
