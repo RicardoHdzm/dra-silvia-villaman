@@ -379,3 +379,25 @@ Relacionado: la bruma de móvil abre a propósito una ventana clara centrada en
 el 50 % de ancho y el 30 % de alto, que es donde el JS pone el punto de fuga.
 Si se mueve una, hay que mover la otra. El corte entre diseño de teléfono y de
 escritorio es 900 px en los dos sitios (`ESTRECHO` en el JS).
+
+## La salida del hero: por qué el desvanecido no va atado al progreso
+
+Al terminar el recorrido, el escenario pegajoso se suelta y sube. Su contenido
+sube con él, y si sigue opaco acaba cruzándose con la cabecera, que sobre el
+hero es transparente: el párrafo del cierre quedaba encima del nombre de la
+doctora.
+
+El contenido vive en `.capas`, cuya opacidad baja conforme el escenario sale.
+Dos detalles que importan:
+
+- **Va atado a la geometría, no a `p`.** La última parada ancla en `0.90` y el
+  escenario se suelta en `1`; ese tramo el anclaje lo salta entero, así que un
+  umbral sobre el progreso no se llega a recorrer nunca. Lo que se mide es
+  cuánto ha subido el escenario: `innerHeight - rect.bottom`.
+- **`.capas` no lleva `transition`.** El valor ya llega suave, uno por cuadro.
+  Ponerle encima una transición solo lo volvería lento — es el mismo error que
+  ya costó una vez con el relevo de textos.
+
+El desvanecido de cada parada sigue viviendo en `.activa`, con su propia
+transición, y los dos se multiplican. Cada mecanismo en su sitio: el relevo es
+por reloj, la salida es por scroll.
