@@ -178,6 +178,13 @@ En la banda de respaldo hay una línea viva, "Puedes pedir cita desde el viernes
 27", calculada de la misma constante `HORARIOS`. Dice "pedir", no "reservar",
 porque eso es lo que de verdad hace el sitio.
 
+## Secciones ocultas
+
+- **"La consulta" y sus seis pasos.** Retirada a petición del cliente. No está
+  borrada: vive entera y comentada en `index.html`, justo antes de la sección
+  de agendar. Para recuperarla basta quitar el comentario y devolver sus ligas
+  al menú y al pie.
+
 ## Caminos ya explorados
 
 Para no volver a recorrerlos sin querer:
@@ -280,8 +287,10 @@ Que dependen de la doctora:
   nombre, fecha y estrellas, tal como aparecen en Doctoralia. La quinta es una
   queja por una cita confirmada que no se respetó y no está en la lista, pero el
   pie dice "4 de 5 estrellas en 5 opiniones" y liga al perfil completo: eso es
-  lo que evita que se lea como una selección a modo. El paso 02 de "la consulta"
-  está escrito para atender esa queja.
+  lo que evita que se lea como una selección a modo. Lo que atiende esa queja
+  es la línea de "agendar": *"la cita queda en firme cuando yo te contesto"*.
+  Antes vivía también en el paso 03 de "la consulta", que ahora está oculta,
+  así que **esa línea es la única que lo dice: no quitarla.**
   Vale confirmar con la doctora que esté de acuerdo con citarlas en el sitio.
 
 De producción gráfica:
