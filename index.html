@@ -425,6 +425,9 @@ section{position:relative;padding:94px 0}
   text-transform:uppercase;color:var(--dim);margin:0 0 9px;padding:0}
 .bk-form fieldset{border:0;padding:0;margin:0}
 .field{margin-bottom:20px}
+/* El primer campo se separa del resto: de el depende la lista de motivos, y
+   pegado a la hora se leia como parte del mismo bloque. */
+.bk-form fieldset.field{margin-bottom:34px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{font:inherit;font-size:14.5px;font-weight:700;padding:10px 16px;border-radius:999px;
   border:1.5px solid var(--line);background:#fff;color:var(--ink-2);cursor:pointer;transition:.2s}
@@ -499,6 +502,23 @@ section{position:relative;padding:94px 0}
 .closing .ctas{justify-content:center;margin-top:0}
 
 /* pie */
+/* Boton flotante de WhatsApp. Se esconde mientras el hero esta en pantalla:
+   ahi ya hay dos salidas, el boton de la parada y "Saltar al calendario", que
+   vive justo en esa esquina, y un tercero solo las estorbaria. El estado
+   .sobre-noche ya lo lleva el <html> desde el bucle del recorrido, asi que
+   esto no necesita JS propio. */
+.wa{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  z-index:45;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;
+  background:#25D366;color:#fff;
+  box-shadow:0 6px 20px rgba(18,140,70,.34), 0 2px 6px rgba(27,47,87,.18);
+  transition:transform .18s ease, box-shadow .18s ease, opacity .25s ease}
+.wa svg{width:30px;height:30px;display:block}
+.wa:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(18,140,70,.44)}
+.wa:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.sobre-noche .wa{opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .25s ease, visibility 0s linear .25s}
+@media (prefers-reduced-motion:reduce){ .wa{transition:none} }
+
 footer{background:#16294D;color:#CFD6E6;padding:58px 0 30px}
 .foot{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:34px}
 .foot h4{margin:0 0 12px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#8E9CBC;font-weight:700}
@@ -710,11 +730,11 @@ html{scroll-behavior:smooth}
     <div class="rv">
       <div class="kicker">Quién te va a atender</div>
       <div class="sec-head" style="max-width:none;margin-bottom:20px">
-        <h2>La paciencia también es <em>parte del tratamiento</em>.</h2>
+        <h2>Una sola especialista <em>para toda la familia</em>.</h2>
       </div>
-      <p class="lead">Es lo que más mencionan mis pacientes: que explico con calma y que los niños salen tranquilos de la consulta.</p>
-      <p>En dermatología pediátrica eso no es un detalle. Buena parte de mi trabajo es lograr que un niño se deje revisar, y eso no se consigue con prisa.</p>
-      <p>Estudié medicina en la Universidad Autónoma de Sinaloa e hice la especialidad en el Hospital Infantil de México Federico Gómez. Atiendo niños desde recién nacidos y también adultos. Si no puedes venir al consultorio, te atiendo en línea.</p>
+      <p class="lead">Soy dermatóloga pediátrica certificada. Atiendo piel, pelo y uñas en niños desde recién nacidos, y consulta dermatológica y estética en adultos.</p>
+      <p>En consulta te explico qué veo, por qué ocurre y qué esperar del tratamiento. Con los niños eso toma algo más de calma, y la cita está pensada para dársela.</p>
+      <p>Estudié medicina en la Universidad Autónoma de Sinaloa e hice la especialidad en el Hospital Infantil de México Federico Gómez. Si no puedes venir al consultorio, te atiendo en línea.</p>
 
       <ul class="facts">
         <li><span class="k">Especialidad</span><span class="v">Dermatología pediátrica, clínica y estética</span></li>
@@ -733,12 +753,12 @@ html{scroll-behavior:smooth}
     <div class="sec-head rv">
       <div class="kicker">Padecimientos</div>
       <h2>Lo que reviso en <em>cada piel</em>.</h2>
-      <p>Son dos consultas distintas, y atiendo las dos.</p>
+      <p>Atiendo dos consultas distintas: dermatología pediátrica y dermatología de adultos.</p>
     </div>
 
     <div class="lanes">
       <div class="lane rv">
-        <h3>En la piel de tus hijos</h3>
+        <h3>Niños</h3>
         <p class="note">Desde recién nacidos hasta adolescentes.</p>
         <ul class="items">
           <li><b>Dermatitis del pañal</b><span>Irritación que no cede con las cremas de siempre.</span></li>
@@ -753,7 +773,7 @@ html{scroll-behavior:smooth}
       <div class="rule" aria-hidden="true"></div>
 
       <div class="lane rv">
-        <h3>En la tuya</h3>
+        <h3>Adultos</h3>
         <p class="note">Consulta dermatológica y estética para adultos.</p>
         <ul class="items">
           <li><b>Acné, rosácea y cicatrices</b><span>Acné quístico, cicatrices de acné, queloides e hipertróficas.</span></li>
@@ -766,7 +786,7 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
-    <p class="lanes-foot rv">¿No ves lo tuyo en la lista? <a href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quisiera%20saber%20si%20atiende%20mi%20caso.">Escríbeme por WhatsApp</a> y te digo si amerita una consulta.</p>
+    <p class="lanes-foot rv">¿No ves lo tuyo en la lista? <a href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quisiera%20saber%20si%20atiende%20mi%20caso.">Escríbeme por WhatsApp</a>.</p>
   </div>
 </section>
 
@@ -818,7 +838,7 @@ html{scroll-behavior:smooth}
     <div class="sec-head rv">
       <div class="kicker">Agendar</div>
       <h2>Elige el día y la hora <em>que te acomoden</em>.</h2>
-      <p>Se arma tu mensaje de WhatsApp y tú decides si lo envías. La cita queda confirmada cuando yo te respondo.</p>
+      <p>Aquí preparas tu solicitud y la envías por WhatsApp. La cita queda apartada cuando te confirmo la hora.</p>
     </div>
 
     <div class="booking rv">
@@ -839,8 +859,8 @@ html{scroll-behavior:smooth}
         <fieldset class="field">
           <legend>¿Para quién es la consulta?</legend>
           <div class="chips" id="who">
-            <button type="button" class="chip" data-who="hijo" aria-pressed="false">Para mi hijo</button>
-            <button type="button" class="chip" data-who="mi" aria-pressed="false">Para mí</button>
+            <button type="button" class="chip" data-who="hijo" aria-pressed="false">Niños</button>
+            <button type="button" class="chip" data-who="mi" aria-pressed="false">Adultos</button>
           </div>
         </fieldset>
 
@@ -894,11 +914,11 @@ html{scroll-behavior:smooth}
       <article class="op">
         <div class="op-top">
           <span class="op-ini" aria-hidden="true">G</span>
-          <span class="op-nombre">guadalupe</span>
+          <span class="op-nombre">Guadalupe</span>
           <span class="op-ver"><svg aria-hidden="true"><use href="#palomita"/></svg>Cita verificada</span>
           <span class="estrellas" role="img" aria-label="5 de 5 estrellas"><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg></span>
         </div>
-        <q>excelente servicio doctora y personal muy atento su ubicación sobre un boulevard principal</q>
+        <q>Excelente servicio doctora y personal muy atento su ubicación sobre un boulevard principal</q>
         <p class="op-pie">12 de diciembre de 2024 · Consulta de primera vez</p>
       </article>
 
@@ -1052,6 +1072,14 @@ html{scroll-behavior:smooth}
     </div>
   </div>
 </footer>
+
+<!-- Boton flotante de WhatsApp. Va al final del documento a proposito: es lo
+     ultimo en el orden de lectura, para que quien navega con teclado o lector
+     de pantalla no se lo encuentre antes que el contenido. -->
+<a class="wa" href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quisiera%20agendar%20una%20consulta."
+   target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a la Dra. Silvia Villaman">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.83 2.42a8.19 8.19 0 0 1 2.41 5.83c0 4.54-3.7 8.22-8.24 8.22zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.17.25-.64.81-.79.98-.14.16-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.08.15-1.18-.06-.11-.23-.17-.48-.29z"/></svg>
+</a>
 
 <script>
 (function(){
@@ -1631,7 +1659,7 @@ html{scroll-behavior:smooth}
   }
 
   function mensaje(){
-    var quien = estado.quien === 'hijo' ? 'para mi hijo' : 'para mí';
+    var quien = estado.quien === 'hijo' ? 'para un niño' : 'para mí';
     var l = ['Hola, doctora. Quiero agendar una consulta ' + quien + '.', ''];
     l.push('Día: ' + fechaLarga(estado.fecha));
     l.push('Hora: ' + estado.hora);
