@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /aviso-de-privacidad.html
+
+# Falta la linea Sitemap: https://DOMINIO/sitemap.xml
+# No se puede escribir hasta que haya dominio definido.

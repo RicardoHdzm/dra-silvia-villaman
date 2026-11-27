@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dra. Silvia Villaman — Dermatóloga pediatra en Culiacán</title>
+<meta name="description" content="Dermatóloga pediátrica en Culiacán, formada en el Hospital Infantil de México Federico Gómez. Atiende piel, pelo y uñas en niños desde recién nacidos, y consulta dermatológica y estética en adultos.">
+<meta property="og:title" content="Dra. Silvia Villaman — Dermatóloga pediatra en Culiacán">
+<meta property="og:description" content="La piel de tus hijos y la tuya, con la misma especialista. Consulta en Culiacán y en línea.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Physician",
+  "name": "Dra. Silvia Villaman Lugo",
+  "medicalSpecialty": "Dermatology",
+  "description": "Dermatóloga pediátrica, clínica y estética en Culiacán, Sinaloa.",
+  "telephone": "+52-667-751-2919",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Pedro María Anaya 2188",
+    "addressLocality": "Culiacán",
+    "addressRegion": "Sinaloa",
+    "addressCountry": "MX"
+  },
+  "alumniOf": [
+    { "@type": "CollegeOrUniversity", "name": "Universidad Autónoma de Sinaloa" },
+    { "@type": "Hospital", "name": "Hospital Infantil de México Federico Gómez" }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script>document.documentElement.className+=" js";</script>
+<style>
+:root{
+  --ink:#1B2F57;
+  --ink-2:#44507A;
+  --dim:#A49FC0;
+  --bg:#F5F1FB;
+  --lav:#7E6FC4;
+  --lav-deep:#5B4FA3;
+  --amber:#E2A13C;
+  --amber-deep:#C9871F;
+  --line:rgba(27,47,87,.12);
+  --t:.5;        /* 0 = ninos, 1 = adultos */
+  --w1:0;        /* peso lado ninos  */
+  --w2:0;        /* peso lado adultos */
+  --wc:1;        /* peso neutro */
+  --max:1240px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(100% - 48px,var(--max));margin-inline:auto}
+
+/* ---------- atmosfera ---------- */
+.atmos{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);transition:opacity .9s ease, transform .9s ease}
+.blob.a{width:62vw;height:62vw;left:-18vw;top:-22vw;
+  background:radial-gradient(circle at 40% 40%, rgba(167,196,240,.80), rgba(167,196,240,0) 68%);
+  opacity:calc(.45 + var(--w1)*.55);
+  transform:translateX(calc(var(--w2)*-3vw)) scale(calc(1 + var(--w1)*.10));}
+.blob.b{width:66vw;height:66vw;right:-22vw;bottom:-28vw;
+  background:radial-gradient(circle at 55% 45%, rgba(146,122,214,.62), rgba(146,122,214,0) 68%);
+  opacity:calc(.40 + var(--w2)*.55);
+  transform:translateX(calc(var(--w1)*3vw)) scale(calc(1 + var(--w2)*.10));}
+.blob.c{width:40vw;height:40vw;left:34vw;top:-14vw;
+  background:radial-gradient(circle at 50% 50%, rgba(226,161,60,.18), rgba(226,161,60,0) 70%);
+  opacity:calc(.5 + var(--wc)*.5);}
+.grain{position:absolute;inset:0;opacity:.13;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");}
+
+/* ---------- header ---------- */
+header{position:relative;padding:18px 0}
+.bar{display:flex;align-items:center;gap:28px}
+.logo img{height:38px;width:auto;display:block;mix-blend-mode:multiply}
+nav{display:flex;gap:26px;margin-left:auto;font-size:14.5px;font-weight:500;color:var(--ink-2)}
+nav a{padding:6px 0;border-bottom:2px solid transparent;transition:.2s}
+nav a:hover{color:var(--ink);border-color:var(--lav)}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;justify-content:center;
+  font:inherit;font-weight:700;font-size:15px;letter-spacing:-.01em;
+  padding:13px 22px;border-radius:999px;border:1.5px solid transparent;
+  cursor:pointer;transition:transform .18s ease, background-color .35s ease, border-color .35s ease, box-shadow .25s ease;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-top{background:var(--ink);color:#fff;padding:11px 20px;font-size:14.5px}
+.btn-top:hover{background:#16294d}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:calc(100svh - 76px);display:flex;align-items:center;padding:8px 0 40px}
+.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;align-items:center}
+
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--lav-deep);margin-bottom:16px}
+.eyebrow::before{content:"";width:26px;height:1.5px;background:var(--lav)}
+
+h1{margin:0;font-size:clamp(42px,5.6vw,74px);line-height:1.0;letter-spacing:-.035em;font-weight:800}
+h1 .l{display:block;transition:color .5s ease, transform .5s ease}
+h1 .l1{color:color-mix(in oklab, var(--ink) calc(100% - var(--w2)*62%), var(--dim));
+  transform:translateX(calc(var(--w2)*-6px))}
+h1 .l2{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;
+  font-size:1.06em;letter-spacing:-.02em;
+  color:color-mix(in oklab, var(--lav-deep) calc(100% - var(--w1)*58%), var(--dim));
+  transform:translateX(calc(var(--w1)*-6px))}
+
+.subs{position:relative;margin:20px 0 0;max-width:46ch;min-height:92px}
+.subs p{position:absolute;inset:0;margin:0;font-size:16.5px;line-height:1.55;color:var(--ink-2);
+  transition:opacity .4s ease, transform .4s ease}
+.subs .s0{opacity:var(--wc);transform:translateY(calc((1 - var(--wc)) * 6px))}
+.subs .s1{opacity:var(--w1);transform:translateY(calc((1 - var(--w1)) * 6px))}
+.subs .s2{opacity:var(--w2);transform:translateY(calc((1 - var(--w2)) * 6px))}
+
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.btn-path{
+  color:var(--ink);
+  border-color:color-mix(in oklab, var(--amber-deep) calc(35% + var(--f)*65%), transparent);
+  background:rgba(226,161,60,calc(.18 + var(--f)*.82));
+  box-shadow:0 calc(2px + var(--f)*8px) calc(6px + var(--f)*22px) rgba(201,135,31,calc(.10 + var(--f)*.20));
+}
+#p1{--f:calc(.55 + var(--w1)*.45 - var(--w2)*.45)}
+#p2{--f:calc(.55 + var(--w2)*.45 - var(--w1)*.45)}
+.btn-path svg{width:17px;height:17px;flex:none}
+
+/* control */
+.switch{margin-top:26px;display:flex;align-items:center;gap:14px;font-size:12.5px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--dim);user-select:none}
+.switch span{transition:color .4s ease}
+.switch .k1{color:color-mix(in oklab, var(--ink) calc(var(--w1)*100%), var(--dim))}
+.switch .k2{color:color-mix(in oklab, var(--ink) calc(var(--w2)*100%), var(--dim))}
+.track{position:relative;flex:none;width:124px;height:32px;border-radius:999px;
+  background:rgba(27,47,87,.07);cursor:ew-resize;touch-action:none}
+.track::after{content:"";position:absolute;left:12px;right:12px;top:50%;height:1.5px;
+  background:rgba(27,47,87,.14);transform:translateY(-50%)}
+.knob{position:absolute;top:4px;width:24px;height:24px;border-radius:50%;background:#fff;
+  box-shadow:0 2px 8px rgba(27,47,87,.22);
+  left:calc(4px + var(--t) * (124px - 32px));transition:left .28s cubic-bezier(.22,1,.36,1)}
+.knob::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--lav)}
+
+.trust{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;gap:8px 22px;font-size:13px;color:var(--ink-2)}
+.trust b{font-weight:700;color:var(--ink)}
+.trust .sep{color:var(--dim)}
+
+/* foto */
+.portrait{position:relative;justify-self:end;width:fit-content;max-width:100%}
+.halo{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);
+  width:108%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 50% 45%,
+    color-mix(in oklab, #B9A7EA calc(35% + var(--w2)*35%), #BBD2F2) 0%,
+    rgba(255,255,255,0) 66%);
+  transition:background .6s ease}
+.ring{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(calc(var(--t)*18deg - 9deg));
+  width:96%;aspect-ratio:1;border-radius:50%;border:1.5px dashed rgba(126,111,196,.38);
+  transition:transform .8s ease}
+.photo-clip{
+  position:relative;
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 6%, #000 86%, transparent 99%);
+  mask-image:linear-gradient(to bottom, transparent 0, #000 6%, #000 86%, transparent 99%);
+}
+.photo{
+  position:relative;aspect-ratio:292/568;
+  height:clamp(360px,62svh,560px);width:auto;
+  background-image:url("img/dra-flyer.webp");
+  background-size:238% auto;
+  background-position:100% 28.2%;
+  background-repeat:no-repeat;
+  mix-blend-mode:multiply;
+  -webkit-mask-image:radial-gradient(86% 78% at 52% 42%, #000 46%, transparent 92%);
+  mask-image:radial-gradient(86% 78% at 52% 42%, #000 46%, transparent 92%);
+  transform:translateX(calc(var(--w1)*10px - var(--w2)*10px)) scale(calc(1 + var(--w2)*.02));
+  transition:transform .6s ease;
+}
+/* segunda foto: solo entra si .portrait trae data-alt-photo y el archivo carga */
+.photo.alt{position:absolute;inset:0;height:auto;width:auto;opacity:0;
+  background-image:var(--alt-photo,none);background-size:cover;background-position:50% 18%}
+.has-alt .photo.alt{opacity:var(--w2);transition:opacity .55s ease}
+.has-alt .photo.base{opacity:calc(1 - var(--w2));transition:opacity .55s ease, transform .6s ease}
+
+.tag{position:absolute;z-index:2;max-width:172px;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);
+  border:1px solid rgba(27,47,87,.08);border-radius:14px;padding:11px 14px;
+  font-size:12.5px;line-height:1.35;font-weight:600;color:var(--ink);
+  box-shadow:0 10px 28px rgba(27,47,87,.10);transition:opacity .45s ease, transform .45s ease}
+.tag small{display:block;font-weight:500;color:var(--ink-2);font-size:11.5px;margin-top:2px}
+.tag.t1{left:-156px;top:11%;opacity:calc(.62 + var(--w1)*.38);transform:translateY(calc(var(--w2)*8px))}
+.tag.t2{right:-12px;bottom:9%;opacity:calc(.62 + var(--w2)*.38);transform:translateY(calc(var(--w1)*8px))}
+
+.scroll{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
+  font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);z-index:2}
+
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr;gap:4px}
+  .hero{min-height:auto;padding-bottom:28px}
+  .portrait{order:-1;justify-self:center;margin-bottom:-4px}
+  .photo{height:clamp(200px,28svh,264px)}
+  .tag{display:none}
+  nav{display:none}
+  h1{font-size:clamp(38px,10.5vw,56px)}
+  .subs{min-height:164px}
+  .ctas .btn-path{flex:1 1 220px}
+  .scroll{display:none}
+  .switch{margin-top:26px}
+}
+/* ---------- secciones ---------- */
+section{position:relative;padding:94px 0}
+.kicker{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--lav-deep);margin-bottom:14px}
+.kicker::before{content:"";width:22px;height:1.5px;background:var(--lav)}
+.sec-head{max-width:34ch;margin:0 0 46px}
+.sec-head h2{margin:0;font-size:clamp(28px,3.4vw,44px);line-height:1.06;letter-spacing:-.032em;font-weight:800}
+.sec-head h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;
+  color:var(--lav-deep);font-size:1.08em}
+.sec-head p{margin:14px 0 0;font-size:16.5px;line-height:1.55;color:var(--ink-2);max-width:52ch}
+.card{background:rgba(255,255,255,.72);border:1px solid rgba(27,47,87,.08);border-radius:20px;
+  padding:26px 28px;box-shadow:0 14px 40px rgba(27,47,87,.06)}
+
+/* la doctora */
+.doc{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:start}
+.doc p{margin:0 0 16px;font-size:16.5px;line-height:1.62;color:var(--ink-2);max-width:54ch}
+.doc .lead{font-size:20px;line-height:1.5;color:var(--ink);font-weight:500;margin-bottom:20px}
+.facts{list-style:none;margin:0;padding:0}
+.facts li{display:grid;grid-template-columns:104px 1fr;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
+.facts li:last-child{border-bottom:0}
+.facts .k{color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:11px;padding-top:3px}
+.facts .v{color:var(--ink);font-weight:600;font-size:14.5px;line-height:1.45}
+
+/* dos carriles */
+.lanes{display:grid;grid-template-columns:1fr 1px 1fr;gap:0 46px;align-items:start}
+.rule{align-self:stretch;background:linear-gradient(180deg,
+  rgba(167,196,240,0), rgba(126,111,196,.45) 35%, rgba(126,111,196,.45) 65%, rgba(167,196,240,0));border-radius:1px}
+.lane h3{margin:0 0 4px;font-size:22px;letter-spacing:-.022em;font-weight:800}
+.lane .note{margin:0 0 18px;font-size:14.5px;color:var(--ink-2)}
+.items{list-style:none;margin:0;padding:0}
+.items li{padding:15px 0;border-top:1px solid var(--line)}
+.items li:last-child{border-bottom:1px solid var(--line)}
+.items b{display:block;font-size:16px;font-weight:700;letter-spacing:-.012em}
+.items span{display:block;margin-top:3px;font-size:14px;line-height:1.5;color:var(--ink-2)}
+.lanes-foot{margin:28px 0 0;font-size:15px;color:var(--ink-2)}
+.lanes-foot a{font-weight:700;color:var(--lav-deep);border-bottom:1.5px solid rgba(126,111,196,.4)}
+
+/* pasos */
+.steps{list-style:none;margin:0;padding:0}
+.steps li{display:grid;grid-template-columns:88px 1fr;gap:24px;padding:26px 0;
+  border-top:1px solid var(--line);align-items:start}
+.steps li:last-child{border-bottom:1px solid var(--line)}
+.steps .num{font-size:46px;line-height:.9;font-weight:800;letter-spacing:-.045em;
+  color:transparent;-webkit-text-stroke:1.4px rgba(126,111,196,.55)}
+.steps h3{margin:0 0 6px;font-size:18px;letter-spacing:-.018em}
+.steps p{margin:0;font-size:15.5px;line-height:1.56;color:var(--ink-2);max-width:62ch}
+
+/* preguntas */
+.faq{border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:20px 52px 20px 0;position:relative;
+  font-size:17px;font-weight:700;letter-spacing:-.018em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";position:absolute;right:14px;top:50%;width:10px;height:10px;margin-top:-7px;
+  border-right:2px solid var(--lav);border-bottom:2px solid var(--lav);
+  transform:rotate(45deg);transition:transform .25s ease}
+.faq details[open] summary::after{transform:rotate(-135deg);margin-top:-3px}
+.faq .ans{margin:0;padding:0 56px 22px 0;font-size:16px;line-height:1.6;color:var(--ink-2);max-width:72ch}
+
+/* donde */
+.where-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.where-grid.cards-3{grid-template-columns:repeat(3,1fr)}
+.where-grid h3{margin:0 0 14px;font-size:19px;letter-spacing:-.02em}
+.where-grid p{margin:0 0 6px;font-size:15.5px;line-height:1.6;color:var(--ink-2)}
+.hours{list-style:none;margin:10px 0 0;padding:0}
+.hours li{display:flex;justify-content:space-between;gap:16px;padding:10px 0;
+  border-bottom:1px dashed var(--line);font-size:14.5px}
+.hours li:last-child{border-bottom:0}
+.hours .d{font-weight:700}
+.hours .h{color:var(--ink-2)}
+
+/* cierre */
+.closing{text-align:center;padding:92px 0 100px}
+.closing h2{margin:0 auto;max-width:17ch;font-size:clamp(30px,4.2vw,56px);
+  line-height:1.05;letter-spacing:-.035em;font-weight:800}
+.closing h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;color:var(--lav-deep)}
+.closing p{margin:18px auto 30px;max-width:46ch;font-size:16.5px;line-height:1.55;color:var(--ink-2)}
+.closing .ctas{justify-content:center;margin-top:0}
+
+/* pie */
+footer{background:#16294D;color:#CFD6E6;padding:58px 0 30px}
+.foot{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:34px}
+.foot h4{margin:0 0 12px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#8E9CBC;font-weight:700}
+.foot p{margin:0;font-size:14.5px;line-height:1.8;color:#CFD6E6}
+.foot a{display:block;font-size:14.5px;line-height:1.8;color:#CFD6E6}
+.foot a:hover{color:#fff}
+.wordmark{font-size:20px;font-weight:800;letter-spacing:-.025em;color:#fff;margin:0}
+.wordmark small{display:block;font-size:11.5px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;color:#8E9CBC;margin-top:7px}
+.legal{margin-top:42px;padding-top:20px;border-top:1px solid rgba(255,255,255,.12);
+  display:flex;flex-wrap:wrap;gap:8px 22px;font-size:12.5px;line-height:1.6;color:#8E9CBC}
+
+/* aparicion al bajar */
+.rv{transition:opacity .7s ease, transform .7s ease}
+.js .rv{opacity:0;transform:translateY(16px)}
+.js .rv.in{opacity:1;transform:none}
+
+@media (max-width:900px){
+  section{padding:62px 0}
+  .sec-head{margin-bottom:32px}
+  .doc{grid-template-columns:1fr;gap:30px}
+  .lanes{grid-template-columns:1fr;gap:42px}
+  .rule{display:none}
+  .where-grid,.where-grid.cards-3{grid-template-columns:1fr}
+  .foot{grid-template-columns:1fr 1fr;gap:26px}
+  .steps li{grid-template-columns:56px 1fr;gap:16px;padding:22px 0}
+  .steps .num{font-size:32px}
+  .closing{padding:70px 0 76px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.001ms !important;animation:none !important}
+  .js .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="atmos" aria-hidden="true">
+  <div class="blob a"></div><div class="blob b"></div><div class="blob c"></div>
+  <div class="grain"></div>
+</div>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#inicio"><img src="img/logo.png" alt="Dra. Silvia Villaman, médico especialista en dermatología"></a>
+    <nav>
+      <a href="#doctora">La doctora</a>
+      <a href="#atiende">Padecimientos</a>
+      <a href="#consulta">La consulta</a>
+      <a href="#preguntas">Preguntas</a>
+      <a href="#donde">Dónde</a>
+    </nav>
+    <a class="btn btn-top" href="https://wa.me/526677512919">Agendar cita</a>
+  </div>
+</header>
+
+<main class="hero" id="inicio">
+  <div class="wrap grid">
+
+    <div class="copy">
+      <div class="eyebrow">Dermatóloga pediatra certificada</div>
+
+      <h1>
+        <span class="l l1">La piel de tus hijos.</span>
+        <span class="l l2">Y la tuya.</span>
+      </h1>
+
+      <div class="subs">
+        <p class="s0">La Dra. Silvia Villaman atiende la piel de los niños de la casa y también la de sus papás. Misma doctora, mismo consultorio, en Culiacán.</p>
+        <p class="s1">Eccema, dermatitis del pañal, manchas, lunares, caída de cabello y uñas. Consulta tranquila, explicada en palabras simples y sin asustar al niño.</p>
+        <p class="s2">Acné, melasma, manchas, láser y dermocosmética. Un plan realista para tu piel, con la misma especialista que ya atiende a tus hijos.</p>
+      </div>
+
+      <div class="ctas">
+        <a class="btn btn-path" id="p1" data-side="0"
+           href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quiero%20agendar%20una%20consulta%20para%20mi%20hijo.">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.2-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.3.3c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6 0l.9-1c.2-.2.4-.2.6-.1l2 1c.2.1.4.2.4.3.1.1.1.6-.1 1.1Z"/></svg>
+          Consulta para mi hijo
+        </a>
+        <a class="btn btn-path" id="p2" data-side="1"
+           href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quiero%20agendar%20una%20consulta%20de%20dermatolog%C3%ADa%20para%20m%C3%AD.">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.2-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.3.3c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6 0l.9-1c.2-.2.4-.2.6-.1l2 1c.2.1.4.2.4.3.1.1.1.6-.1 1.1Z"/></svg>
+          Consulta para mí
+        </a>
+      </div>
+
+      <div class="switch">
+        <span class="k1">Para mis hijos</span>
+        <div class="track" id="track" role="slider" tabindex="0"
+             aria-label="Elegir para quién es la consulta"
+             aria-valuemin="0" aria-valuemax="2" aria-valuenow="1"
+             aria-valuetext="Para toda la familia">
+          <div class="knob"></div>
+        </div>
+        <span class="k2">Para mí</span>
+      </div>
+
+      <div class="trust">
+        <span><b>Ced. Esp. 138224021</b> · UNAM</span>
+        <span class="sep">·</span>
+        <span>Consultorio <b>[dirección pendiente]</b>, Culiacán</span>
+        <span class="sep">·</span>
+        <span>WhatsApp <b>667 751 2919</b></span>
+      </div>
+    </div>
+
+    <!-- Para cruzar dos fotos (bata en el lado "niños", saco en el de "adultos"),
+         agrega aqui: data-alt-photo="img/dra-blazer.png" -->
+    <div class="portrait">
+      <div class="halo" aria-hidden="true"></div>
+      <div class="ring" aria-hidden="true"></div>
+      <div class="photo-clip">
+        <div class="photo base" role="img" aria-label="Dra. Silvia Villaman Lugo"></div>
+        <div class="photo alt" aria-hidden="true"></div>
+      </div>
+      <div class="tag t1">Piel, pelo y uñas en niños<small>desde recién nacidos</small></div>
+      <div class="tag t2">Dermocosmética y láser<small>para adultos</small></div>
+    </div>
+
+  </div>
+  <div class="scroll">Baja para conocerla</div>
+</main>
+
+<section id="doctora">
+  <div class="wrap doc">
+    <div class="rv">
+      <div class="kicker">La doctora</div>
+      <div class="sec-head" style="max-width:none;margin-bottom:20px">
+        <h2>Formada en el hospital infantil <em>más importante del país</em>.</h2>
+      </div>
+      <p class="lead">La Dra. Silvia Villaman Lugo es médico cirujano por la Universidad Autónoma de Sinaloa, con la especialidad en Dermatología Pediátrica cursada en el Hospital Infantil de México Federico Gómez.</p>
+      <p>Atiende en Culiacán piel, pelo y uñas en niños desde recién nacidos, y también la consulta dermatológica y estética de adultos. En las opiniones de sus pacientes se repiten dos cosas: que explica con detalle y que tiene paciencia con los niños.</p>
+      <p>Para valoraciones y seguimiento a distancia también ofrece consulta en línea.</p>
+    </div>
+
+    <div class="card rv">
+      <ul class="facts">
+        <li><span class="k">Especialidad</span><span class="v">Dermatología pediátrica, clínica y estética</span></li>
+        <li><span class="k">Licenciatura</span><span class="v">Médico cirujano — Universidad Autónoma de Sinaloa</span></li>
+        <li><span class="k">Posgrado</span><span class="v">Hospital Infantil de México Federico Gómez</span></li>
+        <li><span class="k">Cédulas</span><span class="v">9532246 · 13824021 · 12820870</span></li>
+        <li><span class="k">Consultorio</span><span class="v">Pedro María Anaya 2188, Culiacán, Sin.</span></li>
+        <li><span class="k">Pacientes</span><span class="v">Niños desde recién nacidos y adultos</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="atiende">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Padecimientos</div>
+      <h2>Lo que se revisa en <em>cada piel</em>.</h2>
+      <p>Dos consultas distintas con la misma especialista. Esto es lo que ve en cada una.</p>
+    </div>
+
+    <div class="lanes">
+      <div class="lane rv">
+        <h3>En la piel de tus hijos</h3>
+        <p class="note">Desde recién nacidos hasta adolescentes.</p>
+        <ul class="items">
+          <li><b>Dermatitis del pañal</b><span>Irritación que no cede con las cremas de siempre.</span></li>
+          <li><b>Eccema y dermatitis seborreica</b><span>Piel seca que pica y vuelve por temporadas. Se controla.</span></li>
+          <li><b>Hemangiomas y manchas de nacimiento</b><span>Valoración y seguimiento para saber cuáles vigilar.</span></li>
+          <li><b>Verrugas y molusco contagioso</b><span>Muy comunes en la escuela y la alberca. Se retiran en consultorio.</span></li>
+          <li><b>Caída de cabello</b><span>Alopecia areata y otras causas, buscando primero el porqué.</span></li>
+          <li><b>Acné del adolescente</b><span>Incluido el acné quístico, con tratamiento acorde a la edad.</span></li>
+        </ul>
+      </div>
+
+      <div class="rule" aria-hidden="true"></div>
+
+      <div class="lane rv">
+        <h3>En la tuya</h3>
+        <p class="note">Consulta dermatológica y estética para adultos.</p>
+        <ul class="items">
+          <li><b>Acné, rosácea y cicatrices</b><span>Acné quístico, cicatrices de acné, queloides e hipertróficas.</span></li>
+          <li><b>Melasma y manchas</b><span>Tratamiento y mantenimiento, con fotoprotección dentro del plan.</span></li>
+          <li><b>Caída de cabello</b><span>Alopecia areata, universal y alopecia en hombres.</span></li>
+          <li><b>Lunares, queratosis y verrugas</b><span>Revisión de nevos y retiro cuando hace falta.</span></li>
+          <li><b>Vitiligo, psoriasis e hiperhidrosis</b><span>Padecimientos crónicos que piden seguimiento, no una sola cita.</span></li>
+          <li><b>Dermocosmética y láser</b><span>Depilación láser, Hydrafacial, Dermapen, radiofrecuencia, rellenos y toxina.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="lanes-foot rv">¿No ves lo tuyo en la lista? <a href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quisiera%20saber%20si%20atiende%20mi%20caso.">Pregúntalo por WhatsApp</a> y te dicen si amerita consulta.</p>
+  </div>
+</section>
+
+<section id="consulta">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">La consulta</div>
+      <h2>Cómo es una cita, <em>paso a paso</em>.</h2>
+      <p>Para que llegues sabiendo qué va a pasar, sobre todo si vas con un niño.</p>
+    </div>
+
+    <ol class="steps">
+      <li class="rv"><div class="num">01</div><div>
+        <h3>Escribes por WhatsApp</h3>
+        <p>Cuentas qué está pasando y, si quieres, mandas una foto. En dermatología la foto ayuda a saber si amerita consulta pronto o puede esperar. Te confirman día y hora.</p>
+      </div></li>
+      <li class="rv"><div class="num">02</div><div>
+        <h3>Confirmas un día antes</h3>
+        <p>Llega un mensaje de confirmación. Contéstalo: es lo que mantiene tu lugar apartado y evita que la agenda se mueva sin avisarte.</p>
+      </div></li>
+      <li class="rv"><div class="num">03</div><div>
+        <h3>Llegas al consultorio</h3>
+        <p>Pedro María Anaya 2188, en Culiacán. Si la consulta es para tu hijo, trae lo que ya le han recetado y fotos de cómo se veía la piel antes.</p>
+      </div></li>
+      <li class="rv"><div class="num">04</div><div>
+        <h3>Revisión sin prisa</h3>
+        <p>La exploración se hace ahí mismo. Con los niños se va al ritmo del niño: primero se le explica, luego se le revisa.</p>
+      </div></li>
+      <li class="rv"><div class="num">05</div><div>
+        <h3>Sales con un plan claro</h3>
+        <p>Qué tiene, por qué pasa, qué se va a usar y en cuánto tiempo se empieza a notar el cambio.</p>
+      </div></li>
+      <li class="rv"><div class="num">06</div><div>
+        <h3>Seguimiento</h3>
+        <p>Consulta subsecuente para revisar cómo va, o valoración en línea si lo que cambió se puede ver por video.</p>
+      </div></li>
+    </ol>
+  </div>
+</section>
+
+<section id="opiniones">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Opiniones</div>
+      <h2>Lo que repiten <em>sus pacientes</em>.</h2>
+    </div>
+    <div class="where-grid cards-3 rv">
+      <div class="card">
+        <h3>Explica con detalle</h3>
+        <p>Salen entendiendo qué tienen y por qué pasa, sin tecnicismos.</p>
+      </div>
+      <div class="card">
+        <h3>Paciencia con los niños</h3>
+        <p>Es lo que más mencionan los papás: el trato y el tiempo que les da.</p>
+      </div>
+      <div class="card">
+        <h3>Atención profesional</h3>
+        <p>Consultorio sobre bulevar principal, fácil de ubicar y de llegar.</p>
+      </div>
+    </div>
+    <p class="lanes-foot rv">4 de 5 estrellas en 5 opiniones verificadas de Doctoralia.</p>
+  </div>
+</section>
+
+<section id="preguntas">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Preguntas</div>
+      <h2>Las preguntas <em>de siempre</em>.</h2>
+    </div>
+    <div class="faq rv">
+      <details>
+        <summary>¿Desde qué edad atiende niños?</summary>
+        <p class="ans">Desde recién nacidos. Buena parte de la consulta pediátrica son bebés con dermatitis del pañal, eccema o manchas de nacimiento.</p>
+      </details>
+      <details>
+        <summary>¿Puedo mandar una foto antes de agendar?</summary>
+        <p class="ans">Sí. La foto no sustituye la revisión, pero orienta bastante: sirve para saber si tu caso amerita consulta pronto o puede esperar.</p>
+      </details>
+      <details>
+        <summary>¿Atiende adultos o solamente niños?</summary>
+        <p class="ans">Las dos cosas. La especialidad es dermatología pediátrica, y la consulta de adultos incluye acné, melasma, caída de cabello, revisión de lunares y dermocosmética.</p>
+      </details>
+      <details>
+        <summary>¿Hay consulta en línea?</summary>
+        <p class="ans">Sí, para valoraciones y seguimiento a distancia. Tiene el mismo costo que la primera visita en consultorio.</p>
+      </details>
+      <details>
+        <summary>¿Cuánto cuesta la consulta?</summary>
+        <p class="ans">Primera vez $1,400 y subsecuente $1,200. Los procedimientos de dermocosmética se cotizan en la valoración, porque dependen de lo que cada piel necesite.</p>
+      </details>
+      <details>
+        <summary>¿Aceptan seguro de gastos médicos?</summary>
+        <p class="ans">Se aceptan aseguradoras, aunque la cobertura cambia según el servicio. Lo más rápido es confirmarlo por WhatsApp antes de agendar.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="donde">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker">Dónde y cuánto</div>
+      <h2>Dónde atiende.</h2>
+    </div>
+    <div class="where-grid">
+      <div class="card rv">
+        <h3>Consultorio</h3>
+        <p><b>Pedro María Anaya 2188</b><br>Culiacán, Sinaloa</p>
+        <p style="margin-top:12px">WhatsApp <b>667 751 2919</b></p>
+        <div class="ctas" style="margin-top:20px">
+          <a class="btn btn-path" style="--f:1" href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quiero%20agendar%20una%20consulta.">Agendar por WhatsApp</a>
+          <a class="btn" style="border-color:rgba(27,47,87,.18);color:var(--ink)" href="https://www.google.com/maps/search/?api=1&amp;query=Pedro+Maria+Anaya+2188+Culiacan" target="_blank" rel="noopener">Cómo llegar</a>
+        </div>
+      </div>
+      <div class="card rv">
+        <h3>Costos de consulta</h3>
+        <ul class="hours">
+          <li><span class="d">Primera vez</span><span class="h">$1,400</span></li>
+          <li><span class="d">Subsecuente</span><span class="h">$1,200</span></li>
+          <li><span class="d">Consulta en línea</span><span class="h">$1,400</span></li>
+          <li><span class="d">Procedimientos</span><span class="h">Se cotizan en la valoración</span></li>
+          <li><span class="d">Horario</span><span class="h">Por confirmar</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap rv">
+    <h2>La piel de tu familia, <em>en las mismas manos</em>.</h2>
+    <p>Escríbele por WhatsApp y agenda. Si vives lejos o no puedes moverte, también hay consulta en línea.</p>
+    <div class="ctas">
+      <a class="btn btn-path" style="--f:1" href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quiero%20agendar%20una%20consulta%20para%20mi%20hijo.">Consulta para mi hijo</a>
+      <a class="btn btn-path" style="--f:1" href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quiero%20agendar%20una%20consulta%20de%20dermatolog%C3%ADa%20para%20m%C3%AD.">Consulta para mí</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <p class="wordmark">Dra. Silvia Villaman<small>Dermatología pediátrica, clínica y estética</small></p>
+      </div>
+      <div>
+        <h4>Consulta</h4>
+        <a href="#doctora">La doctora</a>
+        <a href="#atiende">Padecimientos</a>
+        <a href="#consulta">Cómo es la cita</a>
+        <a href="#preguntas">Preguntas</a>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <a href="https://wa.me/526677512919">WhatsApp 667 751 2919</a>
+        <a href="https://www.google.com/maps/search/?api=1&amp;query=Pedro+Maria+Anaya+2188+Culiacan" target="_blank" rel="noopener">Cómo llegar</a>
+      </div>
+      <div>
+        <h4>Consultorio</h4>
+        <p>Pedro María Anaya 2188<br>Culiacán, Sinaloa</p>
+      </div>
+    </div>
+    <div class="legal">
+      <span>Ced. Prof. 9532246 · Ced. Esp. 13824021 · 12820870</span>
+      <span>Permiso de publicidad COFEPRIS APC 2425042002A00132</span>
+      <span>La información de este sitio es orientativa y no sustituye una consulta médica.</span>
+      <span><a href="aviso-de-privacidad.html" style="color:#CFD6E6;text-decoration:underline">Aviso de privacidad</a></span>
+      <span>© 2026 Dra. Silvia Villaman Lugo</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var hero = document.getElementById('inicio');
+  var track = document.getElementById('track');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hoverable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  var target = 0.5, current = 0.5, locked = false, raf = null;
+
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+  function paint(t){
+    var w1 = clamp(1 - 2*t, 0, 1);
+    var w2 = clamp(2*t - 1, 0, 1);
+    root.style.setProperty('--t', t.toFixed(4));
+    root.style.setProperty('--w1', w1.toFixed(4));
+    root.style.setProperty('--w2', w2.toFixed(4));
+    root.style.setProperty('--wc', (1 - w1 - w2).toFixed(4));
+    var n = t < 0.25 ? 0 : (t > 0.75 ? 2 : 1);
+    track.setAttribute('aria-valuenow', n);
+    track.setAttribute('aria-valuetext', ['Para mis hijos','Para toda la familia','Para mí'][n]);
+  }
+
+  function tick(){
+    current += (target - current) * 0.14;
+    if (Math.abs(target - current) < 0.002){ current = target; raf = null; paint(current); return; }
+    paint(current);
+    raf = requestAnimationFrame(tick);
+  }
+
+  function go(t){
+    target = clamp(t, 0, 1);
+    if (reduce){ current = target; paint(current); return; }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+
+  /* seguir el cursor dentro del hero, solo en escritorio */
+  if (hoverable && !reduce){
+    hero.addEventListener('pointermove', function(e){
+      if (locked || e.pointerType !== 'mouse') return;
+      var r = hero.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width;      /* 0..1 */
+      go(clamp((x - 0.18) / 0.64, 0, 1));          /* zona muerta en los bordes */
+    });
+    hero.addEventListener('pointerleave', function(){ if (!locked) go(0.5); });
+  }
+
+  /* los botones mandan al pasar por encima y al enfocar con teclado */
+  [].forEach.call(document.querySelectorAll('.btn-path'), function(b){
+    var side = Number(b.dataset.side);
+    b.addEventListener('pointerenter', function(){ locked = true; go(side); });
+    b.addEventListener('focus',        function(){ locked = true; go(side); });
+    b.addEventListener('pointerleave', function(){ locked = false; });
+    b.addEventListener('blur',         function(){ locked = false; go(0.5); });
+  });
+
+  /* control arrastrable: el unico camino en tactil */
+  function fromTrack(clientX){
+    var r = track.getBoundingClientRect();
+    return clamp((clientX - r.left - 16) / (r.width - 32), 0, 1);
+  }
+  var dragging = false;
+  track.addEventListener('pointerdown', function(e){
+    dragging = true; locked = true; track.setPointerCapture(e.pointerId); go(fromTrack(e.clientX));
+  });
+  track.addEventListener('pointermove', function(e){ if (dragging) go(fromTrack(e.clientX)); });
+  track.addEventListener('pointerup', function(e){
+    dragging = false;
+    var t = fromTrack(e.clientX);
+    go(t < 0.25 ? 0 : (t > 0.75 ? 1 : 0.5));       /* iman a los tres estados */
+    track.releasePointerCapture(e.pointerId);
+  });
+  track.addEventListener('keydown', function(e){
+    var step = {ArrowLeft:-0.5, ArrowRight:0.5, Home:-1, End:1}[e.key];
+    if (step === undefined) return;
+    e.preventDefault(); locked = true;
+    go(Math.abs(step) === 1 ? (step < 0 ? 0 : 1) : clamp(target + step, 0, 1));
+  });
+
+  paint(0.5);
+
+  /* la segunda foto solo se pide si esta declarada, y solo se usa si carga */
+  var portrait = document.querySelector('.portrait');
+  var altSrc = portrait.dataset.altPhoto;
+  if (altSrc){
+    var alt = new Image();
+    alt.onload = function(){
+      portrait.style.setProperty('--alt-photo', 'url("' + altSrc + '")');
+      portrait.classList.add('has-alt');
+    };
+    alt.src = altSrc;
+  }
+})();
+
+/* aparicion al bajar */
+(function(){
+  var els = document.querySelectorAll('.rv');
+  if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    [].forEach.call(els, function(el){ el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {rootMargin: '0px 0px -10% 0px'});
+  [].forEach.call(els, function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# editores
+.vscode/
+.idea/
+
+# por si mas adelante entra un build
+node_modules/
+dist/
