@@ -375,10 +375,16 @@ las tres llamadas que pintan una anomalía (`tipo`, `tipo2` y la mira). De
 Lo mismo aplica si algún día se añade un glifo nuevo: tiene que recibir la
 escala ya multiplicada, no `ka * 1.5` a secas.
 
-Relacionado: la bruma de móvil abre a propósito una ventana clara centrada en
-el 50 % de ancho y el 30 % de alto, que es donde el JS pone el punto de fuga.
-Si se mueve una, hay que mover la otra. El corte entre diseño de teléfono y de
-escritorio es 900 px en los dos sitios (`ESTRECHO` en el JS).
+Relacionado: la bruma abre a propósito una ventana clara centrada en el 50 %
+de ancho y el 30 % de alto, que es donde el JS pone el punto de fuga. Si se
+mueve una, hay que mover la otra.
+
+Y manda el **alto**, no el ancho. Con el texto centrado debajo del gráfico, el
+hueco limpio que le queda es una banda horizontal cuya altura sale del alto de
+pantalla; el ancho solo entra para pantallas muy angostas. Cuando el hero
+repartía en horizontal (texto a la izquierda, gráfico a la derecha) mandaba el
+ancho, y al centrar hubo que cambiarlo: si no, en escritorio volvía a pasar lo
+de móvil, el glifo no cabía en la banda y se leía como una mancha.
 
 ## La salida del hero: por qué el desvanecido no va atado al progreso
 
@@ -401,3 +407,20 @@ Dos detalles que importan:
 El desvanecido de cada parada sigue viviendo en `.activa`, con su propia
 transición, y los dos se multiplican. Cada mecanismo en su sitio: el relevo es
 por reloj, la salida es por scroll.
+
+## Una sola composición del hero
+
+Antes había dos, una por ancho: en escritorio el texto a la izquierda y el
+gráfico corrido al 62 %; en teléfono el texto abajo y el gráfico arriba. El
+corte entre ambas fue fuente de desajustes (en un momento el CSS cambiaba en
+900 px y el JS en 780, y en esa franja el gráfico quedaba fuera de la ventana
+clara).
+
+Ahora es una sola, en todos los anchos: **gráfico arriba y centrado, texto
+centrado debajo**. Se centró a petición del cliente, para alejarse de la
+composición del sitio de referencia y para que el titular y las paradas
+compartan eje. El reparto pasó de horizontal a vertical, y de ahí vienen dos
+consecuencias que no son opcionales:
+
+- La escala del glifo se ata al alto, no al ancho (ver la sección anterior).
+- Hay una sola `.bruma`, no una por ancho.
