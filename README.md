@@ -43,6 +43,10 @@ Debajo del titular hay una línea viva — "Puedes pedir cita desde el viernes 2
 calculada de la misma constante `HORARIOS`. Se actualiza sola y dice "pedir",
 no "reservar", porque eso es lo que de verdad hace el sitio.
 
+El retrato tiene parallax: `--mx` y `--my` (−1 a 1, el puntero respecto al
+centro del hero) mueven el halo, el anillo y la foto en cantidades distintas,
+y el halo al revés. Se interpola más suelto que el cambio de lado, a propósito.
+
 El lado activo del hero es un estado discreto (`data-lado` en la sección:
 `ninos` · `neutro` · `adultos`) y el CSS decide por clase qué texto, qué color
 de titular y qué CTA se enciende. **No usar aritmética de opacidades para

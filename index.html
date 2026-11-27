@@ -49,6 +49,8 @@
   --w1:0;        /* peso lado ninos  */
   --w2:0;        /* peso lado adultos */
   --wc:1;        /* peso neutro */
+  --mx:0;        /* puntero: -1 izquierda, 1 derecha */
+  --my:0;        /* puntero: -1 arriba, 1 abajo */
   --max:1240px;
 }
 *{box-sizing:border-box}
@@ -170,13 +172,17 @@ h1 .l2{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weigh
 
 /* foto */
 .portrait{position:relative;justify-self:end;width:fit-content;max-width:100%}
-.halo{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);
+/* Tres planos que se mueven distinto con el puntero: el halo al reves y poco,
+   el anillo a media, el retrato al frente. Eso es lo que lee como profundidad. */
+.halo{position:absolute;left:50%;top:52%;
+  transform:translate(-50%,-50%) translate(calc(var(--mx)*-9px), calc(var(--my)*-4px));
   width:108%;aspect-ratio:1;border-radius:50%;
   background:radial-gradient(circle at 50% 45%,
     color-mix(in oklab, #B9A7EA calc(35% + var(--w2)*35%), #BBD2F2) 0%,
     rgba(255,255,255,0) 66%);
   transition:background .3s ease}
-.ring{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(calc(var(--t)*18deg - 9deg));
+.ring{position:absolute;left:50%;top:52%;
+  transform:translate(-50%,-50%) translate(calc(var(--mx)*5px), calc(var(--my)*-5px)) rotate(calc(var(--t)*18deg - 9deg));
   width:96%;aspect-ratio:1;border-radius:50%;border:1.5px dashed rgba(126,111,196,.38)}
 .photo-clip{
   position:relative;
@@ -193,7 +199,9 @@ h1 .l2{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weigh
   mix-blend-mode:multiply;
   -webkit-mask-image:radial-gradient(86% 78% at 52% 42%, #000 46%, transparent 92%);
   mask-image:radial-gradient(86% 78% at 52% 42%, #000 46%, transparent 92%);
-  transform:translateX(calc(var(--w1)*10px - var(--w2)*10px)) scale(calc(1 + var(--w2)*.02));
+  transform:translateX(calc(var(--w1)*10px - var(--w2)*10px))
+            translateY(calc(var(--my)*-9px))
+            scale(calc(1 + var(--w2)*.02));
 }
 /* segunda foto: solo entra si .portrait trae data-alt-photo y el archivo carga */
 .photo.alt{position:absolute;inset:0;height:auto;width:auto;opacity:0;
@@ -833,6 +841,7 @@ html{scroll-behavior:smooth}
   var hoverable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   var target = 0.5, current = 0.5, locked = false, raf = null;
+  var tgtX = 0, curX = 0, tgtY = 0, curY = 0;   /* parallax del retrato */
 
   function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
@@ -847,15 +856,24 @@ html{scroll-behavior:smooth}
     root.style.setProperty('--w1', w1.toFixed(4));
     root.style.setProperty('--w2', w2.toFixed(4));
     root.style.setProperty('--wc', clamp(1 - w1 - w2, 0, 1).toFixed(4));
+    hero.style.setProperty('--mx', curX.toFixed(4));
+    hero.style.setProperty('--my', curY.toFixed(4));
     var n = t < 0.25 ? 0 : (t > 0.75 ? 2 : 1);
     if (hero.dataset.lado !== LADOS[n]) hero.dataset.lado = LADOS[n];
     track.setAttribute('aria-valuenow', n);
     track.setAttribute('aria-valuetext', ETIQUETAS[n]);
   }
 
+  function arranca(){ if (!raf) raf = requestAnimationFrame(tick); }
+
   function tick(){
     current += (target - current) * 0.22;
-    if (Math.abs(target - current) < 0.002){ current = target; raf = null; paint(current); return; }
+    curX    += (tgtX - curX) * 0.12;      /* el parallax va mas suelto a proposito */
+    curY    += (tgtY - curY) * 0.12;
+    var quieto = Math.abs(target - current) < 0.002 &&
+                 Math.abs(tgtX - curX) < 0.002 &&
+                 Math.abs(tgtY - curY) < 0.002;
+    if (quieto){ current = target; curX = tgtX; curY = tgtY; raf = null; paint(current); return; }
     paint(current);
     raf = requestAnimationFrame(tick);
   }
@@ -864,7 +882,14 @@ html{scroll-behavior:smooth}
     if (!isFinite(t)) t = 0.5;
     target = clamp(t, 0, 1);
     if (reduce){ current = target; paint(current); return; }
-    if (!raf) raf = requestAnimationFrame(tick);
+    arranca();
+  }
+
+  function mover(x, y){
+    if (reduce) return;
+    tgtX = isFinite(x) ? clamp(x, -1, 1) : 0;
+    tgtY = isFinite(y) ? clamp(y, -1, 1) : 0;
+    arranca();
   }
 
   /* seguir el cursor dentro del hero, solo en escritorio */
@@ -872,11 +897,17 @@ html{scroll-behavior:smooth}
     hero.addEventListener('pointermove', function(e){
       if (locked || e.pointerType !== 'mouse') return;
       var r = hero.getBoundingClientRect();
-      if (!r.width || r.bottom < 80) return;       /* ya scrolleaste lejos del hero */
+      if (!r.width || !r.height || r.bottom < 80) return;   /* ya scrolleaste lejos del hero */
       var x = (e.clientX - r.left) / r.width;      /* 0..1 */
+      var y = (e.clientY - r.top) / r.height;      /* 0..1 */
+      mover(x * 2 - 1, y * 2 - 1);                 /* -1..1 desde el centro */
+      if (locked) return;
       go(clamp((x - 0.18) / 0.64, 0, 1));          /* zona muerta en los bordes */
     });
-    hero.addEventListener('pointerleave', function(){ if (!locked) go(0.5); });
+    hero.addEventListener('pointerleave', function(){
+      mover(0, 0);
+      if (!locked) go(0.5);
+    });
   }
 
   /* los botones mandan al pasar por encima y al enfocar con teclado */
