@@ -213,6 +213,31 @@ h1 .l2{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weigh
 [data-lado="adultos"] .tag.t1{opacity:.45;transform:translateY(8px)}
 [data-lado="ninos"]   .tag.t2{opacity:.45;transform:translateY(8px)}
 
+/* Entrada al cargar. Solo hay fotograma "from": con fill backwards el elemento
+   parte de ahi y al terminar suelta el control, asi que no pisa el translateX
+   que el estado le pone despues al titular. */
+@keyframes entra{ from{ opacity:0; transform:translateY(14px) } }
+@keyframes entraFoto{ from{ opacity:0; transform:translateY(16px) scale(.975) } }
+
+.js .eyebrow,
+.js h1 .l,
+.js .subs,
+.js .next-date,
+.js .ctas,
+.js .switch,
+.js .trust{ animation:entra .38s cubic-bezier(.22,1,.36,1) backwards }
+.js .portrait{ animation:entraFoto .52s cubic-bezier(.22,1,.36,1) backwards }
+
+.js .eyebrow  { animation-delay:.02s }
+.js .portrait { animation-delay:.06s }
+.js h1 .l1    { animation-delay:.08s }
+.js h1 .l2    { animation-delay:.14s }
+.js .subs     { animation-delay:.20s }
+.js .next-date{ animation-delay:.25s }
+.js .ctas     { animation-delay:.29s }
+.js .switch   { animation-delay:.33s }
+.js .trust    { animation-delay:.37s }
+
 .scroll{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
   font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);z-index:2}
 
@@ -391,6 +416,10 @@ html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){
   *{transition-duration:.001ms !important;animation:none !important}
   .js .rv{opacity:1;transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .js .eyebrow,.js h1 .l,.js .subs,.js .next-date,
+  .js .ctas,.js .switch,.js .trust,.js .portrait{opacity:1;transform:none}
 }
 </style>
 </head>
