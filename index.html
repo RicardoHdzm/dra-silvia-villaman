@@ -181,6 +181,10 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
    el navegador corrige el scroll antes de que el codigo pueda reaccionar.
    Lo que impide saltarse una parada es scroll-snap-stop, no la dureza. */
 html{scroll-snap-type:y proximity}
+/* La seccion que sigue al hero tambien es destino: al pasar la ultima parada,
+   un movimiento mas te deja en ella y no en los 100vh muertos que tarda el
+   escenario en despegarse. Con proximity esto no atrapa. */
+#doctora{scroll-snap-align:start;scroll-snap-stop:always}
 .ancla{position:absolute;left:0;width:1px;height:1px;pointer-events:none;
   top:calc(var(--at) * var(--rango));scroll-snap-align:start;scroll-snap-stop:always}
 
@@ -255,7 +259,7 @@ body{padding-top:76px}
 .btn-path svg{width:17px;height:17px;flex:none}
 
 @media (max-width:980px){ .probe{grid-template-columns:1fr 1fr} }
-@media (max-width:620px){ .probe{grid-template-columns:1fr} }
+@media (max-width:620px){ .probe{grid-template-columns:1fr} .ops{grid-template-columns:1fr} }
 @media (max-width:900px){
   nav{display:none}
   .viaje{height:420vh;--rango:320vh}
@@ -385,7 +389,7 @@ section{position:relative;padding:94px 0}
 .bk-foot{margin:12px 0 0;font-size:12.5px;line-height:1.5;color:var(--dim)}
 
 /* opiniones */
-.ops{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ops{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .op{background:rgba(255,255,255,.72);border:1px solid rgba(27,47,87,.08);border-radius:18px;
   padding:20px 22px;box-shadow:0 10px 30px rgba(27,47,87,.05)}
 .op-top{display:flex;align-items:center;gap:10px;margin-bottom:13px;flex-wrap:wrap}
@@ -462,7 +466,7 @@ footer{background:#16294D;color:#CFD6E6;padding:58px 0 30px}
   .lanes{grid-template-columns:1fr;gap:42px}
   .rule{display:none}
   .where-grid,.where-grid.cards-3{grid-template-columns:1fr}
-  .ops{grid-template-columns:1fr}
+  .ops{grid-template-columns:1fr 1fr}
   .foot{grid-template-columns:1fr 1fr;gap:26px}
   .steps li{grid-template-columns:56px 1fr;gap:16px;padding:22px 0}
   .steps .num{font-size:32px}
