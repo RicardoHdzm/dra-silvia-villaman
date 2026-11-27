@@ -66,9 +66,25 @@ de atrás llegan tenues y pequeños, los de adelante crecen hasta pasarte por
 encima y desvanecerse. `DELTA` es cuánto se adelanta cada anomalía a su parada:
 cuanto más chico, más cerca y más grande llega.
 
-Lo que te encuentras son los seis motivos de consulta —resequedad, pigmento,
-lunar, ronchas, acné y raíz del pelo—, cada uno con su texto y su botón: el
-recorrido no solo narra, también agenda.
+El recorrido tiene **cuatro paradas y un remate**, no seis: resequedad,
+pigmento, ronchas y folículo. Se recortó a propósito. Con seis, el visitante
+tenía que atravesar cinco pantallas antes de poder hacer nada, y el hero
+pasaba de ser lo que convertía a ser el obstáculo. Ahora son 3.8 pantallas en
+escritorio y 3.2 en móvil, y hay una **salida visible** —"Saltar al
+calendario"— para quien llega con prisa.
+
+El **menú completo de los seis síntomas** vive en la banda `.entradas`, que se
+muestra **siempre** debajo del recorrido, no solo como respaldo. Es una
+cuestión de accesibilidad: las paradas ocultas salen del árbol de
+accesibilidad, así que quien navega con teclado o lector de pantalla nunca
+llegaba a ver el camino principal del sitio.
+
+Una parada puede mostrar **dos gráficos**: el folículo es de donde sale el pelo
+y donde empieza el acné, y el texto habla de los dos, así que se dibujan ambos
+con su color (`data-sintoma` y `data-sintoma2`).
+
+El recorrido **remata** en una última pantalla que invita a agendar, en vez de
+terminar en seco.
 
 Por qué no es una copia del túnel, aunque ahora también se entre: el de ellos
 es un viaje **por dentro de un tubo**, una sola cavidad recorrida a lo largo,
