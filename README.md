@@ -342,3 +342,20 @@ Si se le agrega cualquier otra regla, esa regla deja de aplicar por debajo de
 621px. Así se rompió el móvil una vez: `.booking{grid-template-columns:1fr}`
 cayó dentro de ese bloque y en teléfono el calendario y el formulario volvieron
 a dos columnas encimadas. El aviso está escrito también en el propio CSS.
+
+## Alturas del hero: cuál unidad va en cada sitio
+
+Son dos alturas distintas y no deben llevar la misma unidad.
+
+- `.stage` (el escenario pegajoso) va en **`dvh`**. Tiene que medir siempre lo
+  que mide la pantalla *ahora mismo*. En el teléfono la barra del navegador se
+  encoge al primer scroll y el viewport crece unos 100 px; con `svh` el
+  escenario se quedaba corto y por abajo asomaba la sección siguiente, que es
+  lo que se siente como que la página se desliza en vez de avanzar el
+  recorrido.
+- `.viaje` (el alto total de la sección) va en **`vh`**, que no cambia. Si
+  también siguiera a la barra, el documento entero cambiaría de alto a media
+  lectura y el scroll daría un salto.
+- Las anclas no llevan unidad: las coloca el JS a partir de
+  `alto de la sección − window.innerHeight`, que es la cuenta real y se
+  recalcula en cada `resize`.
