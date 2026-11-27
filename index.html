@@ -144,12 +144,18 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
 .capas{position:absolute;inset:0;opacity:var(--salida,1)}
 
 /* niebla de profundidad: oscurece arriba y abajo y abre el centro-izquierda */
+/* La niebla es oscura a proposito: la version clara lavaba el hero entero y
+   dejaba el texto ilegible. Abre una ventana limpia justo donde vive el
+   grafico (50% de ancho, 30% de alto, el mismo punto de fuga que pone el JS)
+   y guarda la oscuridad para la mitad de abajo, que es donde esta el texto.
+   Si se mueve el punto de fuga, hay que mover esta ventana con el. */
 .bruma{position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
-    radial-gradient(74% 62% at 28% 50%, rgba(14,26,48,.92) 0%,
-      rgba(14,26,48,.62) 46%, rgba(14,26,48,0) 100%),
-    linear-gradient(to bottom, rgba(10,18,34,.95), rgba(10,18,34,0) 24%,
-      rgba(10,18,34,0) 72%, rgba(10,18,34,.96))}
+    radial-gradient(92% 34% at 50% 30%, rgba(14,26,48,.10) 0%,
+      rgba(14,26,48,.52) 68%, rgba(14,26,48,.88) 100%),
+    linear-gradient(to bottom, rgba(10,18,34,.90) 0%, rgba(10,18,34,.07) 12%,
+      rgba(10,18,34,.07) 40%, rgba(10,18,34,.80) 56%,
+      rgba(10,18,34,.95) 72%, rgba(10,18,34,.97) 100%)}
 
 /* Solo un bloque a la vez. Cruzar dos textos en la misma posicion no
    funciona: al 50 y 50 no se lee ninguno. El scroll elige el ganador y el
@@ -164,8 +170,13 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
   transition:opacity .26s cubic-bezier(.4,0,.2,1) .13s, visibility 0s}
 .titular{left:50%;width:min(100% - 56px,660px);
   transform:translate(-50%,-50%);text-align:center}
-.parada{left:clamp(28px,7vw,110px);width:min(100% - 56px,560px);
-  transform:translateY(-50%);text-align:left}
+/* Centrada, igual que el titular. Antes vivia pegada a la izquierda con el
+   grafico corrido a la derecha; se centro para alejarse de la composicion del
+   sitio de referencia y para que titular y paradas compartan eje. El reparto
+   pasa a ser vertical: el grafico arriba y el texto abajo, que es como ya
+   funcionaba en el telefono. */
+.parada{left:50%;top:63%;width:min(100% - 56px,560px);
+  transform:translate(-50%,-50%);text-align:center}
 
 .titular h1{margin:0 auto;max-width:13ch;font-size:clamp(46px,7.6vw,104px);line-height:.96;
   letter-spacing:-.042em;font-weight:800;color:var(--tinta-clara)}
@@ -188,7 +199,7 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
   letter-spacing:-.035em;font-weight:800;color:var(--tinta-clara)}
 .parada h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
   font-weight:400;color:var(--luz);font-size:1.05em}
-.parada p{margin:18px 0 0;max-width:44ch;font-size:19px;line-height:1.5;
+.parada p{margin:18px auto 0;max-width:44ch;font-size:19px;line-height:1.5;
   color:var(--tinta-media)}
 .parada .btn{margin-top:24px}
 
@@ -315,27 +326,15 @@ body{padding-top:76px}
 @media (max-width:900px){
   nav{display:none}
   .viaje{height:320vh}
-  .parada{top:63%;left:28px;right:28px;width:auto}
   .parada p{font-size:17px}
-  /* La niebla es oscura a proposito: la version clara de antes lavaba el hero
-     entero y dejaba el texto ilegible. Pero la anterior arrancaba en .55 en su
-     punto mas claro y cubria el lienzo completo, y como el glifo se pinta con
-     un alfa medio de 68/255, del rojo de las ronchas no llegaba a pantalla ni
-     el 20%: por eso en el telefono las anomalias no se veian.
-     Ahora la niebla abre una ventana limpia justo donde vive el grafico (50%
-     de ancho, 30% de alto, que es donde el JS pone el punto de fuga) y guarda
-     la oscuridad para la mitad de abajo, que es donde empieza el texto. */
-  .bruma{background:
-    radial-gradient(88% 30% at 50% 30%, rgba(14,26,48,.10) 0%,
-      rgba(14,26,48,.52) 68%, rgba(14,26,48,.88) 100%),
-    linear-gradient(to bottom, rgba(10,18,34,.90) 0%, rgba(10,18,34,.08) 15%,
-      rgba(10,18,34,.08) 36%, rgba(10,18,34,.78) 52%,
-      rgba(10,18,34,.95) 70%, rgba(10,18,34,.97) 100%)}
   .riel{right:14px;gap:11px}
   .escala{left:18px;bottom:16px}
   .baja{display:none}   /* chocaba con la barra de escala */
   .logo-texto small{display:none}
-  .btn-top{padding:10px 16px;font-size:13.5px;white-space:nowrap}
+  /* Sin nav visible ya no hay nada que lo empuje: el auto pasa aqui. En
+     escritorio no, porque alli empuja el nav y dos autos se repartirian el
+     hueco dejando el menu a media barra. */
+  .btn-top{margin-left:auto;padding:10px 16px;font-size:13.5px;white-space:nowrap}
 }
 @media (prefers-reduced-motion:reduce){
   .viaje{display:none}
@@ -1086,11 +1085,6 @@ html{scroll-behavior:smooth}
 
 
   /* ---- optica ---- */
-  /* El mismo corte que usa el CSS para pasar a diseno de telefono. Estaba en
-     780 y entre 780 y 900 el texto ya ocupaba todo el ancho mientras el
-     grafico seguia corrido a la derecha, fuera de la ventana limpia que abre
-     la bruma. */
-  var ESTRECHO = 900;
   var F = 760;          /* distancia focal */
   var PROF = 5200;      /* todo el viaje, en unidades de proyeccion */
   var CERCA = 90;       /* donde el plano ya te paso por encima */
@@ -1267,8 +1261,11 @@ html{scroll-behavior:smooth}
 
   /* ---- pintar ---- */
   function pinta(p, t){
-    var cx = vw * (vw < ESTRECHO ? 0.5 : 0.62) + Math.sin(t * 0.00031) * 14;
-    var cy = vh * (vw < ESTRECHO ? 0.30 : 0.5) + Math.cos(t * 0.00024) * 11;
+    /* Un solo punto de fuga en todos los anchos: centrado y en el tercio
+       alto, con el texto centrado debajo. Antes habia dos composiciones, una
+       por ancho, y el corte entre ellas era una fuente de desajustes. */
+    var cx = vw * 0.5 + Math.sin(t * 0.00031) * 14;
+    var cy = vh * 0.30 + Math.cos(t * 0.00024) * 11;
 
     /* Los glifos se dibujaban al mismo tamano en pixeles en cualquier
        pantalla, porque su escala solo depende de la profundidad. En el
@@ -1276,8 +1273,11 @@ html{scroll-behavior:smooth}
        una sola roncha media 194-324 px de radio y acababas DENTRO de una, de
        ahi que pareciera que las anomalias desaparecen. El factor las ata al
        tamano de la ventana para que ocupen siempre la misma fraccion de
-       pantalla; a partir de 1180x820 vale 1 y no cambia nada. */
-    var escG = Math.min(1, vw / 1180, vh / 820);
+       pantalla. Manda el alto, no el ancho: con el texto centrado debajo, el
+       hueco limpio que le queda al grafico es una banda horizontal cuya altura
+       sale del alto de pantalla. El ancho solo entra para pantallas muy
+       angostas. */
+    var escG = Math.min(1, vh / 2300, vw / 900);
 
     ctx.clearRect(0, 0, vw, vh);
 
