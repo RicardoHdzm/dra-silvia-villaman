@@ -65,7 +65,7 @@ a{color:inherit;text-decoration:none}
 
 /* ---------- atmosfera ---------- */
 .atmos{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.blob{position:absolute;border-radius:50%;filter:blur(70px);transition:opacity .9s ease, transform .9s ease}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);transition:opacity .45s ease, transform .45s ease}
 .blob.a{width:62vw;height:62vw;left:-18vw;top:-22vw;
   background:radial-gradient(circle at 40% 40%, rgba(167,196,240,.80), rgba(167,196,240,0) 68%);
   opacity:calc(.45 + var(--w1)*.55);
@@ -106,20 +106,23 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
 .eyebrow::before{content:"";width:26px;height:1.5px;background:var(--lav)}
 
 h1{margin:0;font-size:clamp(42px,5.6vw,74px);line-height:1.0;letter-spacing:-.035em;font-weight:800}
-h1 .l{display:block;transition:color .5s ease, transform .5s ease}
-h1 .l1{color:color-mix(in oklab, var(--ink) calc(100% - var(--w2)*62%), var(--dim));
-  transform:translateX(calc(var(--w2)*-6px))}
+/* El lado activo es un estado discreto (data-lado) y no una cuenta de opacidades:
+   asi nunca pueden quedar dos textos encimados. --t solo mueve lo continuo. */
+h1 .l{display:block;transition:color .2s ease, transform .2s ease}
+h1 .l1{color:var(--ink)}
 h1 .l2{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;
-  font-size:1.06em;letter-spacing:-.02em;
-  color:color-mix(in oklab, var(--lav-deep) calc(100% - var(--w1)*58%), var(--dim));
-  transform:translateX(calc(var(--w1)*-6px))}
+  font-size:1.06em;letter-spacing:-.02em;color:var(--lav-deep)}
+[data-lado="adultos"] h1 .l1{color:var(--dim);transform:translateX(-6px)}
+[data-lado="ninos"]   h1 .l2{color:var(--dim);transform:translateX(-6px)}
 
 .subs{position:relative;margin:20px 0 0;max-width:46ch;min-height:92px}
 .subs p{position:absolute;inset:0;margin:0;font-size:16.5px;line-height:1.55;color:var(--ink-2);
-  transition:opacity .4s ease, transform .4s ease}
-.subs .s0{opacity:var(--wc);transform:translateY(calc((1 - var(--wc)) * 6px))}
-.subs .s1{opacity:var(--w1);transform:translateY(calc((1 - var(--w1)) * 6px))}
-.subs .s2{opacity:var(--w2);transform:translateY(calc((1 - var(--w2)) * 6px))}
+  opacity:0;visibility:hidden;transform:translateY(5px);
+  transition:opacity .2s ease, transform .2s ease, visibility 0s linear .2s}
+[data-lado="neutro"]  .subs .s0,
+[data-lado="ninos"]   .subs .s1,
+[data-lado="adultos"] .subs .s2{opacity:1;visibility:visible;transform:none;
+  transition:opacity .2s ease, transform .2s ease, visibility 0s}
 
 .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
 .btn-path{
@@ -128,23 +131,28 @@ h1 .l2{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weigh
   background:rgba(226,161,60,calc(.18 + var(--f)*.82));
   box-shadow:0 calc(2px + var(--f)*8px) calc(6px + var(--f)*22px) rgba(201,135,31,calc(.10 + var(--f)*.20));
 }
-#p1{--f:calc(.55 + var(--w1)*.45 - var(--w2)*.45)}
-#p2{--f:calc(.55 + var(--w2)*.45 - var(--w1)*.45)}
+#p1,#p2{--f:.55}
+[data-lado="ninos"]   #p1{--f:1}
+[data-lado="ninos"]   #p2{--f:.12}
+[data-lado="adultos"] #p2{--f:1}
+[data-lado="adultos"] #p1{--f:.12}
+.btn-path{transition:transform .18s ease, background-color .2s ease,
+  border-color .2s ease, box-shadow .2s ease}
 .btn-path svg{width:17px;height:17px;flex:none}
 
 /* control */
 .switch{margin-top:26px;display:flex;align-items:center;gap:14px;font-size:12.5px;font-weight:600;
   letter-spacing:.06em;text-transform:uppercase;color:var(--dim);user-select:none}
-.switch span{transition:color .4s ease}
-.switch .k1{color:color-mix(in oklab, var(--ink) calc(var(--w1)*100%), var(--dim))}
-.switch .k2{color:color-mix(in oklab, var(--ink) calc(var(--w2)*100%), var(--dim))}
+.switch span{transition:color .2s ease;color:var(--dim)}
+[data-lado="ninos"]   .switch .k1{color:var(--ink)}
+[data-lado="adultos"] .switch .k2{color:var(--ink)}
 .track{position:relative;flex:none;width:124px;height:32px;border-radius:999px;
   background:rgba(27,47,87,.07);cursor:ew-resize;touch-action:none}
 .track::after{content:"";position:absolute;left:12px;right:12px;top:50%;height:1.5px;
   background:rgba(27,47,87,.14);transform:translateY(-50%)}
 .knob{position:absolute;top:4px;width:24px;height:24px;border-radius:50%;background:#fff;
   box-shadow:0 2px 8px rgba(27,47,87,.22);
-  left:calc(4px + var(--t) * (124px - 32px));transition:left .28s cubic-bezier(.22,1,.36,1)}
+  left:calc(4px + var(--t) * (124px - 32px))}
 .knob::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--lav)}
 
 .trust{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);
@@ -159,10 +167,9 @@ h1 .l2{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weigh
   background:radial-gradient(circle at 50% 45%,
     color-mix(in oklab, #B9A7EA calc(35% + var(--w2)*35%), #BBD2F2) 0%,
     rgba(255,255,255,0) 66%);
-  transition:background .6s ease}
+  transition:background .3s ease}
 .ring{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(calc(var(--t)*18deg - 9deg));
-  width:96%;aspect-ratio:1;border-radius:50%;border:1.5px dashed rgba(126,111,196,.38);
-  transition:transform .8s ease}
+  width:96%;aspect-ratio:1;border-radius:50%;border:1.5px dashed rgba(126,111,196,.38)}
 .photo-clip{
   position:relative;
   -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 6%, #000 86%, transparent 99%);
@@ -179,21 +186,24 @@ h1 .l2{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weigh
   -webkit-mask-image:radial-gradient(86% 78% at 52% 42%, #000 46%, transparent 92%);
   mask-image:radial-gradient(86% 78% at 52% 42%, #000 46%, transparent 92%);
   transform:translateX(calc(var(--w1)*10px - var(--w2)*10px)) scale(calc(1 + var(--w2)*.02));
-  transition:transform .6s ease;
 }
 /* segunda foto: solo entra si .portrait trae data-alt-photo y el archivo carga */
 .photo.alt{position:absolute;inset:0;height:auto;width:auto;opacity:0;
   background-image:var(--alt-photo,none);background-size:cover;background-position:50% 18%}
-.has-alt .photo.alt{opacity:var(--w2);transition:opacity .55s ease}
-.has-alt .photo.base{opacity:calc(1 - var(--w2));transition:opacity .55s ease, transform .6s ease}
+.has-alt .photo.alt{opacity:var(--w2)}
+.has-alt .photo.base{opacity:calc(1 - var(--w2))}
 
 .tag{position:absolute;z-index:2;max-width:172px;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);
   border:1px solid rgba(27,47,87,.08);border-radius:14px;padding:11px 14px;
   font-size:12.5px;line-height:1.35;font-weight:600;color:var(--ink);
   box-shadow:0 10px 28px rgba(27,47,87,.10);transition:opacity .45s ease, transform .45s ease}
 .tag small{display:block;font-weight:500;color:var(--ink-2);font-size:11.5px;margin-top:2px}
-.tag.t1{left:-156px;top:11%;opacity:calc(.62 + var(--w1)*.38);transform:translateY(calc(var(--w2)*8px))}
-.tag.t2{right:-12px;bottom:9%;opacity:calc(.62 + var(--w2)*.38);transform:translateY(calc(var(--w1)*8px))}
+.tag.t1{left:-156px;top:11%;opacity:.62}
+.tag.t2{right:-12px;bottom:9%;opacity:.62}
+[data-lado="ninos"]   .tag.t1{opacity:1}
+[data-lado="adultos"] .tag.t2{opacity:1}
+[data-lado="adultos"] .tag.t1{opacity:.45;transform:translateY(8px)}
+[data-lado="ninos"]   .tag.t2{opacity:.45;transform:translateY(8px)}
 
 .scroll{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
   font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);z-index:2}
@@ -440,9 +450,9 @@ html{scroll-behavior:smooth}
       </div>
 
       <div class="trust">
-        <span><b>Ced. Esp. 138224021</b> · UNAM</span>
+        <span>Especialidad en el <b>Hospital Infantil de México Federico Gómez</b></span>
         <span class="sep">·</span>
-        <span>Consultorio <b>[dirección pendiente]</b>, Culiacán</span>
+        <span><b>Pedro María Anaya 2188</b>, Culiacán</span>
         <span class="sep">·</span>
         <span>WhatsApp <b>667 751 2919</b></span>
       </div>
@@ -537,33 +547,33 @@ html{scroll-behavior:smooth}
     <div class="sec-head rv">
       <div class="kicker">La consulta</div>
       <h2>Cómo es una cita, <em>paso a paso</em>.</h2>
-      <p>Para que llegues sabiendo qué va a pasar, sobre todo si vas con un niño.</p>
+      <p>Desde que eliges el día aquí abajo hasta que sales del consultorio con un plan.</p>
     </div>
 
     <ol class="steps">
       <li class="rv"><div class="num">01</div><div>
-        <h3>Escribes por WhatsApp</h3>
-        <p>Cuentas qué está pasando y, si quieres, mandas una foto. En dermatología la foto ayuda a saber si amerita consulta pronto o puede esperar. Te confirman día y hora.</p>
+        <h3>Eliges día y hora en el calendario</h3>
+        <p>Aquí mismo, en <a href="#agendar">agendar</a>: marcas para quién es, el día, la hora que te acomoda y el motivo. Si quieres, agregas desde cuándo viene el problema.</p>
       </div></li>
       <li class="rv"><div class="num">02</div><div>
-        <h3>Confirmas un día antes</h3>
-        <p>Llega un mensaje de confirmación. Contéstalo: es lo que mantiene tu lugar apartado y evita que la agenda se mueva sin avisarte.</p>
+        <h3>Revisas el mensaje y lo mandas</h3>
+        <p>El sitio arma el mensaje completo y lo ves antes de enviarlo. El botón lo abre en tu WhatsApp. También puedes escribir directo, sin usar el calendario.</p>
       </div></li>
       <li class="rv"><div class="num">03</div><div>
+        <h3>Ella confirma</h3>
+        <p>Te responde si hay espacio a esa hora o te propone otra cercana. <b>La cita queda apartada hasta ese mensaje</b>, no antes: elegir en el calendario es pedirla, no reservarla.</p>
+      </div></li>
+      <li class="rv"><div class="num">04</div><div>
         <h3>Llegas al consultorio</h3>
         <p>Pedro María Anaya 2188, en Culiacán. Si la consulta es para tu hijo, trae lo que ya le han recetado y fotos de cómo se veía la piel antes.</p>
       </div></li>
-      <li class="rv"><div class="num">04</div><div>
+      <li class="rv"><div class="num">05</div><div>
         <h3>Revisión sin prisa</h3>
         <p>La exploración se hace ahí mismo. Con los niños se va al ritmo del niño: primero se le explica, luego se le revisa.</p>
       </div></li>
-      <li class="rv"><div class="num">05</div><div>
-        <h3>Sales con un plan claro</h3>
-        <p>Qué tiene, por qué pasa, qué se va a usar y en cuánto tiempo se empieza a notar el cambio.</p>
-      </div></li>
       <li class="rv"><div class="num">06</div><div>
-        <h3>Seguimiento</h3>
-        <p>Consulta subsecuente para revisar cómo va, o valoración en línea si lo que cambió se puede ver por video.</p>
+        <h3>Sales con un plan, y hay seguimiento</h3>
+        <p>Qué tiene, por qué pasa, qué se va a usar y en cuánto tiempo se nota el cambio. Después, consulta subsecuente o valoración en línea si algo cambia.</p>
       </div></li>
     </ol>
   </div>
@@ -783,26 +793,32 @@ html{scroll-behavior:smooth}
 
   function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
+  var LADOS = ['ninos','neutro','adultos'];
+  var ETIQUETAS = ['Para mis hijos','Para toda la familia','Para mí'];
+
   function paint(t){
+    if (!isFinite(t)) t = 0.5;                 /* una sola variable mala rompia el hero entero */
     var w1 = clamp(1 - 2*t, 0, 1);
     var w2 = clamp(2*t - 1, 0, 1);
-    root.style.setProperty('--t', t.toFixed(4));
+    root.style.setProperty('--t',  t.toFixed(4));
     root.style.setProperty('--w1', w1.toFixed(4));
     root.style.setProperty('--w2', w2.toFixed(4));
-    root.style.setProperty('--wc', (1 - w1 - w2).toFixed(4));
+    root.style.setProperty('--wc', clamp(1 - w1 - w2, 0, 1).toFixed(4));
     var n = t < 0.25 ? 0 : (t > 0.75 ? 2 : 1);
+    if (hero.dataset.lado !== LADOS[n]) hero.dataset.lado = LADOS[n];
     track.setAttribute('aria-valuenow', n);
-    track.setAttribute('aria-valuetext', ['Para mis hijos','Para toda la familia','Para mí'][n]);
+    track.setAttribute('aria-valuetext', ETIQUETAS[n]);
   }
 
   function tick(){
-    current += (target - current) * 0.14;
+    current += (target - current) * 0.22;
     if (Math.abs(target - current) < 0.002){ current = target; raf = null; paint(current); return; }
     paint(current);
     raf = requestAnimationFrame(tick);
   }
 
   function go(t){
+    if (!isFinite(t)) t = 0.5;
     target = clamp(t, 0, 1);
     if (reduce){ current = target; paint(current); return; }
     if (!raf) raf = requestAnimationFrame(tick);
@@ -813,6 +829,7 @@ html{scroll-behavior:smooth}
     hero.addEventListener('pointermove', function(e){
       if (locked || e.pointerType !== 'mouse') return;
       var r = hero.getBoundingClientRect();
+      if (!r.width || r.bottom < 80) return;       /* ya scrolleaste lejos del hero */
       var x = (e.clientX - r.left) / r.width;      /* 0..1 */
       go(clamp((x - 0.18) / 0.64, 0, 1));          /* zona muerta en los bordes */
     });
@@ -831,7 +848,9 @@ html{scroll-behavior:smooth}
   /* control arrastrable: el unico camino en tactil */
   function fromTrack(clientX){
     var r = track.getBoundingClientRect();
-    return clamp((clientX - r.left - 16) / (r.width - 32), 0, 1);
+    var util = r.width - 32;
+    if (util <= 0) return 0.5;
+    return clamp((clientX - r.left - 16) / util, 0, 1);
   }
   var dragging = false;
   track.addEventListener('pointerdown', function(e){
