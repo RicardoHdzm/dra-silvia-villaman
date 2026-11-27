@@ -107,7 +107,7 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
    como una malla de nodos y aristas, y las lesiones como anomalias del campo.
    La base es el azul marino del propio logo, no un verde petroleo, que seria
    meterse justo en el terreno de la referencia. */
-.viaje{position:relative;height:520vh;--rango:420vh;
+.viaje{position:relative;height:380vh;--rango:280vh;
   --noche:#0E1A30; --noche2:#16233F;
   --luz:#A78BFA; --tinta-clara:#EDEAF9; --tinta-media:#A7B1CE}
 .stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate;
@@ -144,6 +144,12 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
   font-weight:400;color:var(--luz);font-size:1.04em}
 .titular p{margin:22px auto 0;max-width:42ch;font-size:19px;line-height:1.55;
   color:var(--tinta-media)}
+
+.credencial{margin:30px auto 0;padding-top:18px;max-width:620px;
+  border-top:1px solid rgba(199,180,255,.16);display:flex;flex-wrap:wrap;
+  justify-content:center;gap:8px 18px;font-size:13.5px;color:var(--tinta-media)}
+.credencial b{color:var(--tinta-clara);font-weight:700}
+.credencial .sep{color:rgba(167,177,206,.45)}
 
 .parada .capa{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;
   letter-spacing:.18em;text-transform:uppercase;color:var(--acento,var(--luz));margin-bottom:14px;
@@ -188,6 +194,14 @@ html{scroll-snap-type:y proximity}
 .ancla{position:absolute;left:0;width:1px;height:1px;pointer-events:none;
   top:calc(var(--at) * var(--rango));scroll-snap-align:start;scroll-snap-stop:always}
 
+/* Salida siempre a la vista: el recorrido es bonito pero no todo el mundo
+   viene a verlo, y quien llega con una urgencia no deberia tener que
+   atravesarlo entero para encontrar como pedir cita. */
+.saltar{position:absolute;right:28px;bottom:26px;z-index:3;font-size:12.5px;
+  font-weight:700;letter-spacing:.03em;color:rgba(205,190,255,.9);
+  border-bottom:1px solid rgba(205,190,255,.35);padding-bottom:3px;transition:.2s}
+.saltar:hover{color:#fff;border-color:#fff}
+
 .baja{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;
   color:rgba(177,187,214,.88);transition:opacity .4s ease}
@@ -214,16 +228,19 @@ body{padding-top:76px}
 .viaje{margin-top:-76px}
 
 /* respaldo: sin animacion, en movil, o si el canvas no sirve */
-.entradas{display:none;padding:0 0 10px}
+/* Visible siempre, no solo como respaldo. Quien navega con teclado o lector
+   de pantalla nunca llega a ver las paradas del recorrido, asi que el menu
+   completo de sintomas tiene que existir tambien fuera de el. */
+.entradas{display:block;padding:70px 0 10px}
 .sin-viaje .viaje{display:none}
-.sin-viaje .entradas{display:block}
+
 .entradas .eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:12.5px;
   font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--lav-deep);
   margin-bottom:18px}
 .entradas .eyebrow::before{content:"";width:26px;height:1.5px;background:var(--lav)}
-.entradas h1{margin:0 0 10px;font-size:clamp(36px,6vw,54px);line-height:1;
+.entradas h2{margin:0 0 10px;font-size:clamp(36px,6vw,54px);line-height:1;
   letter-spacing:-.04em;font-weight:800}
-.entradas h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
+.entradas h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
   font-weight:400;color:var(--lav-deep);font-size:1.04em}
 .entradas .hero-sub{margin:0 0 26px;max-width:46ch;font-size:17px;line-height:1.55;color:var(--ink-2)}
 
@@ -262,7 +279,7 @@ body{padding-top:76px}
 @media (max-width:620px){ .probe{grid-template-columns:1fr} .ops{grid-template-columns:1fr} }
 @media (max-width:900px){
   nav{display:none}
-  .viaje{height:420vh;--rango:320vh}
+  .viaje{height:320vh;--rango:220vh}
   .parada{top:63%;left:28px;right:28px;width:auto}
   .parada p{font-size:17px}
   /* la niebla tambien es oscura: la version clara de antes lavaba el hero
@@ -466,6 +483,11 @@ footer{background:#16294D;color:#CFD6E6;padding:58px 0 30px}
   .lanes{grid-template-columns:1fr;gap:42px}
   .rule{display:none}
   .where-grid,.where-grid.cards-3{grid-template-columns:1fr}
+  /* dos columnas solo en tableta: la regla de una columna vive mas arriba y
+     perderia contra esta, asi que aqui se acota por abajo */
+  .ops{grid-template-columns:1fr}
+}
+@media (min-width:621px) and (max-width:900px){
   .ops{grid-template-columns:1fr 1fr}
   .foot{grid-template-columns:1fr 1fr;gap:26px}
   .steps li{grid-template-columns:56px 1fr;gap:16px;padding:22px 0}
@@ -517,69 +539,69 @@ html{scroll-behavior:smooth}
 
     <div class="titular" data-at="0">
       <h1>Cuatro milímetros <em>hacia adentro</em>.</h1>
-      <p>Todo lo que trata pasa en ese grosor. Baja y ve bajando con la piel. Dermatóloga pediátrica en Culiacán.</p>
+      <p>Todo lo que trata pasa en ese grosor. Dermatóloga pediátrica en Culiacán.</p>
+      <div class="credencial">
+        <span>Especialidad en el <b>Hospital Infantil de México Federico Gómez</b></span>
+        <span class="sep">·</span>
+        <span><b>Pedro María Anaya 2188</b>, Culiacán</span>
+        <span class="sep">·</span>
+        <span>WhatsApp <b>667 751 2919</b></span>
+      </div>
     </div>
 
-    <div class="parada" data-at="0.16" data-sintoma="seca" hidden>
+    <div class="parada" data-at="0.18" data-sintoma="seca" hidden>
       <div class="capa">Estrato córneo · 0.02 mm</div>
       <h2>Aquí la piel <em>se parte</em>.</h2>
-      <p>Lo que tocas son células muertas. La resequedad que vuelve, la aspereza y la descamación pasan en esta capa.</p>
+      <p>Lo que tocas son células muertas. La resequedad que vuelve y la descamación pasan en esta capa.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="seca">Pedir cita por esto</a>
     </div>
 
-    <div class="parada" data-at="0.32" data-sintoma="mancha" hidden>
+    <div class="parada" data-at="0.36" data-sintoma="mancha" hidden>
       <div class="capa">Epidermis · 0.10 mm</div>
       <h2>Donde nace <em>el color</em>.</h2>
-      <p>Aquí viven los melanocitos. Cuando se desordenan aparecen las manchas y el melasma.</p>
+      <p>Aquí viven los melanocitos. Cuando se desordenan aparecen las manchas, los lunares y el melasma.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="mancha">Pedir cita por esto</a>
     </div>
 
-    <div class="parada" data-at="0.48" data-sintoma="lunar" hidden>
-      <div class="capa">Unión · 0.30 mm</div>
-      <h2>El que conviene <em>vigilar</em>.</h2>
-      <p>A esta profundidad nacen los nevos. La mayoría no son nada; los que cambian son los que se revisan.</p>
-      <a class="btn btn-path" href="#agendar" data-sintoma="lunar">Pedir cita por esto</a>
-    </div>
-
-    <div class="parada" data-at="0.64" data-sintoma="ronchas" hidden>
+    <div class="parada" data-at="0.54" data-sintoma="ronchas" hidden>
       <div class="capa">Dermis · 1 mm</div>
       <h2>Ronchas que van <em>y vienen</em>.</h2>
       <p>El brote se ve arriba pero ocurre aquí, en los vasos. Encontrar qué lo dispara es la mitad del tratamiento.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="ronchas">Pedir cita por esto</a>
     </div>
 
-    <div class="parada" data-at="0.80" data-sintoma="acne" hidden>
-      <div class="capa">Folículo · 2 mm</div>
-      <h2>El acné empieza <em>adentro</em>.</h2>
-      <p>No en la superficie, sino en el poro. Por eso tallar no sirve y el tratamiento va por otro lado.</p>
+    <div class="parada" data-at="0.72" data-sintoma="acne" data-sintoma2="cabello" hidden>
+      <div class="capa">Folículo · 3.5 mm</div>
+      <h2>Donde empieza <em>el acné</em>.</h2>
+      <p>Y de donde nace el pelo. Por eso el acné no se quita tallando y la caída se trata desde la raíz.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="acne">Pedir cita por esto</a>
     </div>
 
-    <div class="parada" data-at="0.95" data-sintoma="cabello" hidden>
-      <div class="capa">Raíz · 3.5 mm</div>
-      <h2>Y aquí <em>nace el pelo</em>.</h2>
-      <p>Cuando se cae, la causa está en la raíz. Se busca antes de recetar nada.</p>
-      <a class="btn btn-path" href="#agendar" data-sintoma="cabello">Pedir cita por esto</a>
+    <div class="parada cierre" data-at="0.90" hidden>
+      <div class="capa">4 mm</div>
+      <h2>Todo eso lo revisa <em>la misma doctora</em>.</h2>
+      <p>Dermatóloga pediátrica certificada, en Culiacán. Elige el día que te acomode y pide tu cita en un minuto.</p>
+      <a class="btn btn-path" href="#agendar">Agendar cita</a>
     </div>
 
     <div class="escala" id="escala" aria-hidden="true">0.00 mm</div>
     <div class="riel" id="riel" aria-hidden="true"></div>
     <div class="baja" id="baja">Baja para entrar</div>
+    <a class="saltar" href="#agendar">Saltar al calendario &rarr;</a>
   </div>
 
     <div class="ancla" style="--at:0" aria-hidden="true"></div>
-    <div class="ancla" style="--at:0.16" aria-hidden="true"></div>
-    <div class="ancla" style="--at:0.32" aria-hidden="true"></div>
-    <div class="ancla" style="--at:0.48" aria-hidden="true"></div>
-    <div class="ancla" style="--at:0.64" aria-hidden="true"></div>
-    <div class="ancla" style="--at:0.80" aria-hidden="true"></div>
-    <div class="ancla" style="--at:0.95" aria-hidden="true"></div>
+    <div class="ancla" style="--at:0.18" aria-hidden="true"></div>
+    <div class="ancla" style="--at:0.36" aria-hidden="true"></div>
+    <div class="ancla" style="--at:0.54" aria-hidden="true"></div>
+    <div class="ancla" style="--at:0.72" aria-hidden="true"></div>
+    <div class="ancla" style="--at:0.90" aria-hidden="true"></div>
 </main>
 
 <section class="entradas" id="entradas">
   <div class="wrap">
     <div class="eyebrow">Dermatóloga pediátrica · Culiacán</div>
-    <h1>¿Qué le ves <em>a la piel</em>?</h1>
+    <h2>¿Qué le ves <em>a la piel</em>?</h2>
     <p class="hero-sub">De tus hijos o la tuya. Elige lo que ves y pide cita en un minuto.</p>
 
     <div class="probe">
@@ -1024,7 +1046,7 @@ html{scroll-behavior:smooth}
 
   /* profundidad real: se interpola entre las anclas de cada parada, asi que
      el numero que marca el medidor es el mismo que dice la parada */
-  var ANCLAS = [[0,0],[0.16,0.02],[0.32,0.10],[0.48,0.30],[0.64,1.0],[0.80,2.0],[0.95,3.5],[1,4.0]];
+  var ANCLAS = [[0,0],[0.18,0.02],[0.36,0.10],[0.54,1.0],[0.72,3.5],[0.90,4.0],[1,4.0]];
   function milimetros(p){
     for (var i = 1; i < ANCLAS.length; i++){
       if (p <= ANCLAS[i][0]){
@@ -1042,7 +1064,7 @@ html{scroll-behavior:smooth}
     planos = [];
 
     /* un plano de tejido: rejilla recortada en disco, con sus aristas */
-    function plano(u, tipo){
+    function plano(u, tipo, tipo2){
       var giro = Math.sin(u * 91.7) * 3.14;
       var cg = Math.cos(giro), sg = Math.sin(giro);
       var pts = [], idx = {}, n = 0;
@@ -1068,12 +1090,12 @@ html{scroll-behavior:smooth}
           if (b !== undefined) ar.push(a, b);
         }
       }
-      return { u: u, pts: pts, ar: ar, tipo: tipo || null, R: R };
+      return { u: u, pts: pts, ar: ar, tipo: tipo || null, tipo2: tipo2 || null, R: R };
     }
 
     for (var u = -0.02; u < 1.12; u += DU) planos.push(plano(u));
     paradas.forEach(function(p){
-      planos.push(plano(parseFloat(p.dataset.at) + DELTA, p.dataset.sintoma));
+      planos.push(plano(parseFloat(p.dataset.at) + DELTA, p.dataset.sintoma, p.dataset.sintoma2));
     });
     planos.sort(function(a,b){ return b.u - a.u; });   /* del fondo al frente */
 
@@ -1251,6 +1273,11 @@ html{scroll-behavior:smooth}
       ctx.globalAlpha = op;
       var C = COLOR[an.tipo] || COLOR_BASE;
       glifo[an.tipo](ctx, cx, cy, ka * 1.5, t, C);
+      /* una parada puede mostrar dos cosas: el foliculo es de donde sale el
+         pelo y donde empieza el acne, y el texto habla de las dos */
+      if (an.tipo2 && glifo[an.tipo2]){
+        glifo[an.tipo2](ctx, cx, cy, ka * 1.5, t, COLOR[an.tipo2] || COLOR_BASE);
+      }
       var cerca = 1 - Math.min(1, Math.abs(p - at) / 0.075);
       if (cerca > 0) mira(ctx, cx, cy, 160 * ka * 1.5, cerca * 0.8, t, C);
       ctx.restore();
@@ -1296,7 +1323,7 @@ html{scroll-behavior:smooth}
     });
     baja.style.opacity = p > 0.03 ? 0 : 1;
     var mm = milimetros(p);
-    escala.textContent = (mm < 0.1 ? mm.toFixed(3) : mm.toFixed(2)) + ' mm';
+    escala.textContent = mm.toFixed(2) + ' mm';
   }
 
   function cuadro(ts){
