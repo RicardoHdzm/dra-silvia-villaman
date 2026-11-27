@@ -1072,10 +1072,13 @@ html{scroll-behavior:smooth}
       halo(g, x, y, 150 * k, 'rgba(167,139,250,A)', '.10');
     },
     mancha: function(g, x, y, k, t){
+      /* Pigmento, no hueco: dibujarla mas oscura que el fondo la volvia
+         invisible justo sobre fondo oscuro. Ahora es una mancha calida que
+         se ve, con el centro mas denso. */
       var lat = 1 + 0.05 * Math.sin(t * 0.0009);
-      halo(g, x, y, 230 * k * lat, 'rgba(8,14,28,A)', '.80');
-      halo(g, x, y, 130 * k * lat, 'rgba(8,14,28,A)', '.72');
-      halo(g, x, y, 260 * k, 'rgba(167,139,250,A)', '.10');
+      halo(g, x, y, 260 * k * lat, 'rgba(154,106,120,A)', '.30');
+      halo(g, x, y, 155 * k * lat, 'rgba(132,88,108,A)', '.34');
+      halo(g, x, y, 72 * k, 'rgba(74,48,62,A)', '.46');
     },
     lunar: function(g, x, y, k, t){
       halo(g, x, y, 170 * k, 'rgba(167,139,250,A)', '.30');
@@ -1180,12 +1183,27 @@ html{scroll-behavior:smooth}
         }
       }
 
-      if (pl.tipo && glifo[pl.tipo]){
-        glifo[pl.tipo](ctx, cx, cy, k * 1.15, t);
-        var at = pl.u - DELTA;
-        var cerca = 1 - Math.min(1, Math.abs(p - at) / 0.075);
-        if (cerca > 0) mira(ctx, cx, cy, 150 * k * 1.15, cerca * 0.85, t);
-      }
+
+    }
+
+    /* Las anomalias van aparte del bucle de planos. Si se dibujaran con su
+       plano, al acercarse cruzarian el limite de recorte y desaparecerian de
+       golpe con la parada todavia en pantalla. Aqui la distancia se topa: la
+       anomalia crece hasta un maximo, se queda, y se va con su texto. */
+    for (var g2 = 0; g2 < planos.length; g2++){
+      var an = planos[g2];
+      if (!an.tipo || !glifo[an.tipo]) continue;
+      var at = an.u - DELTA;
+      var op = 1 - Math.min(1, Math.abs(p - at) / 0.13);
+      if (op <= 0) continue;
+      var za = Math.max(165, (an.u - p) * PROF + CERCA);
+      var ka = F / za;
+      ctx.save();
+      ctx.globalAlpha = op;
+      glifo[an.tipo](ctx, cx, cy, ka * 1.5, t);
+      var cerca = 1 - Math.min(1, Math.abs(p - at) / 0.075);
+      if (cerca > 0) mira(ctx, cx, cy, 160 * ka * 1.5, cerca * 0.8, t);
+      ctx.restore();
     }
 
     /* polvo, tambien en perspectiva */
