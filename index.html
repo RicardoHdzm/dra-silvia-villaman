@@ -93,9 +93,12 @@ a{color:inherit;text-decoration:none}
 /* ---------- header ---------- */
 .bar{display:flex;align-items:center;gap:28px}
 .logo img{height:38px;width:auto;display:block;mix-blend-mode:multiply}
-nav{display:flex;gap:26px;margin-left:auto;font-size:14.5px;font-weight:500;color:var(--ink-2)}
-nav a{padding:6px 0;border-bottom:2px solid transparent;transition:.2s}
-nav a:hover{color:var(--ink);border-color:var(--lav)}
+/* Acotadas a la cabecera. Se escribieron cuando <nav> solo habia uno; al
+   darle el suyo al pie, este heredaba display:flex y margin-left:auto y se
+   salia por la derecha. */
+header nav{display:flex;gap:26px;margin-left:auto;font-size:14.5px;font-weight:500;color:var(--ink-2)}
+header nav a{padding:6px 0;border-bottom:2px solid transparent;transition:.2s}
+header nav a:hover{color:var(--ink);border-color:var(--lav)}
 .btn{
   display:inline-flex;align-items:center;gap:9px;justify-content:center;
   font:inherit;font-weight:700;font-size:15px;letter-spacing:-.01em;
@@ -266,8 +269,8 @@ header.posado{background:rgba(245,241,251,.86);backdrop-filter:blur(12px);
   text-transform:uppercase;color:var(--ink-2);margin-top:4px;transition:color .3s ease}
 .sobre-noche .logo-texto{color:#EDEAF9}
 .sobre-noche .logo-texto small{color:rgba(167,177,206,.78)}
-.sobre-noche nav a{color:rgba(237,234,249,.78)}
-.sobre-noche nav a:hover{color:#fff;border-color:var(--luz)}
+.sobre-noche header nav a{color:rgba(237,234,249,.78)}
+.sobre-noche header nav a:hover{color:#fff;border-color:var(--luz)}
 .sobre-noche .btn-top{background:rgba(237,234,249,.95);color:#15223C}
 .sobre-noche .btn-top:hover{background:#fff}
 body{padding-top:76px}
@@ -324,7 +327,10 @@ body{padding-top:76px}
 @media (max-width:980px){ .probe{grid-template-columns:1fr 1fr} }
 @media (max-width:620px){ .probe{grid-template-columns:1fr} .ops{grid-template-columns:1fr} }
 @media (max-width:900px){
-  nav{display:none}
+  /* Solo el menu de la cabecera. Antes era nav{display:none} a secas, de
+     cuando solo habia un <nav> en la pagina; al darle uno propio al pie,
+     esa regla se lo llevaba por delante en el telefono. */
+  header nav{display:none}
   .viaje{height:320vh}
   .parada p{font-size:17px}
   .riel{right:14px;gap:11px}
@@ -520,16 +526,46 @@ section{position:relative;padding:94px 0}
 @media (prefers-reduced-motion:reduce){ .wa{transition:none} }
 
 footer{background:#16294D;color:#CFD6E6;padding:58px 0 30px}
-.foot{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:34px}
+/* El pie es la ficha del consultorio, no un segundo mapa del sitio. Antes
+   eran cuatro columnas: una la gastaba "Consultorio" en dos lineas, otra
+   repetia el menu de la cabecera, y en el telefono las cuatro caian en dos
+   de 150 px donde el numero se partia a media cifra ("667 751 / 2919").
+   Ahora van juntos nombre, direccion y telefono, que es lo que busca un
+   paciente y lo que leen los buscadores, y al lado la navegacion. */
+.foot{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:40px}
 .foot h4{margin:0 0 12px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#8E9CBC;font-weight:700}
-.foot p{margin:0;font-size:14.5px;line-height:1.8;color:#CFD6E6}
-.foot a{display:block;font-size:14.5px;line-height:1.8;color:#CFD6E6}
-.foot a:hover{color:#fff}
+.foot-nav a{display:block;font-size:14.5px;line-height:1.95;color:#CFD6E6}
+.foot-nav a:hover{color:#fff}
 .wordmark{font-size:20px;font-weight:800;letter-spacing:-.025em;color:#fff;margin:0}
 .wordmark small{display:block;font-size:11.5px;font-weight:600;letter-spacing:.11em;
   text-transform:uppercase;color:#8E9CBC;margin-top:7px}
-.legal{margin-top:42px;padding-top:20px;border-top:1px solid rgba(255,255,255,.12);
-  display:flex;flex-wrap:wrap;gap:8px 22px;font-size:12.5px;line-height:1.6;color:#8E9CBC}
+
+.foot-dir{margin:26px 0 0;font-style:normal;font-size:14.5px;line-height:1.75;color:#CFD6E6}
+.foot-mapa{display:inline-block;margin-top:7px;color:#CFD6E6;
+  border-bottom:1px solid rgba(255,255,255,.28);padding-bottom:1px;transition:.2s}
+.foot-mapa:hover{color:#fff;border-color:#fff}
+/* nowrap: el numero se partia en "667 751 / 2919" al caer la columna */
+.foot-tel{display:inline-block;margin-top:20px;font-size:22px;font-weight:800;
+  letter-spacing:-.02em;color:#fff;white-space:nowrap;transition:opacity .2s ease}
+.foot-tel:hover{opacity:.82}
+
+.redes{list-style:none;margin:24px 0 0;padding:0;display:flex;gap:10px}
+.redes a{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;
+  background:rgba(255,255,255,.08);color:#CFD6E6;
+  transition:background .2s ease, color .2s ease, transform .18s ease}
+.redes a:hover{background:rgba(255,255,255,.18);color:#fff;transform:translateY(-2px)}
+.redes a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.redes svg{width:20px;height:20px;display:block}
+
+.legal{margin-top:46px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);
+  display:grid;gap:11px;font-size:12.5px;line-height:1.6;color:#8E9CBC}
+.legal p{margin:0}
+/* el aviso medico va aparte y mas claro: antes quedaba enterrado entre el
+   numero de permiso y el copyright, y es el que importa */
+.legal-aviso{color:#B9C4DC}
+.legal-pie{display:flex;flex-wrap:wrap;gap:6px 20px;align-items:center}
+.legal a{color:#CFD6E6;text-decoration:underline}
+.legal a:hover{color:#fff}
 
 /* aparicion al bajar */
 .rv{transition:opacity .7s ease, transform .7s ease}
@@ -546,7 +582,9 @@ footer{background:#16294D;color:#CFD6E6;padding:58px 0 30px}
   .rule{display:none}
   .where-grid,.where-grid.cards-3{grid-template-columns:1fr}
   .ops{grid-template-columns:1fr}
-  .foot{grid-template-columns:1fr 1fr;gap:26px}
+  .foot{grid-template-columns:1fr;gap:34px}
+  /* hueco para que el boton flotante de WhatsApp no tape el copyright */
+  footer{padding-bottom:92px}
   .steps li{grid-template-columns:56px 1fr;gap:16px;padding:22px 0}
   .steps .num{font-size:32px}
   .closing{padding:70px 0 76px}
@@ -1042,33 +1080,40 @@ html{scroll-behavior:smooth}
 <footer>
   <div class="wrap">
     <div class="foot">
-      <div>
+      <div class="foot-ficha">
         <p class="wordmark">Dra. Silvia Villaman<small>Dermatología pediátrica, clínica y estética</small></p>
+
+        <address class="foot-dir">
+          Pedro María Anaya 2188<br>Culiacán, Sinaloa<br>
+          <a class="foot-mapa" href="https://www.google.com/maps/search/?api=1&amp;query=Pedro+Maria+Anaya+2188+Culiacan" target="_blank" rel="noopener">Cómo llegar &rarr;</a>
+        </address>
+
+        <a class="foot-tel" href="https://wa.me/526677512919">667 751 2919</a>
+
+        <ul class="redes">
+          <li><a href="https://wa.me/526677512919" aria-label="Escribir por WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.83 2.42a8.19 8.19 0 0 1 2.41 5.83c0 4.54-3.7 8.22-8.24 8.22zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.17.25-.64.81-.79.98-.14.16-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.08.15-1.18-.06-.11-.23-.17-.48-.29z"/></svg></a></li>
+          <li><a href="https://www.instagram.com/dra.silviavillaman/" target="_blank" rel="noopener" aria-label="Instagram de la doctora"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9A5.5 5.5 0 0 1 16.5 22h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm4.5 3a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm5.3-.9a1.1 1.1 0 1 1 0-2.2 1.1 1.1 0 0 1 0 2.2Z"/></svg></a></li>
+          <li><a href="https://www.doctoralia.com.mx/perfil/silvia-villaman" target="_blank" rel="noopener" aria-label="Opiniones en Doctoralia"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="m12 17.3-6.18 3.7 1.64-7.03L2 9.24l7.19-.61L12 2l2.81 6.63 7.19.61-5.46 4.73 1.64 7.03z"/></svg></a></li>
+        </ul>
       </div>
-      <div>
+
+      <nav class="foot-nav" aria-label="Pie de página">
         <h4>Consulta</h4>
         <a href="#doctora">Sobre mí</a>
         <a href="#atiende">Padecimientos</a>
         <a href="#agendar">Agendar cita</a>
         <a href="#preguntas">Preguntas</a>
-      </div>
-      <div>
-        <h4>Contacto</h4>
-        <a href="https://wa.me/526677512919">WhatsApp 667 751 2919</a>
-        <a href="https://www.instagram.com/dra.silviavillaman/" target="_blank" rel="noopener">Instagram @dra.silviavillaman</a>
-        <a href="https://www.google.com/maps/search/?api=1&amp;query=Pedro+Maria+Anaya+2188+Culiacan" target="_blank" rel="noopener">Cómo llegar</a>
-      </div>
-      <div>
-        <h4>Consultorio</h4>
-        <p>Pedro María Anaya 2188<br>Culiacán, Sinaloa</p>
-      </div>
+        <a href="#donde">Dónde</a>
+      </nav>
     </div>
+
     <div class="legal">
-      <span>Ced. Prof. 9532246 · Ced. Esp. 13824021 · 12820870</span>
-      <span>Permiso de publicidad COFEPRIS APC 2425042002A00132</span>
-      <span>La información de este sitio es orientativa y no sustituye una consulta médica.</span>
-      <span><a href="aviso-de-privacidad.html" style="color:#CFD6E6;text-decoration:underline">Aviso de privacidad</a></span>
-      <span>© 2026 Dra. Silvia Villaman Lugo</span>
+      <p class="legal-aviso">La información de este sitio es orientativa y no sustituye una consulta médica.</p>
+      <p>Ced. Prof. 9532246 · Ced. Esp. 13824021 · 12820870 · Permiso de publicidad COFEPRIS APC 2425042002A00132</p>
+      <p class="legal-pie">
+        <a href="aviso-de-privacidad.html">Aviso de privacidad</a>
+        <span>© 2026 Dra. Silvia Villaman Lugo</span>
+      </p>
     </div>
   </div>
 </footer>
