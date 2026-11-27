@@ -38,7 +38,35 @@ Cada CTA abre WhatsApp con un texto distinto ya escrito, para que ella sepa de
 qué se trata antes de abrir el chat.
 
 Secciones: hero · la doctora · padecimientos (dos carriles) · la consulta paso a
-paso · opiniones · preguntas · dónde y cuánto · cierre · pie.
+paso · **agendar** · opiniones · preguntas · dónde y cuánto · cierre · pie.
+
+## Cómo funciona "agendar"
+
+No hay backend ni reserva real. El calendario sirve para **armar el mensaje de
+WhatsApp**: eliges para quién es, día, hora y motivo, ves el mensaje completo
+antes de mandarlo, y el botón abre WhatsApp con todo ya escrito. La cita queda
+en firme cuando ella contesta, y eso se dice en la propia sección.
+
+No se envía nada a ningún servidor y no se guarda nada en el navegador.
+
+El horario vive en una sola constante al inicio de ese bloque de JS:
+
+```js
+var HORARIOS = {
+  0: [],                                              // domingo
+  1: ['16:00','16:30','17:00','17:30','18:00'],       // lunes
+  ...
+  6: ['10:00','10:30','11:00','11:30']                // sabado
+};
+var DIAS_MINIMOS = 1;   // para hoy ya no se agenda
+var DIAS_MAXIMOS = 60;
+```
+
+Un día sin horas sale deshabilitado en el calendario. Los motivos también son
+dos listas ahí mismo, una por cada lado del concepto.
+
+El calendario se maneja con teclado: flechas para moverse entre días, Enter para
+elegir. Los días deshabilitados se saltan.
 
 ## Cómo activar la segunda foto del hero
 
@@ -71,7 +99,12 @@ Que dependen de la doctora:
 - **Cédula: hay discrepancia.** El flyer dice `138224021`; Doctoralia dice
   `13824021` (un dígito menos) más `9532246` y `12820870`. En el sitio quedaron
   las tres de Doctoralia. Confirmar cuál es cuál.
-- **Horario de consulta** — en el sitio dice "Por confirmar".
+- **Horario de consulta — urgente.** El calendario de "agendar" muestra horas
+  **inventadas** (tarde de lunes a viernes, mañana el sábado) porque no las
+  tenemos. Son creíbles y por eso mismo peligrosas: si alguien pide las 18:00 y
+  ella no atiende a esa hora, la primera impresión ya se perdió. Cambiar
+  `HORARIOS` antes de enseñar el sitio a nadie. La tarjeta de costos también
+  dice "Por confirmar" en el renglón de horario.
 - **Correo de contacto** para el aviso de privacidad y los derechos ARCO.
 - **Revisión legal del aviso.** La consulta médica maneja datos personales
   sensibles; el borrador sigue la estructura de la LFPDPPP pero necesita abogado.
