@@ -18,6 +18,22 @@ img/  logo.png          marca en azul marino sobre blanco, la que usa el sitio
       dra-flyer.webp    el flyer original, material de origen, ya no se usa
 ```
 
+## En línea
+
+**https://ricardohdzm.github.io/dra-silvia-villaman/**
+
+Es una **previa**, no el sitio final. Lleva `noindex, nofollow` a propósito:
+el horario del calendario sigue inventado y la cédula sin confirmar, así que
+si Google lo indexa alguien puede llegar al consultorio a una hora que no
+existe. **Quitar esa etiqueta solo cuando esos datos estén verificados y la
+doctora apruebe el contenido.**
+
+El repositorio tuvo que volverse **público** para poder usar GitHub Pages:
+en cuenta personal, Pages sobre repos privados requiere plan de pago. Eso
+significa que el código y todo el historial son públicos. Si más adelante se
+prefiere ocultarlos, Cloudflare Pages y Netlify despliegan desde repos
+privados en su plan gratuito.
+
 ## Correr en local
 
 ```
