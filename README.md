@@ -359,3 +359,23 @@ Son dos alturas distintas y no deben llevar la misma unidad.
 - Las anclas no llevan unidad: las coloca el JS a partir de
   `alto de la sección − window.innerHeight`, que es la cuenta real y se
   recalcula en cada `resize`.
+
+## Los glifos de las anomalías tienen que escalar con la ventana
+
+`ka = F / za` sale solo de la profundidad, así que un glifo se dibujaba del
+mismo tamaño en píxeles en una pantalla de 1280 y en una de 375. En el
+teléfono eso significaba una roncha de 194–324 px de radio: acababas *dentro*
+de una, viendo su degradado y nada más. Por eso parecía que las anomalías
+desaparecían en móvil, aunque el lienzo tuviera medio millón de píxeles rojos.
+
+El factor es `escG = min(1, ancho/1180, alto/820)` y multiplica la escala en
+las tres llamadas que pintan una anomalía (`tipo`, `tipo2` y la mira). De
+1180×820 para arriba vale 1, así que el escritorio quedó igual.
+
+Lo mismo aplica si algún día se añade un glifo nuevo: tiene que recibir la
+escala ya multiplicada, no `ka * 1.5` a secas.
+
+Relacionado: la bruma de móvil abre a propósito una ventana clara centrada en
+el 50 % de ancho y el 30 % de alto, que es donde el JS pone el punto de fuga.
+Si se mueve una, hay que mover la otra. El corte entre diseño de teléfono y de
+escritorio es 900 px en los dos sitios (`ESTRECHO` en el JS).
