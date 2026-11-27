@@ -103,25 +103,78 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
 .btn-top{background:var(--ink);color:#fff;padding:11px 20px;font-size:14.5px}
 .btn-top:hover{background:#16294d}
 
-/* ---------- hero ---------- */
-.hero{position:relative;min-height:calc(100svh - 76px);display:flex;align-items:center;
-  padding:48px 0 60px;text-align:center}
-.hero .wrap{width:min(100% - 48px, 1060px)}
+/* ---------- el recorrido por la piel ---------- */
+/* La seccion es alta y el escenario queda pegado: el scroll vertical mueve
+   una camara que avanza en horizontal sobre un trozo de piel. Lo que te vas
+   encontrando en el camino son los seis motivos de consulta. */
+.viaje{position:relative;height:520vh}
+.stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate}
+#piel{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:-2}
+/* El velo carga a la izquierda, que es donde va el texto; la derecha se deja
+   despejada para que se vea lo que te encuentras en el camino. */
+.bruma{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    linear-gradient(to right, rgba(245,241,251,.96) 0%, rgba(245,241,251,.88) 36%,
+      rgba(245,241,251,.30) 62%, rgba(245,241,251,.10) 100%),
+    linear-gradient(to bottom, rgba(245,241,251,.92), rgba(245,241,251,0) 22%,
+      rgba(245,241,251,0) 78%, rgba(245,241,251,.94))}
 
-.eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:12.5px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--lav-deep);margin-bottom:20px}
-.eyebrow::before,.eyebrow::after{content:"";width:26px;height:1.5px;background:var(--lav)}
+.titular{position:absolute;left:50%;top:50%;width:min(100% - 56px,620px);
+  transform:translate(-50%,-50%);text-align:center;
+  transition:opacity .3s ease, transform .3s ease}
+.parada{position:absolute;left:clamp(28px,7vw,110px);top:50%;width:min(100% - 56px,470px);
+  transform:translateY(-50%);text-align:left;
+  transition:opacity .3s ease, transform .3s ease}
+.titular[hidden],.parada[hidden]{display:none}
+.parada p{margin-left:0;margin-right:0}
 
-h1{margin:0 auto;max-width:14ch;font-size:clamp(44px,7.6vw,98px);line-height:.96;
+.titular h1{margin:0 auto;max-width:13ch;font-size:clamp(42px,6.8vw,88px);line-height:.97;
   letter-spacing:-.042em;font-weight:800}
-h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;
-  color:var(--lav-deep);font-size:1.04em}
+.titular h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
+  font-weight:400;color:var(--lav-deep);font-size:1.04em}
+.titular p{margin:20px auto 0;max-width:44ch;font-size:17px;line-height:1.55;color:var(--ink-2)}
 
-.hero-sub{margin:22px auto 0;max-width:46ch;font-size:17px;line-height:1.55;color:var(--ink-2)}
+.parada .capa{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--lav-deep);margin-bottom:14px}
+.parada .capa::before{content:"";width:22px;height:1.5px;background:var(--lav)}
+.parada h2{margin:0;font-size:clamp(28px,4vw,50px);line-height:1.04;
+  letter-spacing:-.035em;font-weight:800}
+.parada h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
+  font-weight:400;color:var(--lav-deep);font-size:1.05em}
+.parada p{margin:16px auto 0;max-width:46ch;font-size:16.5px;line-height:1.55;color:var(--ink-2)}
+.parada .btn{margin-top:22px}
 
-/* las seis entradas: el hero pregunta en vez de anunciar */
-.probe{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
-  margin:40px auto 0;max-width:880px;text-align:left}
+/* barra de escala, como en una foto de microscopio */
+.escala{position:absolute;left:28px;bottom:26px;z-index:2;
+  font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.escala::before{content:"";display:block;width:74px;height:2px;background:var(--dim);
+  opacity:.55;margin-bottom:7px}
+
+/* riel de avance */
+.riel{position:absolute;right:28px;top:50%;transform:translateY(-50%);z-index:2;
+  display:flex;flex-direction:column;gap:12px}
+.riel span{width:8px;height:8px;border-radius:50%;background:rgba(27,47,87,.16);
+  transition:background .25s ease, transform .25s ease}
+.riel span.on{background:var(--lav-deep);transform:scale(1.5)}
+
+.baja{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:2;
+  font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+
+/* respaldo: sin animacion, en movil, o si el canvas no sirve */
+.entradas{display:none;padding:0 0 10px}
+.sin-viaje .viaje{display:none}
+.sin-viaje .entradas{display:block}
+.entradas .eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:12.5px;
+  font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--lav-deep);
+  margin-bottom:18px}
+.entradas .eyebrow::before{content:"";width:26px;height:1.5px;background:var(--lav)}
+.entradas h1{margin:0 0 10px;font-size:clamp(36px,6vw,54px);line-height:1;
+  letter-spacing:-.04em;font-weight:800}
+.entradas h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
+  font-weight:400;color:var(--lav-deep);font-size:1.04em}
+.entradas .hero-sub{margin:0 0 26px;max-width:46ch;font-size:17px;line-height:1.55;color:var(--ink-2)}
+
+.probe{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0}
 .probe a{display:flex;align-items:center;gap:14px;padding:15px 17px;border-radius:16px;
   background:rgba(255,255,255,.72);border:1.5px solid rgba(27,47,87,.08);
   box-shadow:0 8px 26px rgba(27,47,87,.05);
@@ -135,15 +188,10 @@ h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight
 .probe small{display:block;font-weight:500;font-size:12.5px;line-height:1.35;
   color:var(--ink-2);margin-top:3px}
 
-.hero-mas{margin:24px 0 0;font-size:14.5px;color:var(--ink-2)}
-.hero-mas a{font-weight:700;color:var(--lav-deep);border-bottom:1.5px solid rgba(126,111,196,.4)}
-
-.next-date{display:inline-flex;align-items:center;gap:10px;margin:30px auto 0;
-  font-size:14px;font-weight:600;color:var(--ink-2)}
-.next-date b{color:var(--ink)}
-.next-date::before{content:"";width:7px;height:7px;flex:none;border-radius:50%;
-  background:var(--amber);box-shadow:0 0 0 4px rgba(226,161,60,.22)}
-.next-date[hidden]{display:none}
+.trust{margin-top:30px;padding-top:18px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;gap:8px 22px;font-size:13px;color:var(--ink-2)}
+.trust b{font-weight:700;color:var(--ink)}
+.trust .sep{color:var(--dim)}
 
 .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
 .btn-path{
@@ -157,57 +205,22 @@ h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight
 }
 .btn-path svg{width:17px;height:17px;flex:none}
 
-.trust{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);
-  display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;font-size:13px;color:var(--ink-2)}
-.trust b{font-weight:700;color:var(--ink)}
-.trust .sep{color:var(--dim)}
-
-/* Entrada al cargar. Solo hay fotograma "from" y el relleno es backwards:
-   al terminar suelta el control y no se queda encima de nada. */
-@keyframes entra{ from{ opacity:0; transform:translateY(14px) } }
-
-.js .eyebrow,
-.js h1,
-.js .hero-sub,
-.js .probe a,
-.js .hero-mas,
-.js .next-date,
-.js .trust{ animation:entra .38s cubic-bezier(.22,1,.36,1) backwards }
-
-.js .eyebrow        { animation-delay:.01s }
-.js h1              { animation-delay:.04s }
-.js .hero-sub       { animation-delay:.09s }
-.js .probe a:nth-child(1){ animation-delay:.13s }
-.js .probe a:nth-child(2){ animation-delay:.16s }
-.js .probe a:nth-child(3){ animation-delay:.19s }
-.js .probe a:nth-child(4){ animation-delay:.22s }
-.js .probe a:nth-child(5){ animation-delay:.25s }
-.js .probe a:nth-child(6){ animation-delay:.28s }
-.js .hero-mas       { animation-delay:.31s }
-.js .next-date      { animation-delay:.34s }
-.js .trust          { animation-delay:.37s }
-
-/* Red de seguridad: el contenido del hero no puede quedarse invisible nunca.
-   Si la animacion no corrio, a los 1200 ms se muestra todo y punto. */
-.listo .eyebrow,.listo h1,.listo .hero-sub,.listo .probe a,
-.listo .hero-mas,.listo .next-date,.listo .trust{
-  animation:none !important;opacity:1 !important;transform:none !important}
-
-.scroll{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
-  font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);z-index:2}
-
-@media (max-width:980px){
-  .probe{grid-template-columns:1fr 1fr;max-width:620px}
-}
-@media (max-width:620px){
-  .probe{grid-template-columns:1fr}
-}
+@media (max-width:980px){ .probe{grid-template-columns:1fr 1fr} }
+@media (max-width:620px){ .probe{grid-template-columns:1fr} }
 @media (max-width:900px){
-  .hero{min-height:auto;padding:32px 0 40px}
   nav{display:none}
-  h1{font-size:clamp(38px,10.5vw,58px);max-width:none}
-  .scroll{display:none}
-  .trust{justify-content:flex-start;text-align:left}
+  .viaje{height:420vh}
+  .parada{top:63%;left:28px;right:28px;width:auto}
+  .parada p{font-size:15.5px}
+  .bruma{background:
+    linear-gradient(to bottom, rgba(245,241,251,.92), rgba(245,241,251,.10) 22%,
+      rgba(245,241,251,.55) 48%, rgba(245,241,251,.95) 62%)}
+  .riel{right:16px}
+  .escala{left:18px;bottom:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  .viaje{display:none}
+  .entradas{display:block}
 }
 /* ---------- secciones ---------- */
 section{position:relative;padding:94px 0}
@@ -435,39 +448,89 @@ html{scroll-behavior:smooth}
   </div>
 </header>
 
-<main class="hero" id="inicio">
+<main class="viaje" id="inicio">
+  <div class="stage">
+    <canvas id="piel" aria-hidden="true"></canvas>
+    <div class="bruma" aria-hidden="true"></div>
+
+    <div class="titular" data-at="0">
+      <h1>Un recorrido por <em>una piel</em>.</h1>
+      <p>Lo que te vas encontrando es lo que ella atiende. Dermatóloga pediátrica en Culiacán.</p>
+    </div>
+
+    <div class="parada" data-at="0.16" data-sintoma="seca" hidden>
+      <div class="capa">Superficie</div>
+      <h2>Aquí la piel <em>se parte</em>.</h2>
+      <p>Resequedad que vuelve por temporadas, aspereza, descamación. En niños suele ser eccema, y se controla.</p>
+      <a class="btn btn-path" href="#agendar" data-sintoma="seca">Pedir cita por esto</a>
+    </div>
+
+    <div class="parada" data-at="0.32" data-sintoma="mancha" hidden>
+      <div class="capa">Pigmento</div>
+      <h2>Una mancha que <em>antes no estaba</em>.</h2>
+      <p>El color lo dan los melanocitos. Cuando se desordenan aparecen las manchas y el melasma.</p>
+      <a class="btn btn-path" href="#agendar" data-sintoma="mancha">Pedir cita por esto</a>
+    </div>
+
+    <div class="parada" data-at="0.48" data-sintoma="ronchas" hidden>
+      <div class="capa">Brote</div>
+      <h2>Ronchas que van <em>y vienen</em>.</h2>
+      <p>Salen, pican, se quitan y regresan. Encontrar qué las dispara es la mitad del tratamiento.</p>
+      <a class="btn btn-path" href="#agendar" data-sintoma="ronchas">Pedir cita por esto</a>
+    </div>
+
+    <div class="parada" data-at="0.64" data-sintoma="lunar" hidden>
+      <div class="capa">Lunar</div>
+      <h2>El que conviene <em>vigilar</em>.</h2>
+      <p>La mayoría no son nada. Los que cambian de forma, color o tamaño son los que se revisan.</p>
+      <a class="btn btn-path" href="#agendar" data-sintoma="lunar">Pedir cita por esto</a>
+    </div>
+
+    <div class="parada" data-at="0.80" data-sintoma="acne" hidden>
+      <div class="capa">Folículo</div>
+      <h2>El acné empieza <em>adentro</em>.</h2>
+      <p>No en la superficie, sino en el poro. Por eso tallar no sirve y el tratamiento va por otro lado.</p>
+      <a class="btn btn-path" href="#agendar" data-sintoma="acne">Pedir cita por esto</a>
+    </div>
+
+    <div class="parada" data-at="0.95" data-sintoma="cabello" hidden>
+      <div class="capa">Raíz</div>
+      <h2>Y de aquí <em>nace el pelo</em>.</h2>
+      <p>Cuando se cae, la causa está en la raíz. Se busca antes de recetar nada.</p>
+      <a class="btn btn-path" href="#agendar" data-sintoma="cabello">Pedir cita por esto</a>
+    </div>
+
+    <div class="escala" aria-hidden="true">2 mm de piel</div>
+    <div class="riel" id="riel" aria-hidden="true"></div>
+    <div class="baja" id="baja">Baja para recorrerla</div>
+  </div>
+</main>
+
+<section class="entradas" id="entradas">
   <div class="wrap">
-
     <div class="eyebrow">Dermatóloga pediátrica · Culiacán</div>
-
     <h1>¿Qué le ves <em>a la piel</em>?</h1>
-
     <p class="hero-sub">De tus hijos o la tuya. Elige lo que ves y pide cita en un minuto.</p>
 
     <div class="probe">
       <a href="#agendar" data-sintoma="mancha">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-             stroke-linejoin="round" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
           <path d="M12 3.8c3.5 0 6.8 2.3 6.8 5.6 0 2-1 3.2-1 4.9 0 2.3-2.3 5.7-5.8 5.7-4 0-6.8-3.2-6.8-7.2C5.2 8.6 8.1 3.8 12 3.8Z"/>
         </svg>
         <span>Una mancha<small>nueva, o que cambió de color</small></span>
       </a>
-
       <a href="#agendar" data-sintoma="ronchas">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
           <circle cx="9" cy="8.8" r="3.1"/><circle cx="16.2" cy="13" r="2.2"/><circle cx="8.6" cy="16.4" r="1.8"/>
         </svg>
         <span>Ronchas o comezón<small>brotes que van y vienen</small></span>
       </a>
-
       <a href="#agendar" data-sintoma="seca">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-             stroke-linecap="round" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
           <path d="M4 8h5M12.5 8h7.5M4 12.5h9M16.5 12.5h3.5M4 17h6M13.5 17h6.5"/>
         </svg>
         <span>Resequedad que vuelve<small>piel áspera, se parte, pica</small></span>
       </a>
-
       <a href="#agendar" data-sintoma="lunar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
           <circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/>
@@ -475,7 +538,6 @@ html{scroll-behavior:smooth}
         </svg>
         <span>Un lunar<small>quiero que lo revisen</small></span>
       </a>
-
       <a href="#agendar" data-sintoma="acne">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
           <circle cx="8.2" cy="8" r="2.1"/><circle cx="15.6" cy="10.2" r="1.4"/>
@@ -483,19 +545,14 @@ html{scroll-behavior:smooth}
         </svg>
         <span>Granos o acné<small>en la cara o en la espalda</small></span>
       </a>
-
       <a href="#agendar" data-sintoma="cabello">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-             stroke-linecap="round" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
           <path d="M5.5 4.2c0 6 1.4 9.2 2.9 12.3M11.3 3.6c.5 5.9.2 9.6-.7 13"/>
-          <path d="M17.2 5.6c-.7 3.9-1.1 6-2.8 8.9"/>
-          <path d="M19.4 17.2c-1.7 1-2.7 2.1-3.3 3.2"/>
+          <path d="M17.2 5.6c-.7 3.9-1.1 6-2.8 8.9"/><path d="M19.4 17.2c-1.7 1-2.7 2.1-3.3 3.2"/>
         </svg>
         <span>Se cae el cabello<small>en parches o en general</small></span>
       </a>
     </div>
-
-    <p class="hero-mas">¿Otra cosa? <a href="#atiende">Mira todo lo que atiende</a>.</p>
 
     <p class="next-date" id="proxima" hidden></p>
 
@@ -506,10 +563,8 @@ html{scroll-behavior:smooth}
       <span class="sep">·</span>
       <span>WhatsApp <b>667 751 2919</b></span>
     </div>
-
   </div>
-  <div class="scroll">Baja para conocerla</div>
-</main>
+</section>
 
 <section id="doctora">
   <div class="wrap doc">
@@ -858,43 +913,258 @@ html{scroll-behavior:smooth}
 
 <script>
 (function(){
-  /* El hero ya no tiene mecanismo de lados: solo las manchas del fondo derivan
-     con el puntero, lo justo para que no se sienta una lamina pegada. */
-  var root = document.documentElement;
-  var hero = document.getElementById('inicio');
-  if (!hero) return;
+  /* El recorrido. El scroll vertical mueve una camara que avanza en horizontal
+     sobre un trozo de piel; lo que aparece en el camino son los seis motivos.
+     Dos capas de textura a distinta velocidad hacen la profundidad. */
+  var sec = document.getElementById('inicio');
+  var cv  = document.getElementById('piel');
+  var riel = document.getElementById('riel');
+  var baja = document.getElementById('baja');
+  if (!sec || !cv || !cv.getContext){ document.documentElement.className += ' sin-viaje'; return; }
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-  var tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
+  var ctx = cv.getContext('2d');
+  var bloques = [].slice.call(sec.querySelectorAll('[data-at]'));
+  var paradas = bloques.filter(function(b){ return b.classList.contains('parada'); });
 
-  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+  paradas.forEach(function(){ riel.appendChild(document.createElement('span')); });
+  var puntos = [].slice.call(riel.children);
 
-  function tick(){
-    cx += (tx - cx) * 0.07;
-    cy += (ty - cy) * 0.07;
-    root.style.setProperty('--mx', cx.toFixed(4));
-    root.style.setProperty('--my', cy.toFixed(4));
-    if (Math.abs(tx - cx) < 0.002 && Math.abs(ty - cy) < 0.002){
-      cx = tx; cy = ty; raf = null; return;
+  /* ---- textura: ruido celular, el microrelieve de la piel ---- */
+  function tejido(W, H, cols, aniso, claro, oscuro){
+    var t = document.createElement('canvas'); t.width = W; t.height = H;
+    var g = t.getContext('2d');
+    var cw = W / cols, rows = Math.max(3, Math.round(H / (cw * aniso))), ch = H / rows;
+    var n = cols * rows, px = new Float32Array(n), py = new Float32Array(n);
+    for (var gy = 0; gy < rows; gy++) for (var gx = 0; gx < cols; gx++){
+      var k = gy * cols + gx, sesgo = (gy % 2) * 0.5;
+      px[k] = ((gx + sesgo) % cols + 0.15 + Math.random() * 0.7) * cw;
+      py[k] = (gy + 0.15 + Math.random() * 0.7) * ch;
     }
-    raf = requestAnimationFrame(tick);
+    var img = g.createImageData(W, H), d = img.data, esc = Math.min(cw, ch) * 0.85;
+    for (var y = 0; y < H; y++){
+      var gy0 = Math.floor(y / ch);
+      for (var x = 0; x < W; x++){
+        var gx0 = Math.floor(x / cw), f1 = 1e9, f2 = 1e9;
+        /* Las celdas de los bordes se buscan dando la vuelta: eso hace la tela
+           periodica y mata la costura cuando se repite. */
+        for (var jy = gy0 - 1; jy <= gy0 + 1; jy++){
+          var wy = ((jy % rows) + rows) % rows;
+          var offY = jy < 0 ? -H : (jy >= rows ? H : 0);
+          for (var jx = gx0 - 1; jx <= gx0 + 1; jx++){
+            var wx = ((jx % cols) + cols) % cols;
+            var offX = jx < 0 ? -W : (jx >= cols ? W : 0);
+            var k2 = wy * cols + wx;
+            var dx = x - (px[k2] + offX), dy = (y - (py[k2] + offY)) / aniso;
+            var di = Math.sqrt(dx * dx + dy * dy);
+            if (di < f1){ f2 = f1; f1 = di; } else if (di < f2){ f2 = di; }
+          }
+        }
+        var v = (f2 - f1) / esc; if (v > 1) v = 1; v = v * v * (3 - 2 * v);
+        var i = (y * W + x) * 4;
+        d[i]   = oscuro[0] + (claro[0] - oscuro[0]) * v;
+        d[i+1] = oscuro[1] + (claro[1] - oscuro[1]) * v;
+        d[i+2] = oscuro[2] + (claro[2] - oscuro[2]) * v;
+        d[i+3] = 255;
+      }
+    }
+    g.putImageData(img, 0, 0);
+    return t;
   }
-  function arranca(){ if (!raf) raf = requestAnimationFrame(tick); }
 
-  hero.addEventListener('pointermove', function(e){
-    if (e.pointerType !== 'mouse') return;
-    var r = hero.getBoundingClientRect();
-    if (!r.width || !r.height || r.bottom < 80) return;
-    var x = (e.clientX - r.left) / r.width;
-    var y = (e.clientY - r.top) / r.height;
-    if (!isFinite(x) || !isFinite(y)) return;
-    tx = clamp(x * 2 - 1, -1, 1);
-    ty = clamp(y * 2 - 1, -1, 1);
-    arranca();
-  });
-  hero.addEventListener('pointerleave', function(){ tx = 0; ty = 0; arranca(); });
+  /* Celdas chicas y poco contraste: con celdas grandes y marcadas esto deja de
+     parecer piel y empieza a parecer reptil. */
+  var tela = tejido(560, 380, 38, 0.68, [250,247,254], [237,231,247]);
+
+  /* ---- el mundo ---- */
+  var vw = 0, vh = 0, mundo = 0, poros = [], accidentes = [];
+
+  function siembra(){
+    mundo = vw * 5.5;
+    poros = [];
+    for (var i = 0; i < 220; i++){
+      poros.push({ x: Math.random() * mundo, y: Math.random() * vh,
+                   r: 1 + Math.random() * 2.2, a: 0.05 + Math.random() * 0.1 });
+    }
+    poros.sort(function(a,b){ return a.x - b.x; });
+    accidentes = paradas.map(function(p, i){
+      var at = parseFloat(p.dataset.at);
+      /* en ancho, a la derecha del texto; en angosto no cabe al lado,
+         asi que se va arriba y el texto baja (lo hace el CSS) */
+      var angosto = vw < 780;
+      return { tipo: p.dataset.sintoma, i: i,
+               x: at * (mundo - vw) + vw * (angosto ? 0.5 : 0.74),
+               y: angosto ? vh * 0.27 : vh * (0.46 + ((i % 3) - 1) * 0.09) };
+    });
+  }
+
+  /* ---- lo que te encuentras en el camino ---- */
+  function mancha(g, x, y, s){
+    for (var i = 0; i < 4; i++){
+      var ox = (Math.cos(i * 2.1) * 26 + 8) * s, oy = (Math.sin(i * 1.7) * 20) * s, r = (62 - i * 8) * s;
+      var gr = g.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, r);
+      gr.addColorStop(0, "rgba(151,112,122,.26)");
+      gr.addColorStop(1, "rgba(151,112,122,0)");
+      g.fillStyle = gr; g.beginPath(); g.arc(x + ox, y + oy, r, 0, 6.3); g.fill();
+    }
+  }
+  function ronchas(g, x, y, s){
+    for (var i = 0; i < 7; i++){
+      var ox = Math.cos(i * 1.9) * 70 * s, oy = Math.sin(i * 2.6) * 46 * s, r = (15 + (i % 3) * 7) * s;
+      var gr = g.createRadialGradient(x + ox - r * .3, y + oy - r * .3, r * .1, x + ox, y + oy, r);
+      gr.addColorStop(0, "rgba(214,138,152,.42)");
+      gr.addColorStop(.7, "rgba(205,122,138,.26)");
+      gr.addColorStop(1, "rgba(205,122,138,0)");
+      g.fillStyle = gr; g.beginPath(); g.arc(x + ox, y + oy, r, 0, 6.3); g.fill();
+    }
+  }
+  function seca(g, x, y, s){
+    /* grietas que serpentean y se cruzan, no rayos saliendo de un centro:
+       en radial esto parecia un destello y decia otra cosa */
+    g.save(); g.lineCap = "round";
+    g.strokeStyle = "rgba(124,108,144,.26)";
+    for (var i = 0; i < 5; i++){
+      var ang = i * 1.1 + 0.4;
+      var cx = x + Math.cos(ang + 2) * 72 * s, cy = y + Math.sin(ang + 2) * 46 * s;
+      g.lineWidth = (1.1 + (i % 2) * .6) * s;
+      g.beginPath(); g.moveTo(cx, cy);
+      for (var j = 0; j < 6; j++){
+        ang += Math.sin(i * 3.1 + j * 1.7) * 0.75;
+        cx += Math.cos(ang) * 26 * s; cy += Math.sin(ang) * 17 * s;
+        g.lineTo(cx, cy);
+      }
+      g.stroke();
+    }
+    g.fillStyle = "rgba(255,255,255,.55)";
+    for (var k = 0; k < 14; k++){
+      var ox = Math.cos(k * 2.3) * 80 * s, oy = Math.sin(k * 1.6) * 52 * s;
+      g.beginPath(); g.ellipse(x + ox, y + oy, 8 * s, 4.5 * s, k * .9, 0, 6.3); g.fill();
+    }
+    g.restore();
+  }
+  function lunar(g, x, y, s){
+    var gr = g.createRadialGradient(x - 6 * s, y - 6 * s, 2 * s, x, y, 30 * s);
+    gr.addColorStop(0, "rgba(118,92,96,.80)");
+    gr.addColorStop(.72, "rgba(96,74,82,.66)");
+    gr.addColorStop(1, "rgba(96,74,82,0)");
+    g.fillStyle = gr; g.beginPath(); g.ellipse(x, y, 30 * s, 26 * s, .3, 0, 6.3); g.fill();
+    g.fillStyle = "rgba(255,255,255,.22)";
+    g.beginPath(); g.ellipse(x - 9 * s, y - 9 * s, 7 * s, 4.5 * s, .5, 0, 6.3); g.fill();
+  }
+  function acne(g, x, y, s){
+    for (var i = 0; i < 5; i++){
+      var ox = Math.cos(i * 2.4) * 58 * s, oy = Math.sin(i * 1.3) * 38 * s, r = (11 + (i % 2) * 5) * s;
+      var gr = g.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, r * 2.2);
+      gr.addColorStop(0, "rgba(201,104,112,.40)");
+      gr.addColorStop(1, "rgba(201,104,112,0)");
+      g.fillStyle = gr; g.beginPath(); g.arc(x + ox, y + oy, r * 2.2, 0, 6.3); g.fill();
+      g.fillStyle = "rgba(252,248,240,.85)";
+      g.beginPath(); g.arc(x + ox, y + oy, r * .42, 0, 6.3); g.fill();
+    }
+  }
+  function cabello(g, x, y, s){
+    g.save(); g.lineCap = "round"; g.strokeStyle = "rgba(96,80,102,.42)";
+    for (var i = 0; i < 9; i++){
+      var ox = (i - 4) * 19 * s, L = (46 + (i % 3) * 26) * s, cur = (i % 2 ? 1 : -1) * 22 * s;
+      g.lineWidth = (1.1 + (i % 2) * .5) * s;
+      g.beginPath(); g.moveTo(x + ox, y + 18 * s);
+      g.quadraticCurveTo(x + ox + cur, y - L * .5, x + ox + cur * 1.6, y - L); g.stroke();
+      g.fillStyle = "rgba(120,100,128,.22)";
+      g.beginPath(); g.ellipse(x + ox, y + 18 * s, 3.2 * s, 2 * s, 0, 0, 6.3); g.fill();
+    }
+    g.strokeStyle = "rgba(96,80,102,.3)"; g.lineWidth = 1.2 * s;
+    g.beginPath(); g.moveTo(x + 60 * s, y + 52 * s);
+    g.bezierCurveTo(x + 110 * s, y + 38 * s, x + 130 * s, y + 70 * s, x + 182 * s, y + 56 * s);
+    g.stroke(); g.restore();
+  }
+  var dibujo = { seca: seca, mancha: mancha, ronchas: ronchas,
+                 lunar: lunar, acne: acne, cabello: cabello };
+
+  /* ---- pintar ---- */
+  function capa(camX, vel, escala, alfa){
+    var w = tela.width * escala, h = tela.height * escala;
+    var off = -((camX * vel) % w);
+    ctx.globalAlpha = alfa;
+    /* sin espejear: el espejo crea parejas simetricas que el ojo detecta
+       enseguida. Con una tela grande y poco contraste, la repeticion no canta. */
+    for (var y = -h; y < vh + h; y += h){
+      for (var x = off - w; x < vw + w; x += w){
+        ctx.drawImage(tela, x, y, w, h);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function pinta(p){
+    var camX = p * (mundo - vw);
+    ctx.clearRect(0, 0, vw, vh);
+    capa(camX, 0.42, 2.3, 0.55);
+    capa(camX, 1.00, 1.0, 0.92);
+
+    ctx.save(); ctx.translate(-camX, 0);
+    for (var i = 0; i < poros.length; i++){
+      var po = poros[i];
+      if (po.x < camX - 20) continue;
+      if (po.x > camX + vw + 20) break;
+      ctx.fillStyle = "rgba(120,104,146," + po.a + ")";
+      ctx.beginPath(); ctx.ellipse(po.x, po.y, po.r, po.r * .7, 0, 0, 6.3); ctx.fill();
+    }
+    var s = Math.min(1.5, vw / 900);
+    for (var j = 0; j < accidentes.length; j++){
+      var a = accidentes[j];
+      if (a.x < camX - 340 || a.x > camX + vw + 340) continue;
+      (dibujo[a.tipo] || mancha)(ctx, a.x, a.y, s);
+    }
+    ctx.restore();
+  }
+
+  /* ---- scroll ---- */
+  var ultimo = -1, pendiente = false;
+
+  function avanza(){
+    pendiente = false;
+    var r = sec.getBoundingClientRect();
+    var total = r.height - window.innerHeight;
+    var p = total > 0 ? Math.max(0, Math.min(1, -r.top / total)) : 0;
+    if (Math.abs(p - ultimo) < 0.0004) return;
+    ultimo = p;
+    pinta(p);
+
+    bloques.forEach(function(b){
+      var at = parseFloat(b.dataset.at);
+      var esTitular = b.classList.contains("titular");
+      var vent = esTitular ? 0.10 : 0.075;
+      var w = 1 - Math.abs(p - at) / vent;
+      if (w <= 0){ b.hidden = true; return; }
+      b.hidden = false;
+      b.style.opacity = w.toFixed(3);
+      /* el titular va centrado, las paradas pegadas a la izquierda */
+      b.style.transform = (esTitular ? "translate(-50%,-50%)" : "translateY(-50%)") +
+        " translateY(" + ((1 - w) * 16).toFixed(1) + "px)";
+    });
+    paradas.forEach(function(b, i){
+      puntos[i].classList.toggle("on", Math.abs(p - parseFloat(b.dataset.at)) < 0.075);
+    });
+    baja.style.opacity = p > 0.03 ? 0 : 1;
+  }
+
+  function pide(){ if (!pendiente){ pendiente = true; requestAnimationFrame(avanza); } }
+
+  function mide(){
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    vw = cv.clientWidth; vh = cv.clientHeight;
+    cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    siembra();
+    ultimo = -1;
+    avanza();
+  }
+
+  mide();
+  addEventListener("scroll", pide, {passive:true});
+  var t; addEventListener("resize", function(){ clearTimeout(t); t = setTimeout(mide, 200); });
 })();
+
 
 /* aparicion al bajar */
 (function(){

@@ -26,6 +26,37 @@ npx serve .
 
 O cualquier servidor estático.
 
+## Rama `hero-capas`: el recorrido por la piel
+
+> Esta rama reemplaza el hero por un recorrido con scroll, a petición del
+> cliente, que pidió "algo como drailse.com". **No está en `main`.**
+
+El scroll vertical mueve una cámara que avanza **en horizontal** sobre un trozo
+de piel. Lo que te vas encontrando en el camino son los seis motivos de
+consulta: resequedad, mancha, ronchas, lunar, acné y caída de cabello. Cada uno
+es una parada con su texto y su botón, así que el recorrido no solo narra:
+también agenda.
+
+Por qué no es una copia del túnel: el de ellos es un viaje **por dentro de un
+tubo** y dice "nueve metros, ella cuida el último tramo". Este es un viaje
+**sobre una superficie** y dice "esto es lo que puede aparecer". Comparten
+mecánica, como dos películas comparten el travelling, pero no geometría,
+ni métrica, ni mensaje.
+
+Lo técnico, en `index.html`:
+
+- La piel es ruido celular (Worley) generado al cargar en un canvas de 560×380
+  y repetido. El ruido es **periódico** —las celdas del borde se buscan dando la
+  vuelta— porque si no, cada repetición deja una costura vertical visible.
+- Dos capas de la misma tela a distinta velocidad y escala hacen la profundidad.
+- Los accidentes del camino se dibujan con trazos de canvas, no con imágenes.
+- `0 KB` de descarga: todo es generado. La tela tarda ~18 ms una vez.
+  Para comparar, drailse baja unos 600 KB de three.js solo para su túnel.
+- En pantallas angostas el accidente se va arriba y el texto baja, porque al
+  lado no caben.
+- Con `prefers-reduced-motion` el recorrido no se muestra y en su lugar aparece
+  la banda `.entradas`, que es el hero anterior con las seis tarjetas.
+
 ## Concepto
 
 El hero no anuncia, **pregunta**: "¿Qué le ves a la piel?" y seis entradas —mancha,
