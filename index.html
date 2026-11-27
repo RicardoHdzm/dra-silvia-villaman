@@ -87,7 +87,6 @@ a{color:inherit;text-decoration:none}
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");}
 
 /* ---------- header ---------- */
-header{position:relative;padding:18px 0}
 .bar{display:flex;align-items:center;gap:28px}
 .logo img{height:38px;width:auto;display:block;mix-blend-mode:multiply}
 nav{display:flex;gap:26px;margin-left:auto;font-size:14.5px;font-weight:500;color:var(--ink-2)}
@@ -104,61 +103,90 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
 .btn-top:hover{background:#16294d}
 
 /* ---------- el recorrido por la piel ---------- */
-/* La seccion es alta y el escenario queda pegado: el scroll vertical mueve
-   una camara que avanza en horizontal sobre un trozo de piel. Lo que te vas
-   encontrando en el camino son los seis motivos de consulta. */
-.viaje{position:relative;height:520vh}
-.stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate}
+/* Registro de instrumento, no de ilustracion: fondo oscuro, la piel dibujada
+   como una malla de nodos y aristas, y las lesiones como anomalias del campo.
+   La base es el azul marino del propio logo, no un verde petroleo, que seria
+   meterse justo en el terreno de la referencia. */
+.viaje{position:relative;height:520vh;
+  --noche:#0E1A30; --noche2:#16233F;
+  --luz:#A78BFA; --tinta-clara:#EDEAF9; --tinta-media:#A7B1CE}
+.stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate;
+  background:var(--noche)}
 #piel{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:-2}
-/* El velo carga a la izquierda, que es donde va el texto; la derecha se deja
-   despejada para que se vea lo que te encuentras en el camino. */
+
+/* niebla de profundidad: oscurece arriba y abajo y abre el centro-izquierda */
 .bruma{position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
-    linear-gradient(to right, rgba(245,241,251,.96) 0%, rgba(245,241,251,.88) 36%,
-      rgba(245,241,251,.30) 62%, rgba(245,241,251,.10) 100%),
-    linear-gradient(to bottom, rgba(245,241,251,.92), rgba(245,241,251,0) 22%,
-      rgba(245,241,251,0) 78%, rgba(245,241,251,.94))}
+    radial-gradient(74% 62% at 28% 50%, rgba(14,26,48,.92) 0%,
+      rgba(14,26,48,.62) 46%, rgba(14,26,48,0) 100%),
+    linear-gradient(to bottom, rgba(10,18,34,.95), rgba(10,18,34,0) 24%,
+      rgba(10,18,34,0) 72%, rgba(10,18,34,.96))}
 
-.titular{position:absolute;left:50%;top:50%;width:min(100% - 56px,620px);
+.titular{position:absolute;left:50%;top:50%;width:min(100% - 56px,660px);
   transform:translate(-50%,-50%);text-align:center;
   transition:opacity .3s ease, transform .3s ease}
 .parada{position:absolute;left:clamp(28px,7vw,110px);top:50%;width:min(100% - 56px,470px);
   transform:translateY(-50%);text-align:left;
   transition:opacity .3s ease, transform .3s ease}
 .titular[hidden],.parada[hidden]{display:none}
-.parada p{margin-left:0;margin-right:0}
 
 .titular h1{margin:0 auto;max-width:13ch;font-size:clamp(42px,6.8vw,88px);line-height:.97;
-  letter-spacing:-.042em;font-weight:800}
+  letter-spacing:-.042em;font-weight:800;color:var(--tinta-clara)}
 .titular h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
-  font-weight:400;color:var(--lav-deep);font-size:1.04em}
-.titular p{margin:20px auto 0;max-width:44ch;font-size:17px;line-height:1.55;color:var(--ink-2)}
+  font-weight:400;color:var(--luz);font-size:1.04em}
+.titular p{margin:20px auto 0;max-width:44ch;font-size:17px;line-height:1.55;
+  color:var(--tinta-media)}
 
-.parada .capa{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--lav-deep);margin-bottom:14px}
-.parada .capa::before{content:"";width:22px;height:1.5px;background:var(--lav)}
+.parada .capa{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--luz);margin-bottom:14px;
+  font-variant-numeric:tabular-nums}
+.parada .capa::before{content:"";width:26px;height:1px;background:var(--luz);opacity:.6}
 .parada h2{margin:0;font-size:clamp(28px,4vw,50px);line-height:1.04;
-  letter-spacing:-.035em;font-weight:800}
+  letter-spacing:-.035em;font-weight:800;color:var(--tinta-clara)}
 .parada h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
-  font-weight:400;color:var(--lav-deep);font-size:1.05em}
-.parada p{margin:16px auto 0;max-width:46ch;font-size:16.5px;line-height:1.55;color:var(--ink-2)}
-.parada .btn{margin-top:22px}
+  font-weight:400;color:var(--luz);font-size:1.05em}
+.parada p{margin:16px 0 0;max-width:46ch;font-size:16.5px;line-height:1.55;
+  color:var(--tinta-media)}
+.parada .btn{margin-top:24px}
 
-/* barra de escala, como en una foto de microscopio */
+/* instrumentacion */
 .escala{position:absolute;left:28px;bottom:26px;z-index:2;
-  font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
-.escala::before{content:"";display:block;width:74px;height:2px;background:var(--dim);
-  opacity:.55;margin-bottom:7px}
+  font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(167,177,206,.7);font-variant-numeric:tabular-nums}
+.escala::before{content:"";display:block;width:74px;height:1px;
+  background:rgba(167,177,206,.45);margin-bottom:8px}
 
-/* riel de avance */
-.riel{position:absolute;right:28px;top:50%;transform:translateY(-50%);z-index:2;
-  display:flex;flex-direction:column;gap:12px}
-.riel span{width:8px;height:8px;border-radius:50%;background:rgba(27,47,87,.16);
-  transition:background .25s ease, transform .25s ease}
-.riel span.on{background:var(--lav-deep);transform:scale(1.5)}
+.riel{position:absolute;right:30px;top:50%;transform:translateY(-50%);z-index:2;
+  display:flex;flex-direction:column;gap:14px;align-items:center}
+.riel span{width:7px;height:7px;border-radius:50%;background:rgba(167,177,206,.26);
+  transition:background .25s ease, transform .25s ease, box-shadow .25s ease}
+.riel span.on{background:var(--luz);transform:scale(1.55);
+  box-shadow:0 0 0 4px rgba(167,139,250,.18)}
 
-.baja{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:2;
-  font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.baja{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(177,187,214,.88);transition:opacity .4s ease}
+
+/* la cabecera flota sobre el hero mientras el hero esta en pantalla */
+header{position:fixed;top:0;left:0;right:0;z-index:40;padding:18px 0;
+  transition:background-color .3s ease, box-shadow .3s ease}
+header.posado{background:rgba(245,241,251,.86);backdrop-filter:blur(12px);
+  box-shadow:0 1px 0 rgba(27,47,87,.07)}
+/* El logo es navy sobre fondo blanco opaco: sobre el hero oscuro no hay filtro
+   que lo salve, cualquier inversion pinta la caja entera. Ahi se cambia por
+   la marca escrita, y vuelve la imagen en cuanto la cabecera se posa. */
+.logo-texto{display:none;line-height:1.1;font-weight:800;font-size:17px;
+  letter-spacing:-.025em;color:var(--tinta-clara,#EDEAF9)}
+.logo-texto small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.11em;
+  text-transform:uppercase;color:rgba(167,177,206,.75);margin-top:4px}
+.sobre-noche .logo img{display:none}
+.sobre-noche .logo-texto{display:block}
+.sobre-noche nav a{color:rgba(237,234,249,.78)}
+.sobre-noche nav a:hover{color:#fff;border-color:var(--luz)}
+.sobre-noche .btn-top{background:rgba(237,234,249,.95);color:#15223C}
+.sobre-noche .btn-top:hover{background:#fff}
+body{padding-top:76px}
+.viaje{margin-top:-76px}
 
 /* respaldo: sin animacion, en movil, o si el canvas no sirve */
 .entradas{display:none;padding:0 0 10px}
@@ -212,11 +240,17 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
   .viaje{height:420vh}
   .parada{top:63%;left:28px;right:28px;width:auto}
   .parada p{font-size:15.5px}
+  /* la niebla tambien es oscura: la version clara de antes lavaba el hero
+     entero y dejaba el texto ilegible */
   .bruma{background:
-    linear-gradient(to bottom, rgba(245,241,251,.92), rgba(245,241,251,.10) 22%,
-      rgba(245,241,251,.55) 48%, rgba(245,241,251,.95) 62%)}
-  .riel{right:16px}
-  .escala{left:18px;bottom:18px}
+    radial-gradient(90% 34% at 50% 26%, rgba(14,26,48,.55) 0%, rgba(14,26,48,.88) 100%),
+    linear-gradient(to bottom, rgba(10,18,34,.92), rgba(10,18,34,.25) 20%,
+      rgba(10,18,34,.82) 52%, rgba(10,18,34,.97) 70%)}
+  .riel{right:14px;gap:11px}
+  .escala{left:18px;bottom:16px}
+  .baja{display:none}   /* chocaba con la barra de escala */
+  .logo-texto small{display:none}
+  .btn-top{padding:10px 16px;font-size:13.5px;white-space:nowrap}
 }
 @media (prefers-reduced-motion:reduce){
   .viaje{display:none}
@@ -435,7 +469,10 @@ html{scroll-behavior:smooth}
 
 <header>
   <div class="wrap bar">
-    <a class="logo" href="#inicio"><img src="img/logo.png" alt="Dra. Silvia Villaman, médico especialista en dermatología"></a>
+    <a class="logo" href="#inicio">
+      <img src="img/logo.png" alt="Dra. Silvia Villaman, médico especialista en dermatología">
+      <span class="logo-texto" aria-hidden="true">Dra. Silvia Villaman<small>Dermatología pediátrica</small></span>
+    </a>
     <nav>
       <a href="#doctora">La doctora</a>
       <a href="#atiende">Padecimientos</a>
@@ -913,208 +950,230 @@ html{scroll-behavior:smooth}
 
 <script>
 (function(){
-  /* El recorrido. El scroll vertical mueve una camara que avanza en horizontal
-     sobre un trozo de piel; lo que aparece en el camino son los seis motivos.
-     Dos capas de textura a distinta velocidad hacen la profundidad. */
+  /* El recorrido, en registro de instrumento. La piel se dibuja como una malla
+     de nodos y aristas —el microrelieve es un campo de celdas, asi que la malla
+     no es un adorno— y las lesiones son anomalias de ese campo, no dibujos.
+     El scroll vertical avanza una camara en horizontal. */
   var sec = document.getElementById('inicio');
   var cv  = document.getElementById('piel');
   var riel = document.getElementById('riel');
   var baja = document.getElementById('baja');
+  var cabecera = document.querySelector('header');
   if (!sec || !cv || !cv.getContext){ document.documentElement.className += ' sin-viaje'; return; }
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.documentElement.className += ' sin-viaje';
+    if (cabecera) cabecera.classList.add('posado');
+    return;
+  }
 
   var ctx = cv.getContext('2d');
   var bloques = [].slice.call(sec.querySelectorAll('[data-at]'));
   var paradas = bloques.filter(function(b){ return b.classList.contains('parada'); });
-
   paradas.forEach(function(){ riel.appendChild(document.createElement('span')); });
   var puntos = [].slice.call(riel.children);
 
-  /* ---- textura: ruido celular, el microrelieve de la piel ---- */
-  function tejido(W, H, cols, aniso, claro, oscuro){
-    var t = document.createElement('canvas'); t.width = W; t.height = H;
-    var g = t.getContext('2d');
-    var cw = W / cols, rows = Math.max(3, Math.round(H / (cw * aniso))), ch = H / rows;
-    var n = cols * rows, px = new Float32Array(n), py = new Float32Array(n);
-    for (var gy = 0; gy < rows; gy++) for (var gx = 0; gx < cols; gx++){
-      var k = gy * cols + gx, sesgo = (gy % 2) * 0.5;
-      px[k] = ((gx + sesgo) % cols + 0.15 + Math.random() * 0.7) * cw;
-      py[k] = (gy + 0.15 + Math.random() * 0.7) * ch;
-    }
-    var img = g.createImageData(W, H), d = img.data, esc = Math.min(cw, ch) * 0.85;
-    for (var y = 0; y < H; y++){
-      var gy0 = Math.floor(y / ch);
-      for (var x = 0; x < W; x++){
-        var gx0 = Math.floor(x / cw), f1 = 1e9, f2 = 1e9;
-        /* Las celdas de los bordes se buscan dando la vuelta: eso hace la tela
-           periodica y mata la costura cuando se repite. */
-        for (var jy = gy0 - 1; jy <= gy0 + 1; jy++){
-          var wy = ((jy % rows) + rows) % rows;
-          var offY = jy < 0 ? -H : (jy >= rows ? H : 0);
-          for (var jx = gx0 - 1; jx <= gx0 + 1; jx++){
-            var wx = ((jx % cols) + cols) % cols;
-            var offX = jx < 0 ? -W : (jx >= cols ? W : 0);
-            var k2 = wy * cols + wx;
-            var dx = x - (px[k2] + offX), dy = (y - (py[k2] + offY)) / aniso;
-            var di = Math.sqrt(dx * dx + dy * dy);
-            if (di < f1){ f2 = f1; f1 = di; } else if (di < f2){ f2 = di; }
-          }
-        }
-        var v = (f2 - f1) / esc; if (v > 1) v = 1; v = v * v * (3 - 2 * v);
-        var i = (y * W + x) * 4;
-        d[i]   = oscuro[0] + (claro[0] - oscuro[0]) * v;
-        d[i+1] = oscuro[1] + (claro[1] - oscuro[1]) * v;
-        d[i+2] = oscuro[2] + (claro[2] - oscuro[2]) * v;
-        d[i+3] = 255;
-      }
-    }
-    g.putImageData(img, 0, 0);
-    return t;
-  }
+  var PASO = 62;            /* separacion de la malla */
+  var vw = 0, vh = 0, mundo = 0;
+  var nodos = [], cols = 0, filas = 0, anomalias = [], polvo = [];
 
-  /* Celdas chicas y poco contraste: con celdas grandes y marcadas esto deja de
-     parecer piel y empieza a parecer reptil. */
-  var tela = tejido(560, 380, 38, 0.68, [250,247,254], [237,231,247]);
-
-  /* ---- el mundo ---- */
-  var vw = 0, vh = 0, mundo = 0, poros = [], accidentes = [];
-
+  /* ---- el campo ---- */
   function siembra(){
     mundo = vw * 5.5;
-    poros = [];
-    for (var i = 0; i < 220; i++){
-      poros.push({ x: Math.random() * mundo, y: Math.random() * vh,
-                   r: 1 + Math.random() * 2.2, a: 0.05 + Math.random() * 0.1 });
-    }
-    poros.sort(function(a,b){ return a.x - b.x; });
-    accidentes = paradas.map(function(p, i){
+    cols = Math.ceil(mundo / PASO) + 2;
+    filas = Math.ceil(vh / PASO) + 2;
+
+    anomalias = paradas.map(function(p, i){
       var at = parseFloat(p.dataset.at);
-      /* en ancho, a la derecha del texto; en angosto no cabe al lado,
-         asi que se va arriba y el texto baja (lo hace el CSS) */
       var angosto = vw < 780;
-      return { tipo: p.dataset.sintoma, i: i,
-               x: at * (mundo - vw) + vw * (angosto ? 0.5 : 0.74),
-               y: angosto ? vh * 0.27 : vh * (0.46 + ((i % 3) - 1) * 0.09) };
+      return { tipo: p.dataset.sintoma, i: i, at: at,
+               x: at * (mundo - vw) + vw * (angosto ? 0.5 : 0.72),
+               y: angosto ? vh * 0.28 : vh * (0.47 + ((i % 3) - 1) * 0.08),
+               r: angosto ? 150 : 215 };
     });
+
+    /* cada nodo guarda su posicion ya deformada y cuanto lo ilumina la anomalia
+       mas cercana: asi el campo "sabe" donde esta la lesion sin dibujarla */
+    nodos = new Array(cols * filas);
+    for (var f = 0; f < filas; f++){
+      for (var c = 0; c < cols; c++){
+        var x = (c - 1) * PASO + (Math.sin(c * 12.9 + f * 7.3) * 0.5 + 0.5) * PASO * 0.55;
+        var y = (f - 1) * PASO + (Math.sin(c * 4.1 + f * 19.7) * 0.5 + 0.5) * PASO * 0.55;
+        var br = 0, dx = 0, dy = 0, rota = 0;
+        for (var k = 0; k < anomalias.length; k++){
+          var a = anomalias[k];
+          var ex = x - a.x, ey = y - a.y;
+          var d = Math.sqrt(ex * ex + ey * ey);
+          if (d > a.r) continue;
+          var t = 1 - d / a.r;
+          t = t * t;
+          br = Math.max(br, t);
+          if (a.tipo === 'ronchas' || a.tipo === 'lunar'){      /* empuja hacia afuera */
+            dx += (ex / (d || 1)) * t * 16; dy += (ey / (d || 1)) * t * 16;
+          } else if (a.tipo === 'mancha'){                       /* atrae y apaga */
+            dx -= (ex / (d || 1)) * t * 9;  dy -= (ey / (d || 1)) * t * 9;
+          } else if (a.tipo === 'seca'){                         /* rompe la malla */
+            rota = Math.max(rota, t);
+          }
+        }
+        nodos[f * cols + c] = { x: x + dx, y: y + dy, br: br, rota: rota };
+      }
+    }
+
+    polvo = [];
+    for (var i = 0; i < 90; i++){
+      polvo.push({ x: Math.random() * mundo, y: Math.random() * vh,
+                   r: 0.6 + Math.random() * 1.6, v: 0.5 + Math.random() * 0.9,
+                   a: 0.10 + Math.random() * 0.22 });
+    }
+    polvo.sort(function(a,b){ return a.x - b.x; });
   }
 
-  /* ---- lo que te encuentras en el camino ---- */
-  function mancha(g, x, y, s){
-    for (var i = 0; i < 4; i++){
-      var ox = (Math.cos(i * 2.1) * 26 + 8) * s, oy = (Math.sin(i * 1.7) * 20) * s, r = (62 - i * 8) * s;
-      var gr = g.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, r);
-      gr.addColorStop(0, "rgba(151,112,122,.26)");
-      gr.addColorStop(1, "rgba(151,112,122,0)");
-      g.fillStyle = gr; g.beginPath(); g.arc(x + ox, y + oy, r, 0, 6.3); g.fill();
-    }
-  }
-  function ronchas(g, x, y, s){
-    for (var i = 0; i < 7; i++){
-      var ox = Math.cos(i * 1.9) * 70 * s, oy = Math.sin(i * 2.6) * 46 * s, r = (15 + (i % 3) * 7) * s;
-      var gr = g.createRadialGradient(x + ox - r * .3, y + oy - r * .3, r * .1, x + ox, y + oy, r);
-      gr.addColorStop(0, "rgba(214,138,152,.42)");
-      gr.addColorStop(.7, "rgba(205,122,138,.26)");
-      gr.addColorStop(1, "rgba(205,122,138,0)");
-      g.fillStyle = gr; g.beginPath(); g.arc(x + ox, y + oy, r, 0, 6.3); g.fill();
-    }
-  }
-  function seca(g, x, y, s){
-    /* grietas que serpentean y se cruzan, no rayos saliendo de un centro:
-       en radial esto parecia un destello y decia otra cosa */
-    g.save(); g.lineCap = "round";
-    g.strokeStyle = "rgba(124,108,144,.26)";
-    for (var i = 0; i < 5; i++){
-      var ang = i * 1.1 + 0.4;
-      var cx = x + Math.cos(ang + 2) * 72 * s, cy = y + Math.sin(ang + 2) * 46 * s;
-      g.lineWidth = (1.1 + (i % 2) * .6) * s;
-      g.beginPath(); g.moveTo(cx, cy);
-      for (var j = 0; j < 6; j++){
-        ang += Math.sin(i * 3.1 + j * 1.7) * 0.75;
-        cx += Math.cos(ang) * 26 * s; cy += Math.sin(ang) * 17 * s;
-        g.lineTo(cx, cy);
+  /* ---- la malla ---- */
+  function malla(camX, ancho, alfa){
+    var c0 = Math.max(1, Math.floor(camX / PASO) - 1);
+    var c1 = Math.min(cols - 2, Math.ceil((camX + vw) / PASO) + 1);
+    ctx.lineWidth = ancho;
+    ctx.beginPath();
+    for (var f = 1; f < filas - 1; f++){
+      for (var c = c0; c <= c1; c++){
+        var n = nodos[f * cols + c];
+        if (n.rota > 0.45) continue;                  /* aqui la piel esta partida */
+        var der = nodos[f * cols + c + 1];
+        var aba = nodos[(f + 1) * cols + c];
+        if (der && der.rota <= 0.45){ ctx.moveTo(n.x, n.y); ctx.lineTo(der.x, der.y); }
+        if (aba && aba.rota <= 0.45){ ctx.moveTo(n.x, n.y); ctx.lineTo(aba.x, aba.y); }
       }
+    }
+    ctx.strokeStyle = 'rgba(146,167,230,' + alfa + ')';
+    ctx.stroke();
+
+    /* nodos: cuadritos en vez de arcos, muchisimo mas baratos */
+    for (var f2 = 1; f2 < filas - 1; f2++){
+      for (var c2 = c0; c2 <= c1; c2++){
+        var m = nodos[f2 * cols + c2];
+        if (m.rota > 0.45) continue;
+        var b = m.br;
+        if (b > 0.04){
+          ctx.fillStyle = 'rgba(199,180,255,' + (0.25 + b * 0.65) + ')';
+          var s = 1.6 + b * 3.2;
+          ctx.fillRect(m.x - s / 2, m.y - s / 2, s, s);
+        } else {
+          ctx.fillStyle = 'rgba(170,186,235,' + (alfa * 1.5) + ')';
+          ctx.fillRect(m.x - 0.9, m.y - 0.9, 1.8, 1.8);
+        }
+      }
+    }
+  }
+
+  /* ---- las anomalias, abstractas ---- */
+  function halo(g, x, y, r, col, a){
+    var gr = g.createRadialGradient(x, y, 0, x, y, r);
+    gr.addColorStop(0, col.replace('A', a));
+    gr.addColorStop(1, col.replace('A', '0'));
+    g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 6.3); g.fill();
+  }
+
+  var glifo = {
+    seca: function(g, x, y){
+      halo(g, x, y, 190, 'rgba(167,139,250,A)', '.12');
+    },
+    mancha: function(g, x, y){
+      halo(g, x, y, 200, 'rgba(10,16,32,A)', '.78');
+      halo(g, x, y, 120, 'rgba(10,16,32,A)', '.6');
+    },
+    ronchas: function(g, x, y){
+      for (var i = 0; i < 6; i++){
+        var ox = Math.cos(i * 1.9) * 74, oy = Math.sin(i * 2.6) * 50;
+        halo(g, x + ox, y + oy, 34 + (i % 3) * 10, 'rgba(199,180,255,A)', '.34');
+      }
+    },
+    lunar: function(g, x, y){
+      halo(g, x, y, 150, 'rgba(167,139,250,A)', '.26');
+      g.fillStyle = 'rgba(236,232,255,.95)';
+      g.beginPath(); g.arc(x, y, 5.5, 0, 6.3); g.fill();
+      g.strokeStyle = 'rgba(199,180,255,.4)'; g.lineWidth = 1;
+      for (var k = 1; k <= 3; k++){
+        g.beginPath(); g.arc(x, y, 22 * k, 0, 6.3); g.stroke();
+      }
+    },
+    acne: function(g, x, y){
+      for (var i = 0; i < 5; i++){
+        var ox = (i - 2) * 46, oy = Math.sin(i * 1.4) * 30;
+        halo(g, x + ox, y + oy, 30, 'rgba(226,161,60,A)', '.30');
+        g.fillStyle = 'rgba(252,240,214,.9)';
+        g.beginPath(); g.arc(x + ox, y + oy, 2.6, 0, 6.3); g.fill();
+      }
+    },
+    cabello: function(g, x, y){
+      g.save(); g.lineCap = 'round';
+      for (var i = 0; i < 7; i++){
+        var ox = (i - 3) * 27, L = 120 + (i % 3) * 54;
+        g.strokeStyle = 'rgba(199,180,255,' + (0.14 + (i % 2) * 0.12) + ')';
+        g.lineWidth = 1 + (i % 2) * 0.6;
+        g.beginPath(); g.moveTo(x + ox, y + 40);
+        g.quadraticCurveTo(x + ox + (i % 2 ? 46 : -46), y - L * 0.4, x + ox + (i % 2 ? 70 : -70), y - L);
+        g.stroke();
+      }
+      g.restore();
+    }
+  };
+
+  /* mira de instrumento sobre la anomalia activa */
+  function mira(g, x, y, r, fuerza){
+    g.save();
+    g.globalAlpha = fuerza;
+    g.strokeStyle = 'rgba(199,180,255,.55)'; g.lineWidth = 1;
+    g.beginPath(); g.arc(x, y, r, 0, 6.3); g.stroke();
+    var t = 9;
+    [[0,-1],[0,1],[-1,0],[1,0]].forEach(function(d){
+      g.beginPath();
+      g.moveTo(x + d[0] * (r - t), y + d[1] * (r - t));
+      g.lineTo(x + d[0] * (r + t), y + d[1] * (r + t));
       g.stroke();
-    }
-    g.fillStyle = "rgba(255,255,255,.55)";
-    for (var k = 0; k < 14; k++){
-      var ox = Math.cos(k * 2.3) * 80 * s, oy = Math.sin(k * 1.6) * 52 * s;
-      g.beginPath(); g.ellipse(x + ox, y + oy, 8 * s, 4.5 * s, k * .9, 0, 6.3); g.fill();
-    }
+    });
     g.restore();
   }
-  function lunar(g, x, y, s){
-    var gr = g.createRadialGradient(x - 6 * s, y - 6 * s, 2 * s, x, y, 30 * s);
-    gr.addColorStop(0, "rgba(118,92,96,.80)");
-    gr.addColorStop(.72, "rgba(96,74,82,.66)");
-    gr.addColorStop(1, "rgba(96,74,82,0)");
-    g.fillStyle = gr; g.beginPath(); g.ellipse(x, y, 30 * s, 26 * s, .3, 0, 6.3); g.fill();
-    g.fillStyle = "rgba(255,255,255,.22)";
-    g.beginPath(); g.ellipse(x - 9 * s, y - 9 * s, 7 * s, 4.5 * s, .5, 0, 6.3); g.fill();
-  }
-  function acne(g, x, y, s){
-    for (var i = 0; i < 5; i++){
-      var ox = Math.cos(i * 2.4) * 58 * s, oy = Math.sin(i * 1.3) * 38 * s, r = (11 + (i % 2) * 5) * s;
-      var gr = g.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, r * 2.2);
-      gr.addColorStop(0, "rgba(201,104,112,.40)");
-      gr.addColorStop(1, "rgba(201,104,112,0)");
-      g.fillStyle = gr; g.beginPath(); g.arc(x + ox, y + oy, r * 2.2, 0, 6.3); g.fill();
-      g.fillStyle = "rgba(252,248,240,.85)";
-      g.beginPath(); g.arc(x + ox, y + oy, r * .42, 0, 6.3); g.fill();
-    }
-  }
-  function cabello(g, x, y, s){
-    g.save(); g.lineCap = "round"; g.strokeStyle = "rgba(96,80,102,.42)";
-    for (var i = 0; i < 9; i++){
-      var ox = (i - 4) * 19 * s, L = (46 + (i % 3) * 26) * s, cur = (i % 2 ? 1 : -1) * 22 * s;
-      g.lineWidth = (1.1 + (i % 2) * .5) * s;
-      g.beginPath(); g.moveTo(x + ox, y + 18 * s);
-      g.quadraticCurveTo(x + ox + cur, y - L * .5, x + ox + cur * 1.6, y - L); g.stroke();
-      g.fillStyle = "rgba(120,100,128,.22)";
-      g.beginPath(); g.ellipse(x + ox, y + 18 * s, 3.2 * s, 2 * s, 0, 0, 6.3); g.fill();
-    }
-    g.strokeStyle = "rgba(96,80,102,.3)"; g.lineWidth = 1.2 * s;
-    g.beginPath(); g.moveTo(x + 60 * s, y + 52 * s);
-    g.bezierCurveTo(x + 110 * s, y + 38 * s, x + 130 * s, y + 70 * s, x + 182 * s, y + 56 * s);
-    g.stroke(); g.restore();
-  }
-  var dibujo = { seca: seca, mancha: mancha, ronchas: ronchas,
-                 lunar: lunar, acne: acne, cabello: cabello };
 
   /* ---- pintar ---- */
-  function capa(camX, vel, escala, alfa){
-    var w = tela.width * escala, h = tela.height * escala;
-    var off = -((camX * vel) % w);
-    ctx.globalAlpha = alfa;
-    /* sin espejear: el espejo crea parejas simetricas que el ojo detecta
-       enseguida. Con una tela grande y poco contraste, la repeticion no canta. */
-    for (var y = -h; y < vh + h; y += h){
-      for (var x = off - w; x < vw + w; x += w){
-        ctx.drawImage(tela, x, y, w, h);
-      }
-    }
-    ctx.globalAlpha = 1;
-  }
-
   function pinta(p){
     var camX = p * (mundo - vw);
     ctx.clearRect(0, 0, vw, vh);
-    capa(camX, 0.42, 2.3, 0.55);
-    capa(camX, 1.00, 1.0, 0.92);
+
+    /* malla lejana: mas chica, mas lenta, apenas visible */
+    ctx.save();
+    ctx.translate(-camX * 0.45, vh * 0.08);
+    ctx.scale(0.62, 0.62);
+    malla(camX * 0.45 / 0.62, 0.7, 0.055);
+    ctx.restore();
 
     ctx.save(); ctx.translate(-camX, 0);
-    for (var i = 0; i < poros.length; i++){
-      var po = poros[i];
-      if (po.x < camX - 20) continue;
-      if (po.x > camX + vw + 20) break;
-      ctx.fillStyle = "rgba(120,104,146," + po.a + ")";
-      ctx.beginPath(); ctx.ellipse(po.x, po.y, po.r, po.r * .7, 0, 0, 6.3); ctx.fill();
+
+    /* polvo en suspension */
+    for (var i = 0; i < polvo.length; i++){
+      var q = polvo[i];
+      if (q.x < camX - 10) continue;
+      if (q.x > camX + vw + 10) break;
+      ctx.fillStyle = 'rgba(199,180,255,' + q.a + ')';
+      ctx.fillRect(q.x, q.y, q.r, q.r);
     }
-    var s = Math.min(1.5, vw / 900);
-    for (var j = 0; j < accidentes.length; j++){
-      var a = accidentes[j];
-      if (a.x < camX - 340 || a.x > camX + vw + 340) continue;
-      (dibujo[a.tipo] || mancha)(ctx, a.x, a.y, s);
+
+    /* las sombras van debajo de la malla, las luces encima */
+    for (var j = 0; j < anomalias.length; j++){
+      var a = anomalias[j];
+      if (a.x < camX - 420 || a.x > camX + vw + 420) continue;
+      if (a.tipo === 'mancha') glifo.mancha(ctx, a.x, a.y);
     }
+
+    malla(camX, 1, 0.13);
+
+    for (var k = 0; k < anomalias.length; k++){
+      var b = anomalias[k];
+      if (b.x < camX - 420 || b.x > camX + vw + 420) continue;
+      if (b.tipo !== 'mancha' && glifo[b.tipo]) glifo[b.tipo](ctx, b.x, b.y);
+      var cerca = 1 - Math.min(1, Math.abs(p - b.at) / 0.075);
+      if (cerca > 0) mira(ctx, b.x, b.y, b.r * 0.72, cerca * 0.9);
+    }
+
     ctx.restore();
   }
 
@@ -1126,24 +1185,29 @@ html{scroll-behavior:smooth}
     var r = sec.getBoundingClientRect();
     var total = r.height - window.innerHeight;
     var p = total > 0 ? Math.max(0, Math.min(1, -r.top / total)) : 0;
+
+    /* la cabecera se posa cuando el hero deja la pantalla */
+    var sobre = r.bottom > 90;
+    document.documentElement.classList.toggle('sobre-noche', sobre);
+    cabecera.classList.toggle('posado', !sobre);
+
     if (Math.abs(p - ultimo) < 0.0004) return;
     ultimo = p;
     pinta(p);
 
     bloques.forEach(function(b){
       var at = parseFloat(b.dataset.at);
-      var esTitular = b.classList.contains("titular");
+      var esTitular = b.classList.contains('titular');
       var vent = esTitular ? 0.10 : 0.075;
       var w = 1 - Math.abs(p - at) / vent;
       if (w <= 0){ b.hidden = true; return; }
       b.hidden = false;
       b.style.opacity = w.toFixed(3);
-      /* el titular va centrado, las paradas pegadas a la izquierda */
-      b.style.transform = (esTitular ? "translate(-50%,-50%)" : "translateY(-50%)") +
-        " translateY(" + ((1 - w) * 16).toFixed(1) + "px)";
+      b.style.transform = (esTitular ? 'translate(-50%,-50%)' : 'translateY(-50%)') +
+        ' translateY(' + ((1 - w) * 16).toFixed(1) + 'px)';
     });
     paradas.forEach(function(b, i){
-      puntos[i].classList.toggle("on", Math.abs(p - parseFloat(b.dataset.at)) < 0.075);
+      puntos[i].classList.toggle('on', Math.abs(p - parseFloat(b.dataset.at)) < 0.075);
     });
     baja.style.opacity = p > 0.03 ? 0 : 1;
   }
@@ -1161,10 +1225,9 @@ html{scroll-behavior:smooth}
   }
 
   mide();
-  addEventListener("scroll", pide, {passive:true});
-  var t; addEventListener("resize", function(){ clearTimeout(t); t = setTimeout(mide, 200); });
+  addEventListener('scroll', pide, {passive:true});
+  var t; addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(mide, 200); });
 })();
-
 
 /* aparicion al bajar */
 (function(){

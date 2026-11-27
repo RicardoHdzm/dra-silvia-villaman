@@ -40,17 +40,37 @@ tubo** y dice "nueve metros, ella cuida el último tramo". Este es un viaje
 mecánica, como dos películas comparten el travelling, pero no geometría,
 ni métrica, ni mensaje.
 
+**El registro es de instrumento, no de ilustración.** Fondo oscuro, la piel
+dibujada como una malla de nodos y aristas, y las lesiones como anomalías de
+ese campo: no se dibuja un lunar, se dibuja lo que un lunar le hace a la malla.
+
+El color base es el **azul marino del propio logo**, no un verde petróleo. Eso
+es deliberado: el verde azulado es el terreno de la referencia, y usarlo sería
+cruzar la línea que todo este trabajo ha tratado de no cruzar.
+
 Lo técnico, en `index.html`:
 
-- La piel es ruido celular (Worley) generado al cargar en un canvas de 560×380
-  y repetido. El ruido es **periódico** —las celdas del borde se buscan dando la
-  vuelta— porque si no, cada repetición deja una costura vertical visible.
-- Dos capas de la misma tela a distinta velocidad y escala hacen la profundidad.
-- Los accidentes del camino se dibujan con trazos de canvas, no con imágenes.
-- `0 KB` de descarga: todo es generado. La tela tarda ~18 ms una vez.
-  Para comparar, drailse baja unos 600 KB de three.js solo para su túnel.
-- En pantallas angostas el accidente se va arriba y el texto baja, porque al
-  lado no caben.
+- La malla es una retícula de nodos con desplazamiento fijo. Cada anomalía
+  deforma los nodos cercanos y los ilumina: `ronchas` y `lunar` los empujan
+  hacia afuera, `mancha` los atrae y los apaga, `seca` los desconecta y deja
+  la malla rota.
+- Se dibuja en **un solo trazo por capa** —todos los segmentos en un `Path2D`
+  y un `stroke`—, y los nodos son `fillRect` y no arcos. Medido: **0.19 ms** por
+  cuadro para 900 segmentos y 320 nodos, o sea 16.5 ms de margen a 60 fps.
+- Dos capas a distinta velocidad y escala hacen la profundidad, más polvo en
+  suspensión.
+- `0 KB` de descarga: todo es generado. Para comparar, drailse baja unos 600 KB
+  de three.js solo para su túnel.
+- La cabecera flota sobre el hero con la marca escrita, no con `logo.png`:
+  ese archivo es navy sobre blanco **opaco**, y sobre fondo oscuro no hay filtro
+  que lo salve, cualquier inversión pinta la caja entera. Cuando el hero sale de
+  pantalla, la cabecera se posa y vuelve la imagen.
+- Contrastes medidos sobre el fondo oscuro: título 14.7:1, cuerpo 8.1:1,
+  etiqueta de capa 6.4:1, barra de escala 4.6:1.
+- En pantallas angostas la anomalía se va arriba y el texto baja, porque al
+  lado no caben. **Ojo:** la niebla tiene su propia versión en móvil; si se
+  queda la clara encima del hero oscuro, lava todo y el texto se vuelve
+  ilegible.
 - Con `prefers-reduced-motion` el recorrido no se muestra y en su lugar aparece
   la banda `.entradas`, que es el hero anterior con las seis tarjetas.
 
