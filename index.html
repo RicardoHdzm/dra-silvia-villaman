@@ -124,7 +124,15 @@ h1 .l2{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weigh
 [data-lado="adultos"] .subs .s2{opacity:1;visibility:visible;transform:none;
   transition:opacity .2s ease, transform .2s ease, visibility 0s}
 
+.next-date{display:inline-flex;align-items:center;gap:10px;margin:18px 0 0;
+  font-size:14px;font-weight:600;color:var(--ink-2)}
+.next-date b{color:var(--ink)}
+.next-date::before{content:"";width:7px;height:7px;flex:none;border-radius:50%;
+  background:var(--amber);box-shadow:0 0 0 4px rgba(226,161,60,.22)}
+.next-date[hidden]{display:none}
+
 .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.next-date + .ctas{margin-top:16px}
 .btn-path{
   color:var(--ink);
   border-color:color-mix(in oklab, var(--amber-deep) calc(35% + var(--f)*65%), transparent);
@@ -425,16 +433,22 @@ html{scroll-behavior:smooth}
         <p class="s2">Acné, melasma, manchas, láser y dermocosmética. Un plan realista para tu piel, con la misma especialista que ya atiende a tus hijos.</p>
       </div>
 
+      <p class="next-date" id="proxima" hidden></p>
+
       <div class="ctas">
-        <a class="btn btn-path" id="p1" data-side="0"
-           href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quiero%20agendar%20una%20consulta%20para%20mi%20hijo.">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.2-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.3.3c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6 0l.9-1c.2-.2.4-.2.6-.1l2 1c.2.1.4.2.4.3.1.1.1.6-.1 1.1Z"/></svg>
-          Consulta para mi hijo
+        <a class="btn btn-path" id="p1" data-side="0" data-ir-agendar="hijo" href="#agendar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7.5 2.5v3M16.5 2.5v3M3.5 9.5h17M5.5 4.5h13a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2Z"/>
+          </svg>
+          Agendar para mi hijo
         </a>
-        <a class="btn btn-path" id="p2" data-side="1"
-           href="https://wa.me/526677512919?text=Hola%2C%20doctora.%20Quiero%20agendar%20una%20consulta%20de%20dermatolog%C3%ADa%20para%20m%C3%AD.">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.2-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.3.3c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6 0l.9-1c.2-.2.4-.2.6-.1l2 1c.2.1.4.2.4.3.1.1.1.6-.1 1.1Z"/></svg>
-          Consulta para mí
+        <a class="btn btn-path" id="p2" data-side="1" data-ir-agendar="mi" href="#agendar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7.5 2.5v3M16.5 2.5v3M3.5 9.5h17M5.5 4.5h13a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2Z"/>
+          </svg>
+          Agendar para mí
         </a>
       </div>
 
@@ -1073,15 +1087,38 @@ html{scroll-behavior:smooth}
     enviar.setAttribute('aria-disabled','true');
   }
 
-  document.getElementById('who').addEventListener('click', function(e){
-    var b = e.target.closest ? e.target.closest('.chip') : null;
-    if (!b) return;
-    estado.quien = b.dataset.who;
-    [].forEach.call(this.querySelectorAll('.chip'), function(c){
-      c.setAttribute('aria-pressed', c === b ? 'true' : 'false');
+  function elegirQuien(w){
+    if (!MOTIVOS[w]) return;
+    estado.quien = w;
+    [].forEach.call(document.querySelectorAll('#who .chip'), function(c){
+      c.setAttribute('aria-pressed', c.dataset.who === w ? 'true' : 'false');
     });
     pintarMotivos(); actualizar();
+  }
+
+  document.getElementById('who').addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('.chip') : null;
+    if (b) elegirQuien(b.dataset.who);
   });
+
+  /* los CTA del hero bajan hasta aqui con el lado ya elegido */
+  [].forEach.call(document.querySelectorAll('[data-ir-agendar]'), function(a){
+    a.addEventListener('click', function(){ elegirQuien(a.dataset.irAgendar); });
+  });
+
+  /* la primera fecha con espacio, calculada de HORARIOS y escrita en el hero */
+  (function(){
+    var p = document.getElementById('proxima');
+    if (!p) return;
+    for (var i = 0; i <= DIAS_MAXIMOS; i++){
+      var d = addDays(hoy, i);
+      if (!disponible(d)) continue;
+      p.innerHTML = 'Puedes pedir cita desde el <b>' +
+        d.toLocaleDateString('es-MX',{weekday:'long', day:'numeric'}) + '</b>.';
+      p.hidden = false;
+      return;
+    }
+  })();
 
   grid.addEventListener('keydown', function(e){
     var paso = {ArrowLeft:-1, ArrowRight:1, ArrowUp:-7, ArrowDown:7}[e.key];

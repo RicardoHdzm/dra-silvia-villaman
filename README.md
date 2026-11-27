@@ -34,8 +34,20 @@ se enciende, la atmósfera del fondo y el desplazamiento de la foto. Se controla
 con el cursor en escritorio, al pasar o enfocar cada botón, y con el control
 arrastrable, que es el único camino en táctil y con teclado.
 
-Cada CTA abre WhatsApp con un texto distinto ya escrito, para que ella sepa de
-qué se trata antes de abrir el chat.
+Los dos CTA del hero no abren WhatsApp: bajan a la sección de agendar **con el
+lado ya elegido**, así que el hero es el primer paso del flujo y no un póster.
+El camino directo a WhatsApp sigue existiendo en la sección de agendar, en
+"dónde atiende" y en el cierre.
+
+Debajo del titular hay una línea viva — "Puedes pedir cita desde el viernes 27" —
+calculada de la misma constante `HORARIOS`. Se actualiza sola y dice "pedir",
+no "reservar", porque eso es lo que de verdad hace el sitio.
+
+El lado activo del hero es un estado discreto (`data-lado` en la sección:
+`ninos` · `neutro` · `adultos`) y el CSS decide por clase qué texto, qué color
+de titular y qué CTA se enciende. **No usar aritmética de opacidades para
+esto**: la versión anterior lo hacía y, con el puntero a media travesía, dos
+párrafos quedaban encimados.
 
 Secciones: hero · la doctora · padecimientos (dos carriles) · la consulta paso a
 paso · **agendar** · opiniones · preguntas · dónde y cuánto · cierre · pie.
