@@ -27,6 +27,10 @@
   "alumniOf": [
     { "@type": "CollegeOrUniversity", "name": "Universidad Autónoma de Sinaloa" },
     { "@type": "Hospital", "name": "Hospital Infantil de México Federico Gómez" }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/dra.silviavillaman/",
+    "https://www.doctoralia.com.mx/perfil/silvia-villaman"
   ]
 }
 </script>
@@ -219,24 +223,27 @@ section{position:relative;padding:94px 0}
   padding:26px 28px;box-shadow:0 14px 40px rgba(27,47,87,.06)}
 
 /* la doctora */
-.doc{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:start}
+.doc{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:56px;align-items:center}
 .doc p{margin:0 0 16px;font-size:16.5px;line-height:1.62;color:var(--ink-2);max-width:54ch}
 .doc .lead{font-size:20px;line-height:1.5;color:var(--ink);font-weight:500;margin-bottom:20px}
-/* El retrato de estudio, encuadrado por CSS. El recorte se detiene al 88% de
-   ancho a proposito: del 93.6% en adelante empieza el texto del fondo del set.
-   La foto no trae transparencia, pero el fondo es casi blanco y multiply lo
-   funde con la tarjeta, asi que no hace falta recortarla. */
-.doc-foto{position:relative;aspect-ratio:434/491;border-radius:16px;overflow:hidden;
-  margin:0 0 22px;background-color:#EDE9F7;
+/* El retrato va suelto, sin marco ni tarjeta: la foto no trae transparencia,
+   pero su fondo es casi blanco y multiply lo disuelve en el lavanda de la
+   pagina. La mascara de abajo se come la sombra del piso del set, que es lo
+   unico que delataria que hay un rectangulo. El encuadre se detiene al 90% de
+   ancho porque del 93.6% en adelante empieza el texto del fondo. */
+.doc-foto{position:relative;aspect-ratio:456/753;width:min(100%,430px);justify-self:center;
   background-image:url("img/dra-retrato.png");
-  background-size:125% auto;background-position:40% 9.5%;background-repeat:no-repeat;
-  mix-blend-mode:multiply}
+  background-size:119% auto;background-position:37.5% 27.3%;background-repeat:no-repeat;
+  mix-blend-mode:multiply;
+  -webkit-mask-image:linear-gradient(to bottom, #000 72%, transparent 97%);
+  mask-image:linear-gradient(to bottom, #000 72%, transparent 97%)}
 
-.facts{list-style:none;margin:0;padding:0}
-.facts li{display:grid;grid-template-columns:104px 1fr;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
-.facts li:last-child{border-bottom:0}
-.facts .k{color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:11px;padding-top:3px}
-.facts .v{color:var(--ink);font-weight:600;font-size:14.5px;line-height:1.45}
+.facts{list-style:none;margin:30px 0 0;padding:0;
+  display:grid;grid-template-columns:1fr 1fr;gap:0 36px}
+.facts li{padding:13px 0;border-top:1px solid var(--line)}
+.facts .k{display:block;color:var(--dim);font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;font-size:10.5px;margin-bottom:4px}
+.facts .v{display:block;color:var(--ink);font-weight:600;font-size:14.5px;line-height:1.4}
 
 /* dos carriles */
 .lanes{display:grid;grid-template-columns:1fr 1px 1fr;gap:0 46px;align-items:start}
@@ -309,6 +316,25 @@ section{position:relative;padding:94px 0}
 #enviar[aria-disabled="true"]{opacity:.4;pointer-events:none}
 .bk-foot{margin:12px 0 0;font-size:12.5px;line-height:1.5;color:var(--dim)}
 
+/* opiniones */
+.ops{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.op{background:rgba(255,255,255,.72);border:1px solid rgba(27,47,87,.08);border-radius:18px;
+  padding:20px 22px;box-shadow:0 10px 30px rgba(27,47,87,.05)}
+.op-top{display:flex;align-items:center;gap:10px;margin-bottom:13px;flex-wrap:wrap}
+.op-ini{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:rgba(126,111,196,.16);color:var(--lav-deep);font-weight:800;font-size:13px}
+.op-nombre{font-weight:800;font-size:15.5px;letter-spacing:-.015em}
+.op-ver{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;
+  padding:4px 10px;border-radius:999px;background:#E4F2EA;color:#1F6B4A}
+.op-ver svg{width:12px;height:12px;flex:none}
+.estrellas{margin-left:auto;display:inline-flex;gap:2px;color:var(--amber)}
+.estrellas svg{width:15px;height:15px}
+.op q{quotes:none;display:block;font-size:16px;line-height:1.55;color:var(--ink)}
+.op-pie{margin:14px 0 0;font-size:12.5px;color:var(--dim)}
+.ops-foot{margin:26px 0 0;display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;
+  font-size:14.5px;color:var(--ink-2)}
+.ops-foot a{font-weight:700;color:var(--lav-deep);border-bottom:1.5px solid rgba(126,111,196,.4)}
+
 /* preguntas */
 .faq{border-top:1px solid var(--line)}
 .faq details{border-bottom:1px solid var(--line)}
@@ -362,10 +388,13 @@ footer{background:#16294D;color:#CFD6E6;padding:58px 0 30px}
 @media (max-width:900px){
   section{padding:62px 0}
   .sec-head{margin-bottom:32px}
-  .doc{grid-template-columns:1fr;gap:30px}
+  .doc{grid-template-columns:1fr;gap:18px}
+  .doc-foto{width:min(72%,300px);margin-inline:auto}
+  .facts{grid-template-columns:1fr}
   .lanes{grid-template-columns:1fr;gap:42px}
   .rule{display:none}
   .where-grid,.where-grid.cards-3{grid-template-columns:1fr}
+  .ops{grid-template-columns:1fr}
   .foot{grid-template-columns:1fr 1fr;gap:26px}
   .steps li{grid-template-columns:56px 1fr;gap:16px;padding:22px 0}
   .steps .num{font-size:32px}
@@ -413,8 +442,7 @@ html{scroll-behavior:smooth}
 
     <h1>¿Qué le ves <em>a la piel</em>?</h1>
 
-    <p class="hero-sub">De tus hijos o la tuya. Elige lo que estás viendo y te lleva a pedir
-      cita con el motivo ya puesto.</p>
+    <p class="hero-sub">De tus hijos o la tuya. Elige lo que ves y pide cita en un minuto.</p>
 
     <div class="probe">
       <a href="#agendar" data-sintoma="mancha">
@@ -485,24 +513,23 @@ html{scroll-behavior:smooth}
 
 <section id="doctora">
   <div class="wrap doc">
-    <div class="rv">
-      <div class="kicker">La doctora</div>
-      <div class="sec-head" style="max-width:none;margin-bottom:20px">
-        <h2>Formada en el hospital infantil <em>más importante del país</em>.</h2>
-      </div>
-      <p class="lead">La Dra. Silvia Villaman Lugo es médico cirujano por la Universidad Autónoma de Sinaloa, con la especialidad en Dermatología Pediátrica cursada en el Hospital Infantil de México Federico Gómez.</p>
-      <p>Atiende en Culiacán piel, pelo y uñas en niños desde recién nacidos, y también la consulta dermatológica y estética de adultos. En las opiniones de sus pacientes se repiten dos cosas: que explica con detalle y que tiene paciencia con los niños.</p>
-      <p>Para valoraciones y seguimiento a distancia también ofrece consulta en línea.</p>
-    </div>
+    <div class="doc-foto rv" role="img" aria-label="Dra. Silvia Villaman Lugo"></div>
 
-    <div class="card rv">
-      <div class="doc-foto" role="img" aria-label="Dra. Silvia Villaman Lugo"></div>
+    <div class="rv">
+      <div class="kicker">Quién te atiende</div>
+      <div class="sec-head" style="max-width:none;margin-bottom:20px">
+        <h2>La paciencia también es <em>parte del tratamiento</em>.</h2>
+      </div>
+      <p class="lead">Es lo que más repiten sus pacientes: que explica con calma y que los niños no la pasan mal.</p>
+      <p>En dermatología pediátrica eso no es un detalle. Buena parte del trabajo es lograr que un niño se deje revisar, y eso no se consigue con prisa.</p>
+      <p>Silvia Villaman Lugo estudió medicina en la Universidad Autónoma de Sinaloa e hizo la especialidad en el Hospital Infantil de México Federico Gómez. Atiende niños desde recién nacidos y también adultos. Si no puedes venir, hay consulta en línea.</p>
+
       <ul class="facts">
         <li><span class="k">Especialidad</span><span class="v">Dermatología pediátrica, clínica y estética</span></li>
-        <li><span class="k">Licenciatura</span><span class="v">Médico cirujano — Universidad Autónoma de Sinaloa</span></li>
+        <li><span class="k">Licenciatura</span><span class="v">Médico cirujano — UAS</span></li>
         <li><span class="k">Posgrado</span><span class="v">Hospital Infantil de México Federico Gómez</span></li>
         <li><span class="k">Cédulas</span><span class="v">9532246 · 13824021 · 12820870</span></li>
-        <li><span class="k">Consultorio</span><span class="v">Pedro María Anaya 2188, Culiacán, Sin.</span></li>
+        <li><span class="k">Consultorio</span><span class="v">Pedro María Anaya 2188, Culiacán</span></li>
         <li><span class="k">Pacientes</span><span class="v">Niños desde recién nacidos y adultos</span></li>
       </ul>
     </div>
@@ -514,7 +541,7 @@ html{scroll-behavior:smooth}
     <div class="sec-head rv">
       <div class="kicker">Padecimientos</div>
       <h2>Lo que se revisa en <em>cada piel</em>.</h2>
-      <p>Dos consultas distintas con la misma especialista. Esto es lo que ve en cada una.</p>
+      <p>Dos consultas distintas con la misma doctora.</p>
     </div>
 
     <div class="lanes">
@@ -556,33 +583,33 @@ html{scroll-behavior:smooth}
     <div class="sec-head rv">
       <div class="kicker">La consulta</div>
       <h2>Cómo es una cita, <em>paso a paso</em>.</h2>
-      <p>Desde que eliges el día aquí abajo hasta que sales del consultorio con un plan.</p>
+      <p>Para que llegues sabiendo qué va a pasar.</p>
     </div>
 
     <ol class="steps">
       <li class="rv"><div class="num">01</div><div>
-        <h3>Eliges día y hora en el calendario</h3>
-        <p>Aquí mismo, en <a href="#agendar">agendar</a>: marcas para quién es, el día, la hora que te acomoda y el motivo. Si quieres, agregas desde cuándo viene el problema.</p>
+        <h3>Eliges día y hora</h3>
+        <p>En <a href="#agendar">el calendario</a>: para quién es, el día, la hora y el motivo.</p>
       </div></li>
       <li class="rv"><div class="num">02</div><div>
         <h3>Revisas el mensaje y lo mandas</h3>
-        <p>El sitio arma el mensaje completo y lo ves antes de enviarlo. El botón lo abre en tu WhatsApp. También puedes escribir directo, sin usar el calendario.</p>
+        <p>Se arma solo, lo ves completo y se abre en tu WhatsApp. También puedes escribir directo, sin el calendario.</p>
       </div></li>
       <li class="rv"><div class="num">03</div><div>
         <h3>Ella confirma</h3>
-        <p>Te responde si hay espacio a esa hora o te propone otra cercana. <b>La cita queda apartada hasta ese mensaje</b>, no antes: elegir en el calendario es pedirla, no reservarla.</p>
+        <p>Te dice si hay espacio a esa hora o te propone otra. <b>Hasta ese mensaje la cita no está apartada</b>: en el calendario la pides, no la reservas.</p>
       </div></li>
       <li class="rv"><div class="num">04</div><div>
         <h3>Llegas al consultorio</h3>
-        <p>Pedro María Anaya 2188, en Culiacán. Si la consulta es para tu hijo, trae lo que ya le han recetado y fotos de cómo se veía la piel antes.</p>
+        <p>Pedro María Anaya 2188. Si es para tu hijo, trae lo que le han recetado y fotos de cómo se veía la piel antes.</p>
       </div></li>
       <li class="rv"><div class="num">05</div><div>
         <h3>Revisión sin prisa</h3>
-        <p>La exploración se hace ahí mismo. Con los niños se va al ritmo del niño: primero se le explica, luego se le revisa.</p>
+        <p>La exploración es ahí mismo. Con los niños, primero se les explica y luego se les revisa.</p>
       </div></li>
       <li class="rv"><div class="num">06</div><div>
-        <h3>Sales con un plan, y hay seguimiento</h3>
-        <p>Qué tiene, por qué pasa, qué se va a usar y en cuánto tiempo se nota el cambio. Después, consulta subsecuente o valoración en línea si algo cambia.</p>
+        <h3>Sales con un plan</h3>
+        <p>Qué tiene, qué se va a usar y en cuánto se nota. Después hay consulta de control, o valoración en línea si algo cambia.</p>
       </div></li>
     </ol>
   </div>
@@ -593,7 +620,7 @@ html{scroll-behavior:smooth}
     <div class="sec-head rv">
       <div class="kicker">Agendar</div>
       <h2>Elige el día y la hora <em>que te acomoden</em>.</h2>
-      <p>Esto arma tu mensaje de WhatsApp con todo lo que ella necesita saber. La cita queda en firme cuando te contesta confirmando.</p>
+      <p>Se arma tu mensaje de WhatsApp y tú lo mandas. La cita queda en firme cuando ella contesta.</p>
     </div>
 
     <div class="booking rv">
@@ -607,7 +634,7 @@ html{scroll-behavior:smooth}
           <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
         </div>
         <div class="cal-grid" id="calGrid" role="group" aria-label="Elige un día"></div>
-        <p class="cal-note">Los días en gris no tienen consulta o ya pasaron. El horario está sujeto a confirmación.</p>
+        <p class="cal-note">Los días en gris no tienen consulta. Horario sujeto a confirmación.</p>
       </div>
 
       <div class="card bk-form">
@@ -635,7 +662,7 @@ html{scroll-behavior:smooth}
 
         <div class="field">
           <label for="nombre">Tu nombre <span style="text-transform:none;letter-spacing:0;font-weight:500">(opcional)</span></label>
-          <input id="nombre" type="text" maxlength="60" autocomplete="name" placeholder="Para que sepa con quién está hablando">
+          <input id="nombre" type="text" maxlength="60" autocomplete="name" placeholder="Para que sepa con quién habla">
         </div>
 
         <div class="field">
@@ -650,7 +677,7 @@ html{scroll-behavior:smooth}
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.3 1.3-1.9 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.2-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.3.3c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6 0l.9-1c.2-.2.4-.2.6-.1l2 1c.2.1.4.2.4.3.1.1.1.6-.1 1.1Z"/></svg>
           Enviar por WhatsApp
         </a>
-        <p class="bk-foot">No se guarda nada en el sitio: el mensaje se abre en tu WhatsApp y tú decides si lo mandas.</p>
+        <p class="bk-foot">El mensaje se abre en tu WhatsApp. Tú decides si lo mandas.</p>
       </div>
     </div>
   </div>
@@ -660,23 +687,61 @@ html{scroll-behavior:smooth}
   <div class="wrap">
     <div class="sec-head rv">
       <div class="kicker">Opiniones</div>
-      <h2>Lo que repiten <em>sus pacientes</em>.</h2>
+      <h2>Lo que dicen <em>sus pacientes</em>.</h2>
     </div>
-    <div class="where-grid cards-3 rv">
-      <div class="card">
-        <h3>Explica con detalle</h3>
-        <p>Salen entendiendo qué tienen y por qué pasa, sin tecnicismos.</p>
-      </div>
-      <div class="card">
-        <h3>Paciencia con los niños</h3>
-        <p>Es lo que más mencionan los papás: el trato y el tiempo que les da.</p>
-      </div>
-      <div class="card">
-        <h3>Atención profesional</h3>
-        <p>Consultorio sobre bulevar principal, fácil de ubicar y de llegar.</p>
-      </div>
+
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="estrella" viewBox="0 0 24 24"><path fill="currentColor" d="m12 17.3-6.18 3.7 1.64-7.03L2 9.24l7.19-.61L12 2l2.81 6.63 7.19.61-5.46 4.73 1.64 7.03z"/></symbol><symbol id="palomita" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1.2 14.6-4.2-4.2 1.7-1.7 2.5 2.5 5.9-5.9 1.7 1.7z"/></symbol></svg>
+
+    <div class="ops rv">
+      <article class="op">
+        <div class="op-top">
+          <span class="op-ini" aria-hidden="true">G</span>
+          <span class="op-nombre">guadalupe</span>
+          <span class="op-ver"><svg aria-hidden="true"><use href="#palomita"/></svg>Cita verificada</span>
+          <span class="estrellas" role="img" aria-label="5 de 5 estrellas"><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg></span>
+        </div>
+        <q>excelente servicio doctora y personal muy atento su ubicación sobre un boulevard principal</q>
+        <p class="op-pie">12 de diciembre de 2024 · Consulta de primera vez</p>
+      </article>
+
+      <article class="op">
+        <div class="op-top">
+          <span class="op-ini" aria-hidden="true">J</span>
+          <span class="op-nombre">January</span>
+          <span class="op-ver"><svg aria-hidden="true"><use href="#palomita"/></svg>Cita verificada</span>
+          <span class="estrellas" role="img" aria-label="5 de 5 estrellas"><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg></span>
+        </div>
+        <q>Excelente atención, una explicación realmente detallada, muy profesional</q>
+        <p class="op-pie">1 de julio de 2024 · Consulta de primera vez</p>
+      </article>
+
+      <article class="op">
+        <div class="op-top">
+          <span class="op-ini" aria-hidden="true">E</span>
+          <span class="op-nombre">Elva</span>
+          <span class="op-ver"><svg aria-hidden="true"><use href="#palomita"/></svg>Cita verificada</span>
+          <span class="estrellas" role="img" aria-label="5 de 5 estrellas"><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg></span>
+        </div>
+        <q>Mucha claridad, gran atención con niños :D gran doctora</q>
+        <p class="op-pie">29 de mayo de 2024 · Consulta de primera vez</p>
+      </article>
+
+      <article class="op">
+        <div class="op-top">
+          <span class="op-ini" aria-hidden="true">S</span>
+          <span class="op-nombre">Sandra</span>
+          <span class="op-ver"><svg aria-hidden="true"><use href="#palomita"/></svg>Cita verificada</span>
+          <span class="estrellas" role="img" aria-label="5 de 5 estrellas"><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg><svg aria-hidden="true"><use href="#estrella"/></svg></span>
+        </div>
+        <q>Me gustó mucho el trato y la explicación de parte dela doctora, al igual que la paciencia y atención que tiene con los niños</q>
+        <p class="op-pie">1 de mayo de 2024 · Consulta de primera vez</p>
+      </article>
     </div>
-    <p class="lanes-foot rv">4 de 5 estrellas en 5 opiniones verificadas de Doctoralia.</p>
+
+    <p class="ops-foot rv">
+      <span>4 de 5 estrellas en 5 opiniones verificadas.</span>
+      <a href="https://www.doctoralia.com.mx/perfil/silvia-villaman" target="_blank" rel="noopener">Leerlas todas en Doctoralia</a>
+    </p>
   </div>
 </section>
 
@@ -773,6 +838,7 @@ html{scroll-behavior:smooth}
       <div>
         <h4>Contacto</h4>
         <a href="https://wa.me/526677512919">WhatsApp 667 751 2919</a>
+        <a href="https://www.instagram.com/dra.silviavillaman/" target="_blank" rel="noopener">Instagram @dra.silviavillaman</a>
         <a href="https://www.google.com/maps/search/?api=1&amp;query=Pedro+Maria+Anaya+2188+Culiacan" target="_blank" rel="noopener">Cómo llegar</a>
       </div>
       <div>
@@ -1024,7 +1090,7 @@ html{scroll-behavior:smooth}
     if (!estado.motivo)falta.push('el motivo');
     preview.innerHTML = '<span class="ph">Falta elegir ' +
       falta.join(', ').replace(/, ([^,]*)$/, ' y $1') +
-      '. Aquí aparece el mensaje completo antes de mandarlo.</span>';
+      '.</span>';
     enviar.href = 'https://wa.me/' + TEL;
     enviar.setAttribute('aria-disabled','true');
   }

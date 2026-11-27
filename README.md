@@ -131,6 +131,7 @@ aparece. Si algún día se reencuadra, respetar ese límite.
 - Primera vez $1,400 · subsecuente $1,200 · consulta en línea $1,400.
 - 4 de 5 estrellas en 5 opiniones.
 - Ofrece consulta en línea.
+- Instagram: `@dra.silviavillaman` (en el pie y en el `sameAs` del JSON-LD).
 
 ## Pendientes antes de producción
 
@@ -149,10 +150,13 @@ Que dependen de la doctora:
 - **Correo de contacto** para el aviso de privacidad y los derechos ARCO.
 - **Revisión legal del aviso.** La consulta médica maneja datos personales
   sensibles; el borrador sigue la estructura de la LFPDPPP pero necesita abogado.
-- **Opiniones.** La sección resume los temas que se repiten, no cita textual.
-  Para citas literales hace falta su permiso y acreditar a Doctoralia.
-  En las opiniones hay una queja de una cita confirmada que no se respetó; el
-  paso 02 de "la consulta" está escrito para atender eso.
+- **Opiniones.** Se muestran las cuatro de cinco estrellas, textuales, con
+  nombre, fecha y estrellas, tal como aparecen en Doctoralia. La quinta es una
+  queja por una cita confirmada que no se respetó y no está en la lista, pero el
+  pie dice "4 de 5 estrellas en 5 opiniones" y liga al perfil completo: eso es
+  lo que evita que se lea como una selección a modo. El paso 02 de "la consulta"
+  está escrito para atender esa queja.
+  Vale confirmar con la doctora que esté de acuerdo con citarlas en el sitio.
 
 De producción gráfica:
 
