@@ -57,6 +57,15 @@ invisibles. A los 1200 ms el JS agrega la clase `listo` al `<html>`, que fuerza
 todo a visible. Si algún día la animación no corre, el hero se ve igual en vez
 de quedarse en blanco.
 
+## Ramas vivas
+
+- **`hero-capas` — esperando al cliente.** Reemplaza el hero por un recorrido
+  con scroll sobre un trozo de piel, donde los seis motivos de consulta son lo
+  que te encuentras en el camino, cada uno con su botón. Lo pidió el cliente
+  después de ver drailse.com. Está terminado y probado; solo falta que diga que
+  sí. `git switch hero-capas` para verlo, y el README de esa rama explica cómo
+  está hecho y por qué no es una copia del túnel.
+
 ## Caminos ya explorados
 
 Para no volver a recorrerlos sin querer:
