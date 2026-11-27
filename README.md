@@ -12,7 +12,10 @@ index.html                 home completa
 aviso-de-privacidad.html   borrador, pendiente de revisión legal
 favicon.svg
 robots.txt
-img/  logo.png · dra-flyer.webp
+img/  logo.png          marca en azul marino sobre blanco, la que usa el sitio
+      logo-blanco.png   marca en blanco sobre verde azulado — sin usar, ver abajo
+      dra-retrato.png   foto de estudio, la de la ficha
+      dra-flyer.webp    el flyer original, material de origen, ya no se usa
 ```
 
 ## Correr en local
@@ -86,14 +89,23 @@ elegir. Los días deshabilitados se saltan.
 
 ## La foto de la ficha
 
-`.doc-foto` encuadra el flyer por CSS: `background-size: 238%` y
-`background-position: 100% 16.7%` recortan cabeza y hombros, y
-`mix-blend-mode: multiply` funde el fondo claro con el de la tarjeta.
+`img/dra-retrato.png` (543×846), la de estudio con saco negro.
 
-Cuando llegue el recorte de verdad —la del saco negro del perfil de Doctoralia,
-con transparencia— basta cambiar la `background-image` y volver el
-`background-size` a `cover`. El cruce de dos retratos que existía en el hero
-anterior ya no aplica: ahora solo hay una foto y vive en la ficha.
+**No trae transparencia**, pese a ser PNG con canal alfa: el fondo es blanco
+opaco. No hace falta recortarla, porque `mix-blend-mode: multiply` funde ese
+blanco con la tarjeta y el resultado es limpio.
+
+El encuadre es por CSS, en `.doc-foto`:
+
+```css
+aspect-ratio: 434/491;
+background-size: 125% auto;
+background-position: 40% 9.5%;
+```
+
+**El ancho se corta al 88% a propósito.** Del 93.6% en adelante la foto trae el
+texto del fondo del set ("S…", "es…"), y si se encuadra más a la derecha,
+aparece. Si algún día se reencuadra, respetar ese límite.
 
 ## Datos tomados del perfil de Doctoralia
 
@@ -131,10 +143,14 @@ Que dependen de la doctora:
 
 De producción gráfica:
 
-- **Una foto de retrato de verdad** para la ficha de "la doctora". Hoy es el
-  flyer encuadrado por CSS y fundido con `mix-blend-mode: multiply`; de cerca se
-  alcanzan a ver fantasmas de las hojitas del flyer. La del saco negro del
-  perfil de Doctoralia, recortada con transparencia, es la buena.
+- **Decidir el color de la marca.** Hay tres paletas entre los materiales: el
+  flyer es lavanda y morado, `logo.png` es azul marino sobre blanco, y
+  `logo-blanco.png` es blanco sobre **verde azulado `#215F74`**, opaco, sin
+  transparencia. El sitio está construido en marino y lavanda. Si el verde
+  azulado es el color de la marca, hay que repintar el sitio entero; si solo es
+  el fondo con el que exportaron ese archivo, hace falta la marca en vectorial
+  o en PNG con transparencia. Sin esa respuesta, `logo-blanco.png` no se puede
+  usar en ningún lado.
 - **Logo con transparencia.** `logo.png` trae fondo blanco, resuelto también con
   `multiply`. Falla si el fondo deja de ser claro.
 - **Imagen de Open Graph** — la meta existe, falta el archivo.

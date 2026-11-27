@@ -222,12 +222,14 @@ section{position:relative;padding:94px 0}
 .doc{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:start}
 .doc p{margin:0 0 16px;font-size:16.5px;line-height:1.62;color:var(--ink-2);max-width:54ch}
 .doc .lead{font-size:20px;line-height:1.5;color:var(--ink);font-weight:500;margin-bottom:20px}
-/* El retrato bajo del hero a la ficha, que es donde una foto de retrato sirve.
-   Encuadre por CSS sobre el flyer; se va cuando llegue el recorte de verdad. */
-.doc-foto{position:relative;aspect-ratio:292/317;border-radius:16px;overflow:hidden;
+/* El retrato de estudio, encuadrado por CSS. El recorte se detiene al 88% de
+   ancho a proposito: del 93.6% en adelante empieza el texto del fondo del set.
+   La foto no trae transparencia, pero el fondo es casi blanco y multiply lo
+   funde con la tarjeta, asi que no hace falta recortarla. */
+.doc-foto{position:relative;aspect-ratio:434/491;border-radius:16px;overflow:hidden;
   margin:0 0 22px;background-color:#EDE9F7;
-  background-image:url("img/dra-flyer.webp");
-  background-size:238% auto;background-position:100% 16.7%;background-repeat:no-repeat;
+  background-image:url("img/dra-retrato.png");
+  background-size:125% auto;background-position:40% 9.5%;background-repeat:no-repeat;
   mix-blend-mode:multiply}
 
 .facts{list-style:none;margin:0;padding:0}
