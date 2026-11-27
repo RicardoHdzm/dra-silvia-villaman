@@ -38,6 +38,18 @@ verdad y el número coincide con el que dice la parada, porque sale de la misma
 tabla de anclas (`ANCLAS` interpola entre ellas). Cuando el recorrido era
 lateral, la profundidad era decorativa.
 
+**El scroll se ancla en cada parada.** Hay siete `.ancla` invisibles colocadas
+en el punto exacto del recorrido donde cada parada queda centrada, con
+`scroll-snap-align`. Un movimiento corto regresa a la parada actual y uno
+decidido pasa a la siguiente, así que ya no te quedas en los huecos donde no
+hay texto. Es `proximity` y no `mandatory`, y fuera del hero no hay anclas: el
+resto de la página scrollea normal.
+
+La posición sale de `calc(var(--at) * var(--rango))`, donde `--rango` es la
+altura útil del recorrido (420vh en escritorio, 320vh en móvil, porque la
+sección mide distinto). Si cambias la altura de `.viaje`, cambia `--rango` o
+las anclas dejan de coincidir con las paradas.
+
 La proyección es perspectiva a mano: cada plano se dibuja a `escala = F / z`,
 donde `z` sale de su distancia al progreso actual. Se ven unos 12 a la vez; los
 de atrás llegan tenues y pequeños, los de adelante crecen hasta pasarte por

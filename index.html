@@ -107,7 +107,7 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
    como una malla de nodos y aristas, y las lesiones como anomalias del campo.
    La base es el azul marino del propio logo, no un verde petroleo, que seria
    meterse justo en el terreno de la referencia. */
-.viaje{position:relative;height:520vh;
+.viaje{position:relative;height:520vh;--rango:420vh;
   --noche:#0E1A30; --noche2:#16233F;
   --luz:#A78BFA; --tinta-clara:#EDEAF9; --tinta-media:#A7B1CE}
 .stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate;
@@ -162,6 +162,15 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
   transition:background .25s ease, transform .25s ease, box-shadow .25s ease}
 .riel span.on{background:var(--luz);transform:scale(1.55);
   box-shadow:0 0 0 4px rgba(167,139,250,.18)}
+
+/* Anclaje de scroll: una por parada, colocada en el punto exacto del
+   recorrido donde esa parada esta centrada. Con "proximity" un movimiento
+   corto regresa a la parada actual y uno decidido pasa a la siguiente, sin
+   secuestrar la rueda ni romper el teclado. Fuera del hero no hay anclas,
+   asi que el resto de la pagina scrollea normal. */
+html{scroll-snap-type:y proximity}
+.ancla{position:absolute;left:0;width:1px;height:1px;pointer-events:none;
+  top:calc(var(--at) * var(--rango));scroll-snap-align:start}
 
 .baja{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;
@@ -237,7 +246,7 @@ body{padding-top:76px}
 @media (max-width:620px){ .probe{grid-template-columns:1fr} }
 @media (max-width:900px){
   nav{display:none}
-  .viaje{height:420vh}
+  .viaje{height:420vh;--rango:320vh}
   .parada{top:63%;left:28px;right:28px;width:auto}
   .parada p{font-size:15.5px}
   /* la niebla tambien es oscura: la version clara de antes lavaba el hero
@@ -541,6 +550,14 @@ html{scroll-behavior:smooth}
     <div class="riel" id="riel" aria-hidden="true"></div>
     <div class="baja" id="baja">Baja para entrar</div>
   </div>
+
+    <div class="ancla" style="--at:0" aria-hidden="true"></div>
+    <div class="ancla" style="--at:0.16" aria-hidden="true"></div>
+    <div class="ancla" style="--at:0.32" aria-hidden="true"></div>
+    <div class="ancla" style="--at:0.48" aria-hidden="true"></div>
+    <div class="ancla" style="--at:0.64" aria-hidden="true"></div>
+    <div class="ancla" style="--at:0.80" aria-hidden="true"></div>
+    <div class="ancla" style="--at:0.95" aria-hidden="true"></div>
 </main>
 
 <section class="entradas" id="entradas">
