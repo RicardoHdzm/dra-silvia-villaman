@@ -331,3 +331,14 @@ Técnicos:
 | Lavanda | `#7E6FC4` / `#5B4FA3` |
 | Acento (solo CTA) | `#E2A13C` / `#C9871F` |
 | Pie | `#16294D` |
+
+## Una trampa del CSS que ya costó una vez
+
+Las consultas de medios van en cascada y hay una, `(min-width:621px) and
+(max-width:900px)`, colocada **después** de la de `max-width:900px` a propósito,
+para ganarle en el rango de tableta. Solo debe contener `.ops`.
+
+Si se le agrega cualquier otra regla, esa regla deja de aplicar por debajo de
+621px. Así se rompió el móvil una vez: `.booking{grid-template-columns:1fr}`
+cayó dentro de ese bloque y en teléfono el calendario y el formulario volvieron
+a dos columnas encimadas. El aviso está escrito también en el propio CSS.
