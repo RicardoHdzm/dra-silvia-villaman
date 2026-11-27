@@ -57,6 +57,19 @@ invisibles. A los 1200 ms el JS agrega la clase `listo` al `<html>`, que fuerza
 todo a visible. Si algún día la animación no corre, el hero se ve igual en vez
 de quedarse en blanco.
 
+## Caminos ya explorados
+
+Para no volver a recorrerlos sin querer:
+
+- **Hero de "las dos pieles"** (titular en dos líneas que se desteñían con el
+  cursor, retrato recortado a la derecha, control deslizante). Descartado: era
+  la plantilla de medio gremio médico, pedía hover para dar algo y en reposo era
+  un póster. Vive en el historial hasta `bb38cb0`.
+- **Hero sobre superficie de piel** — rama `hero-piel`, página `hero-piel.html`.
+  Ruido celular generado por código en vez del campo lavanda plano. Funciona,
+  pesa cero y mide 9.76:1 de contraste, pero se decidió quedarse con el fondo
+  liso. La rama queda por si se retoma con una macro real de piel.
+
 ## Cómo funciona "agendar"
 
 No hay backend ni reserva real. El calendario sirve para **armar el mensaje de
