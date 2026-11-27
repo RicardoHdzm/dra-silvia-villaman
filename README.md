@@ -26,10 +26,7 @@ npx serve .
 
 O cualquier servidor estático.
 
-## Rama `hero-capas`: el recorrido por la piel
-
-> Esta rama reemplaza el hero por un recorrido con scroll, a petición del
-> cliente, que pidió "algo como drailse.com". **No está en `main`.**
+## El hero: un recorrido por la piel
 
 El scroll vertical mueve una cámara que avanza **en horizontal** sobre un trozo
 de piel. Lo que te vas encontrando en el camino son los seis motivos de
@@ -59,43 +56,17 @@ Lo técnico, en `index.html`:
 
 ## Concepto
 
-El hero no anuncia, **pregunta**: "¿Qué le ves a la piel?" y seis entradas —mancha,
-ronchas, resequedad, lunar, acné, caída de cabello—. Tocas la tuya y bajas al
-calendario con el motivo ya elegido. Es tipográfico y sin persona recortada,
-a propósito: ese layout de texto-a-la-izquierda y doctora-a-la-derecha es la
-plantilla de medio gremio, y era lo que hacía que el hero se sintiera genérico.
+Lo que el visitante elige, tanto en el recorrido como en la banda de respaldo,
+es un **síntoma**, no un motivo: el motivo depende de si la consulta es para un
+niño o para un adulto, así que el mapeo (`SINTOMAS`) se resuelve en el módulo de
+agendar, cuando ya se sabe para quién es.
 
-El retrato vive ahora en la ficha de "la doctora", que es donde una foto de
-retrato de verdad sirve.
+La idea de las dos pieles —una doctora, dos consultas— vive en los dos carriles
+de padecimientos, que es donde es una observación útil y no un acertijo.
 
-Lo que se elige en el hero es un **síntoma**, no un motivo: el motivo depende de
-si la consulta es para un niño o para un adulto, así que el mapeo (`SINTOMAS`)
-se resuelve en el módulo de agendar, cuando ya se sabe para quién es.
-
-La idea de las dos pieles no se perdió: vive en los dos carriles de
-padecimientos, que es donde es una observación útil y no un acertijo.
-
-Debajo del titular hay una línea viva — "Puedes pedir cita desde el viernes 27" —
-calculada de la misma constante `HORARIOS`. Dice "pedir", no "reservar",
+En la banda de respaldo hay una línea viva, "Puedes pedir cita desde el viernes
+27", calculada de la misma constante `HORARIOS`. Dice "pedir", no "reservar",
 porque eso es lo que de verdad hace el sitio.
-
-El fondo deriva con el puntero (`--mx`, `--my`), interpolado cuadro por cuadro.
-Nada más se mueve.
-
-**La entrada del hero tiene red de seguridad:** los elementos aparecen
-escalonados con `animation-fill-mode: backwards`, lo que significa que empiezan
-invisibles. A los 1200 ms el JS agrega la clase `listo` al `<html>`, que fuerza
-todo a visible. Si algún día la animación no corre, el hero se ve igual en vez
-de quedarse en blanco.
-
-## Ramas vivas
-
-- **`hero-capas` — esperando al cliente.** Reemplaza el hero por un recorrido
-  con scroll sobre un trozo de piel, donde los seis motivos de consulta son lo
-  que te encuentras en el camino, cada uno con su botón. Lo pidió el cliente
-  después de ver drailse.com. Está terminado y probado; solo falta que diga que
-  sí. `git switch hero-capas` para verlo, y el README de esa rama explica cómo
-  está hecho y por qué no es una copia del túnel.
 
 ## Caminos ya explorados
 
@@ -105,6 +76,11 @@ Para no volver a recorrerlos sin querer:
   cursor, retrato recortado a la derecha, control deslizante). Descartado: era
   la plantilla de medio gremio médico, pedía hover para dar algo y en reposo era
   un póster. Vive en el historial hasta `bb38cb0`.
+- **Hero de la pregunta** ("¿Qué le ves a la piel?", centrado y tipográfico, con
+  las seis entradas en rejilla). No se descartó por malo: el cliente pidió algo
+  como drailse.com y entró el recorrido. Sobrevive como la banda `.entradas`,
+  que es lo que se ve cuando el visitante tiene `prefers-reduced-motion`.
+  Completo en el historial hasta `52e14f5`.
 - **Hero sobre superficie de piel** — rama `hero-piel`, página `hero-piel.html`.
   Ruido celular generado por código en vez del campo lavanda plano. Funciona,
   pesa cero y mide 9.76:1 de contraste, pero se decidió quedarse con el fondo
