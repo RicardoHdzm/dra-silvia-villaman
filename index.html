@@ -493,17 +493,19 @@ footer{background:#16294D;color:#CFD6E6;padding:58px 0 30px}
   .lanes{grid-template-columns:1fr;gap:42px}
   .rule{display:none}
   .where-grid,.where-grid.cards-3{grid-template-columns:1fr}
-  /* dos columnas solo en tableta: la regla de una columna vive mas arriba y
-     perderia contra esta, asi que aqui se acota por abajo */
   .ops{grid-template-columns:1fr}
-}
-@media (min-width:621px) and (max-width:900px){
-  .ops{grid-template-columns:1fr 1fr}
   .foot{grid-template-columns:1fr 1fr;gap:26px}
   .steps li{grid-template-columns:56px 1fr;gap:16px;padding:22px 0}
   .steps .num{font-size:32px}
   .closing{padding:70px 0 76px}
   .booking{grid-template-columns:1fr}
+}
+/* Unica excepcion de tableta. OJO: esta consulta va DESPUES de la de 900px a
+   proposito, para ganarle en ese rango. No meter aqui nada mas: cualquier
+   regla que se agregue dejaria de aplicar por debajo de 621px, que es
+   exactamente como se rompio el calendario en movil una vez. */
+@media (min-width:621px) and (max-width:900px){
+  .ops{grid-template-columns:1fr 1fr}
 }
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
