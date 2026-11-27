@@ -25,36 +25,34 @@ O cualquier servidor estático.
 
 ## Concepto
 
-"Las dos pieles de tu casa". El sitio no vende una especialidad sino dos consultas
-con la misma doctora: la piel de los niños y la de sus papás.
+El hero no anuncia, **pregunta**: "¿Qué le ves a la piel?" y seis entradas —mancha,
+ronchas, resequedad, lunar, acné, caída de cabello—. Tocas la tuya y bajas al
+calendario con el motivo ya elegido. Es tipográfico y sin persona recortada,
+a propósito: ese layout de texto-a-la-izquierda y doctora-a-la-derecha es la
+plantilla de medio gremio, y era lo que hacía que el hero se sintiera genérico.
 
-El hero gira alrededor de una sola variable CSS `--t` (0 = niños, 1 = adultos).
-De ella dependen el color de cada línea del titular, cuál párrafo se ve, qué CTA
-se enciende, la atmósfera del fondo y el desplazamiento de la foto. Se controla
-con el cursor en escritorio, al pasar o enfocar cada botón, y con el control
-arrastrable, que es el único camino en táctil y con teclado.
+El retrato vive ahora en la ficha de "la doctora", que es donde una foto de
+retrato de verdad sirve.
 
-Los dos CTA del hero no abren WhatsApp: bajan a la sección de agendar **con el
-lado ya elegido**, así que el hero es el primer paso del flujo y no un póster.
-El camino directo a WhatsApp sigue existiendo en la sección de agendar, en
-"dónde atiende" y en el cierre.
+Lo que se elige en el hero es un **síntoma**, no un motivo: el motivo depende de
+si la consulta es para un niño o para un adulto, así que el mapeo (`SINTOMAS`)
+se resuelve en el módulo de agendar, cuando ya se sabe para quién es.
+
+La idea de las dos pieles no se perdió: vive en los dos carriles de
+padecimientos, que es donde es una observación útil y no un acertijo.
 
 Debajo del titular hay una línea viva — "Puedes pedir cita desde el viernes 27" —
-calculada de la misma constante `HORARIOS`. Se actualiza sola y dice "pedir",
-no "reservar", porque eso es lo que de verdad hace el sitio.
+calculada de la misma constante `HORARIOS`. Dice "pedir", no "reservar",
+porque eso es lo que de verdad hace el sitio.
 
-El retrato tiene parallax: `--mx` y `--my` (−1 a 1, el puntero respecto al
-centro del hero) mueven el halo, el anillo y la foto en cantidades distintas,
-y el halo al revés. Se interpola más suelto que el cambio de lado, a propósito.
+El fondo deriva con el puntero (`--mx`, `--my`), interpolado cuadro por cuadro.
+Nada más se mueve.
 
-El lado activo del hero es un estado discreto (`data-lado` en la sección:
-`ninos` · `neutro` · `adultos`) y el CSS decide por clase qué texto, qué color
-de titular y qué CTA se enciende. **No usar aritmética de opacidades para
-esto**: la versión anterior lo hacía y, con el puntero a media travesía, dos
-párrafos quedaban encimados.
-
-Secciones: hero · la doctora · padecimientos (dos carriles) · la consulta paso a
-paso · **agendar** · opiniones · preguntas · dónde y cuánto · cierre · pie.
+**La entrada del hero tiene red de seguridad:** los elementos aparecen
+escalonados con `animation-fill-mode: backwards`, lo que significa que empiezan
+invisibles. A los 1200 ms el JS agrega la clase `listo` al `<html>`, que fuerza
+todo a visible. Si algún día la animación no corre, el hero se ve igual en vez
+de quedarse en blanco.
 
 ## Cómo funciona "agendar"
 
@@ -86,17 +84,16 @@ dos listas ahí mismo, una por cada lado del concepto.
 El calendario se maneja con teclado: flechas para moverse entre días, Enter para
 elegir. Los días deshabilitados se saltan.
 
-## Cómo activar la segunda foto del hero
+## La foto de la ficha
 
-El hero puede cruzar dos retratos: bata en el lado "niños", saco negro en el de
-"adultos". Falta el archivo. Cuando exista:
+`.doc-foto` encuadra el flyer por CSS: `background-size: 238%` y
+`background-position: 100% 16.7%` recortan cabeza y hombros, y
+`mix-blend-mode: multiply` funde el fondo claro con el de la tarjeta.
 
-1. Guarda el recorte con fondo transparente en `img/dra-blazer.png`.
-2. En `index.html`, agrega el atributo al contenedor del retrato:
-   `<div class="portrait" data-alt-photo="img/dra-blazer.png">`
-3. Ajusta el encuadre en `.photo.alt { background-position }`.
-
-Sin el atributo no se pide el archivo, así que no hay petición fallida.
+Cuando llegue el recorte de verdad —la del saco negro del perfil de Doctoralia,
+con transparencia— basta cambiar la `background-image` y volver el
+`background-size` a `cover`. El cruce de dos retratos que existía en el hero
+anterior ya no aplica: ahora solo hay una foto y vive en la ficha.
 
 ## Datos tomados del perfil de Doctoralia
 
@@ -134,10 +131,10 @@ Que dependen de la doctora:
 
 De producción gráfica:
 
-- **`img/dra-blazer.png`** — recorte con transparencia de la foto del saco negro
-  (la misma del perfil de Doctoralia).
-- **Foto de bata recortada.** Hoy es el flyer encuadrado por CSS y fundido con
-  `mix-blend-mode: multiply`. Se ven fantasmas de las hojitas del flyer de cerca.
+- **Una foto de retrato de verdad** para la ficha de "la doctora". Hoy es el
+  flyer encuadrado por CSS y fundido con `mix-blend-mode: multiply`; de cerca se
+  alcanzan a ver fantasmas de las hojitas del flyer. La del saco negro del
+  perfil de Doctoralia, recortada con transparencia, es la buena.
 - **Logo con transparencia.** `logo.png` trae fondo blanco, resuelto también con
   `multiply`. Falla si el fondo deja de ser claro.
 - **Imagen de Open Graph** — la meta existe, falta el archivo.

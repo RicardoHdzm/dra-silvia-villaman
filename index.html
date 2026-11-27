@@ -33,7 +33,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<script>document.documentElement.className+=" js";</script>
+<script>
+document.documentElement.className += " js";
+/* pase lo que pase con las animaciones, el hero se ve */
+setTimeout(function(){ document.documentElement.className += " listo"; }, 1200);
+</script>
 <style>
 :root{
   --ink:#1B2F57;
@@ -45,10 +49,6 @@
   --amber:#E2A13C;
   --amber-deep:#C9871F;
   --line:rgba(27,47,87,.12);
-  --t:.5;        /* 0 = ninos, 1 = adultos */
-  --w1:0;        /* peso lado ninos  */
-  --w2:0;        /* peso lado adultos */
-  --wc:1;        /* peso neutro */
   --mx:0;        /* puntero: -1 izquierda, 1 derecha */
   --my:0;        /* puntero: -1 arriba, 1 abajo */
   --max:1240px;
@@ -67,18 +67,18 @@ a{color:inherit;text-decoration:none}
 
 /* ---------- atmosfera ---------- */
 .atmos{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.blob{position:absolute;border-radius:50%;filter:blur(70px);transition:opacity .45s ease, transform .45s ease}
-.blob.a{width:62vw;height:62vw;left:-18vw;top:-22vw;
+/* Las manchas derivan con el puntero, cada una distinto. Sin transicion:
+   --mx y --my ya vienen interpolados cuadro por cuadro desde el JS. */
+.blob{position:absolute;border-radius:50%;filter:blur(70px)}
+.blob.a{width:62vw;height:62vw;left:-18vw;top:-22vw;opacity:.9;
   background:radial-gradient(circle at 40% 40%, rgba(167,196,240,.80), rgba(167,196,240,0) 68%);
-  opacity:calc(.45 + var(--w1)*.55);
-  transform:translateX(calc(var(--w2)*-3vw)) scale(calc(1 + var(--w1)*.10));}
-.blob.b{width:66vw;height:66vw;right:-22vw;bottom:-28vw;
+  transform:translate(calc(var(--mx)*-16px), calc(var(--my)*-11px))}
+.blob.b{width:66vw;height:66vw;right:-22vw;bottom:-28vw;opacity:.85;
   background:radial-gradient(circle at 55% 45%, rgba(146,122,214,.62), rgba(146,122,214,0) 68%);
-  opacity:calc(.40 + var(--w2)*.55);
-  transform:translateX(calc(var(--w1)*3vw)) scale(calc(1 + var(--w2)*.10));}
-.blob.c{width:40vw;height:40vw;left:34vw;top:-14vw;
+  transform:translate(calc(var(--mx)*18px), calc(var(--my)*13px))}
+.blob.c{width:40vw;height:40vw;left:34vw;top:-14vw;opacity:.95;
   background:radial-gradient(circle at 50% 50%, rgba(226,161,60,.18), rgba(226,161,60,0) 70%);
-  opacity:calc(.5 + var(--wc)*.5);}
+  transform:translate(calc(var(--mx)*9px), calc(var(--my)*-7px))}
 .grain{position:absolute;inset:0;opacity:.13;mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");}
 
@@ -100,33 +100,41 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
 .btn-top:hover{background:#16294d}
 
 /* ---------- hero ---------- */
-.hero{position:relative;min-height:calc(100svh - 76px);display:flex;align-items:center;padding:8px 0 40px}
-.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;align-items:center}
+.hero{position:relative;min-height:calc(100svh - 76px);display:flex;align-items:center;
+  padding:48px 0 60px;text-align:center}
+.hero .wrap{width:min(100% - 48px, 1060px)}
 
-.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--lav-deep);margin-bottom:16px}
-.eyebrow::before{content:"";width:26px;height:1.5px;background:var(--lav)}
+.eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:12.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--lav-deep);margin-bottom:20px}
+.eyebrow::before,.eyebrow::after{content:"";width:26px;height:1.5px;background:var(--lav)}
 
-h1{margin:0;font-size:clamp(42px,5.6vw,74px);line-height:1.0;letter-spacing:-.035em;font-weight:800}
-/* El lado activo es un estado discreto (data-lado) y no una cuenta de opacidades:
-   asi nunca pueden quedar dos textos encimados. --t solo mueve lo continuo. */
-h1 .l{display:block;transition:color .2s ease, transform .2s ease}
-h1 .l1{color:var(--ink)}
-h1 .l2{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;
-  font-size:1.06em;letter-spacing:-.02em;color:var(--lav-deep)}
-[data-lado="adultos"] h1 .l1{color:var(--dim);transform:translateX(-6px)}
-[data-lado="ninos"]   h1 .l2{color:var(--dim);transform:translateX(-6px)}
+h1{margin:0 auto;max-width:14ch;font-size:clamp(44px,7.6vw,98px);line-height:.96;
+  letter-spacing:-.042em;font-weight:800}
+h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;
+  color:var(--lav-deep);font-size:1.04em}
 
-.subs{position:relative;margin:20px 0 0;max-width:46ch;min-height:92px}
-.subs p{position:absolute;inset:0;margin:0;font-size:16.5px;line-height:1.55;color:var(--ink-2);
-  opacity:0;visibility:hidden;transform:translateY(5px);
-  transition:opacity .2s ease, transform .2s ease, visibility 0s linear .2s}
-[data-lado="neutro"]  .subs .s0,
-[data-lado="ninos"]   .subs .s1,
-[data-lado="adultos"] .subs .s2{opacity:1;visibility:visible;transform:none;
-  transition:opacity .2s ease, transform .2s ease, visibility 0s}
+.hero-sub{margin:22px auto 0;max-width:46ch;font-size:17px;line-height:1.55;color:var(--ink-2)}
 
-.next-date{display:inline-flex;align-items:center;gap:10px;margin:18px 0 0;
+/* las seis entradas: el hero pregunta en vez de anunciar */
+.probe{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin:40px auto 0;max-width:880px;text-align:left}
+.probe a{display:flex;align-items:center;gap:14px;padding:15px 17px;border-radius:16px;
+  background:rgba(255,255,255,.72);border:1.5px solid rgba(27,47,87,.08);
+  box-shadow:0 8px 26px rgba(27,47,87,.05);
+  font-size:15.5px;font-weight:700;letter-spacing:-.012em;line-height:1.25;color:var(--ink);
+  transition:transform .16s ease, border-color .16s ease,
+             box-shadow .16s ease, background-color .16s ease}
+.probe a:hover{transform:translateY(-3px);background:#fff;border-color:var(--lav);
+  box-shadow:0 14px 34px rgba(27,47,87,.11)}
+.probe a:focus-visible{outline:2px solid var(--lav);outline-offset:3px}
+.probe svg{width:30px;height:30px;flex:none;color:var(--lav-deep)}
+.probe small{display:block;font-weight:500;font-size:12.5px;line-height:1.35;
+  color:var(--ink-2);margin-top:3px}
+
+.hero-mas{margin:24px 0 0;font-size:14.5px;color:var(--ink-2)}
+.hero-mas a{font-weight:700;color:var(--lav-deep);border-bottom:1.5px solid rgba(126,111,196,.4)}
+
+.next-date{display:inline-flex;align-items:center;gap:10px;margin:30px auto 0;
   font-size:14px;font-weight:600;color:var(--ink-2)}
 .next-date b{color:var(--ink)}
 .next-date::before{content:"";width:7px;height:7px;flex:none;border-radius:50%;
@@ -134,133 +142,68 @@ h1 .l2{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weigh
 .next-date[hidden]{display:none}
 
 .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
-.next-date + .ctas{margin-top:16px}
 .btn-path{
+  --f:1;
   color:var(--ink);
   border-color:color-mix(in oklab, var(--amber-deep) calc(35% + var(--f)*65%), transparent);
   background:rgba(226,161,60,calc(.18 + var(--f)*.82));
   box-shadow:0 calc(2px + var(--f)*8px) calc(6px + var(--f)*22px) rgba(201,135,31,calc(.10 + var(--f)*.20));
+  transition:transform .18s ease, background-color .2s ease,
+             border-color .2s ease, box-shadow .2s ease;
 }
-#p1,#p2{--f:.55}
-[data-lado="ninos"]   #p1{--f:1}
-[data-lado="ninos"]   #p2{--f:.12}
-[data-lado="adultos"] #p2{--f:1}
-[data-lado="adultos"] #p1{--f:.12}
-.btn-path{transition:transform .18s ease, background-color .2s ease,
-  border-color .2s ease, box-shadow .2s ease}
 .btn-path svg{width:17px;height:17px;flex:none}
 
-/* control */
-.switch{margin-top:26px;display:flex;align-items:center;gap:14px;font-size:12.5px;font-weight:600;
-  letter-spacing:.06em;text-transform:uppercase;color:var(--dim);user-select:none}
-.switch span{transition:color .2s ease;color:var(--dim)}
-[data-lado="ninos"]   .switch .k1{color:var(--ink)}
-[data-lado="adultos"] .switch .k2{color:var(--ink)}
-.track{position:relative;flex:none;width:124px;height:32px;border-radius:999px;
-  background:rgba(27,47,87,.07);cursor:ew-resize;touch-action:none}
-.track::after{content:"";position:absolute;left:12px;right:12px;top:50%;height:1.5px;
-  background:rgba(27,47,87,.14);transform:translateY(-50%)}
-.knob{position:absolute;top:4px;width:24px;height:24px;border-radius:50%;background:#fff;
-  box-shadow:0 2px 8px rgba(27,47,87,.22);
-  left:calc(4px + var(--t) * (124px - 32px))}
-.knob::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--lav)}
-
-.trust{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);
-  display:flex;flex-wrap:wrap;gap:8px 22px;font-size:13px;color:var(--ink-2)}
+.trust{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;font-size:13px;color:var(--ink-2)}
 .trust b{font-weight:700;color:var(--ink)}
 .trust .sep{color:var(--dim)}
 
-/* foto */
-.portrait{position:relative;justify-self:end;width:fit-content;max-width:100%}
-/* Tres planos que se mueven distinto con el puntero: el halo al reves y poco,
-   el anillo a media, el retrato al frente. Eso es lo que lee como profundidad. */
-.halo{position:absolute;left:50%;top:52%;
-  transform:translate(-50%,-50%) translate(calc(var(--mx)*-9px), calc(var(--my)*-4px));
-  width:108%;aspect-ratio:1;border-radius:50%;
-  background:radial-gradient(circle at 50% 45%,
-    color-mix(in oklab, #B9A7EA calc(35% + var(--w2)*35%), #BBD2F2) 0%,
-    rgba(255,255,255,0) 66%);
-  transition:background .3s ease}
-.ring{position:absolute;left:50%;top:52%;
-  transform:translate(-50%,-50%) translate(calc(var(--mx)*5px), calc(var(--my)*-5px)) rotate(calc(var(--t)*18deg - 9deg));
-  width:96%;aspect-ratio:1;border-radius:50%;border:1.5px dashed rgba(126,111,196,.38)}
-.photo-clip{
-  position:relative;
-  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 6%, #000 86%, transparent 99%);
-  mask-image:linear-gradient(to bottom, transparent 0, #000 6%, #000 86%, transparent 99%);
-}
-.photo{
-  position:relative;aspect-ratio:292/568;
-  height:clamp(360px,62svh,560px);width:auto;
-  background-image:url("img/dra-flyer.webp");
-  background-size:238% auto;
-  background-position:100% 28.2%;
-  background-repeat:no-repeat;
-  mix-blend-mode:multiply;
-  -webkit-mask-image:radial-gradient(86% 78% at 52% 42%, #000 46%, transparent 92%);
-  mask-image:radial-gradient(86% 78% at 52% 42%, #000 46%, transparent 92%);
-  transform:translateX(calc(var(--w1)*10px - var(--w2)*10px))
-            translateY(calc(var(--my)*-9px))
-            scale(calc(1 + var(--w2)*.02));
-}
-/* segunda foto: solo entra si .portrait trae data-alt-photo y el archivo carga */
-.photo.alt{position:absolute;inset:0;height:auto;width:auto;opacity:0;
-  background-image:var(--alt-photo,none);background-size:cover;background-position:50% 18%}
-.has-alt .photo.alt{opacity:var(--w2)}
-.has-alt .photo.base{opacity:calc(1 - var(--w2))}
-
-.tag{position:absolute;z-index:2;max-width:172px;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);
-  border:1px solid rgba(27,47,87,.08);border-radius:14px;padding:11px 14px;
-  font-size:12.5px;line-height:1.35;font-weight:600;color:var(--ink);
-  box-shadow:0 10px 28px rgba(27,47,87,.10);transition:opacity .45s ease, transform .45s ease}
-.tag small{display:block;font-weight:500;color:var(--ink-2);font-size:11.5px;margin-top:2px}
-.tag.t1{left:-156px;top:11%;opacity:.62}
-.tag.t2{right:-12px;bottom:9%;opacity:.62}
-[data-lado="ninos"]   .tag.t1{opacity:1}
-[data-lado="adultos"] .tag.t2{opacity:1}
-[data-lado="adultos"] .tag.t1{opacity:.45;transform:translateY(8px)}
-[data-lado="ninos"]   .tag.t2{opacity:.45;transform:translateY(8px)}
-
-/* Entrada al cargar. Solo hay fotograma "from": con fill backwards el elemento
-   parte de ahi y al terminar suelta el control, asi que no pisa el translateX
-   que el estado le pone despues al titular. */
+/* Entrada al cargar. Solo hay fotograma "from" y el relleno es backwards:
+   al terminar suelta el control y no se queda encima de nada. */
 @keyframes entra{ from{ opacity:0; transform:translateY(14px) } }
-@keyframes entraFoto{ from{ opacity:0; transform:translateY(16px) scale(.975) } }
 
 .js .eyebrow,
-.js h1 .l,
-.js .subs,
+.js h1,
+.js .hero-sub,
+.js .probe a,
+.js .hero-mas,
 .js .next-date,
-.js .ctas,
-.js .switch,
 .js .trust{ animation:entra .38s cubic-bezier(.22,1,.36,1) backwards }
-.js .portrait{ animation:entraFoto .52s cubic-bezier(.22,1,.36,1) backwards }
 
-.js .eyebrow  { animation-delay:.02s }
-.js .portrait { animation-delay:.06s }
-.js h1 .l1    { animation-delay:.08s }
-.js h1 .l2    { animation-delay:.14s }
-.js .subs     { animation-delay:.20s }
-.js .next-date{ animation-delay:.25s }
-.js .ctas     { animation-delay:.29s }
-.js .switch   { animation-delay:.33s }
-.js .trust    { animation-delay:.37s }
+.js .eyebrow        { animation-delay:.01s }
+.js h1              { animation-delay:.04s }
+.js .hero-sub       { animation-delay:.09s }
+.js .probe a:nth-child(1){ animation-delay:.13s }
+.js .probe a:nth-child(2){ animation-delay:.16s }
+.js .probe a:nth-child(3){ animation-delay:.19s }
+.js .probe a:nth-child(4){ animation-delay:.22s }
+.js .probe a:nth-child(5){ animation-delay:.25s }
+.js .probe a:nth-child(6){ animation-delay:.28s }
+.js .hero-mas       { animation-delay:.31s }
+.js .next-date      { animation-delay:.34s }
+.js .trust          { animation-delay:.37s }
+
+/* Red de seguridad: el contenido del hero no puede quedarse invisible nunca.
+   Si la animacion no corrio, a los 1200 ms se muestra todo y punto. */
+.listo .eyebrow,.listo h1,.listo .hero-sub,.listo .probe a,
+.listo .hero-mas,.listo .next-date,.listo .trust{
+  animation:none !important;opacity:1 !important;transform:none !important}
 
 .scroll{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
   font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);z-index:2}
 
+@media (max-width:980px){
+  .probe{grid-template-columns:1fr 1fr;max-width:620px}
+}
+@media (max-width:620px){
+  .probe{grid-template-columns:1fr}
+}
 @media (max-width:900px){
-  .grid{grid-template-columns:1fr;gap:4px}
-  .hero{min-height:auto;padding-bottom:28px}
-  .portrait{order:-1;justify-self:center;margin-bottom:-4px}
-  .photo{height:clamp(200px,28svh,264px)}
-  .tag{display:none}
+  .hero{min-height:auto;padding:32px 0 40px}
   nav{display:none}
-  h1{font-size:clamp(38px,10.5vw,56px)}
-  .subs{min-height:164px}
-  .ctas .btn-path{flex:1 1 220px}
+  h1{font-size:clamp(38px,10.5vw,58px);max-width:none}
   .scroll{display:none}
-  .switch{margin-top:26px}
+  .trust{justify-content:flex-start;text-align:left}
 }
 /* ---------- secciones ---------- */
 section{position:relative;padding:94px 0}
@@ -279,6 +222,14 @@ section{position:relative;padding:94px 0}
 .doc{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:start}
 .doc p{margin:0 0 16px;font-size:16.5px;line-height:1.62;color:var(--ink-2);max-width:54ch}
 .doc .lead{font-size:20px;line-height:1.5;color:var(--ink);font-weight:500;margin-bottom:20px}
+/* El retrato bajo del hero a la ficha, que es donde una foto de retrato sirve.
+   Encuadre por CSS sobre el flyer; se va cuando llegue el recorte de verdad. */
+.doc-foto{position:relative;aspect-ratio:292/317;border-radius:16px;overflow:hidden;
+  margin:0 0 22px;background-color:#EDE9F7;
+  background-image:url("img/dra-flyer.webp");
+  background-size:238% auto;background-position:100% 16.7%;background-repeat:no-repeat;
+  mix-blend-mode:multiply}
+
 .facts{list-style:none;margin:0;padding:0}
 .facts li{display:grid;grid-template-columns:104px 1fr;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
 .facts li:last-child{border-bottom:0}
@@ -426,8 +377,8 @@ html{scroll-behavior:smooth}
   .js .rv{opacity:1;transform:none}
 }
 @media (prefers-reduced-motion:reduce){
-  .js .eyebrow,.js h1 .l,.js .subs,.js .next-date,
-  .js .ctas,.js .switch,.js .trust,.js .portrait{opacity:1;transform:none}
+  .js .eyebrow,.js h1,.js .hero-sub,.js .probe a,
+  .js .hero-mas,.js .next-date,.js .trust{opacity:1;transform:none}
 }
 </style>
 </head>
@@ -454,72 +405,76 @@ html{scroll-behavior:smooth}
 </header>
 
 <main class="hero" id="inicio">
-  <div class="wrap grid">
+  <div class="wrap">
 
-    <div class="copy">
-      <div class="eyebrow">Dermatóloga pediatra certificada</div>
+    <div class="eyebrow">Dermatóloga pediátrica · Culiacán</div>
 
-      <h1>
-        <span class="l l1">La piel de tus hijos.</span>
-        <span class="l l2">Y la tuya.</span>
-      </h1>
+    <h1>¿Qué le ves <em>a la piel</em>?</h1>
 
-      <div class="subs">
-        <p class="s0">La Dra. Silvia Villaman atiende la piel de los niños de la casa y también la de sus papás. Misma doctora, mismo consultorio, en Culiacán.</p>
-        <p class="s1">Eccema, dermatitis del pañal, manchas, lunares, caída de cabello y uñas. Consulta tranquila, explicada en palabras simples y sin asustar al niño.</p>
-        <p class="s2">Acné, melasma, manchas, láser y dermocosmética. Un plan realista para tu piel, con la misma especialista que ya atiende a tus hijos.</p>
-      </div>
+    <p class="hero-sub">De tus hijos o la tuya. Elige lo que estás viendo y te lleva a pedir
+      cita con el motivo ya puesto.</p>
 
-      <p class="next-date" id="proxima" hidden></p>
+    <div class="probe">
+      <a href="#agendar" data-sintoma="mancha">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+             stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3.8c3.5 0 6.8 2.3 6.8 5.6 0 2-1 3.2-1 4.9 0 2.3-2.3 5.7-5.8 5.7-4 0-6.8-3.2-6.8-7.2C5.2 8.6 8.1 3.8 12 3.8Z"/>
+        </svg>
+        <span>Una mancha<small>nueva, o que cambió de color</small></span>
+      </a>
 
-      <div class="ctas">
-        <a class="btn btn-path" id="p1" data-side="0" data-ir-agendar="hijo" href="#agendar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
-               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M7.5 2.5v3M16.5 2.5v3M3.5 9.5h17M5.5 4.5h13a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2Z"/>
-          </svg>
-          Agendar para mi hijo
-        </a>
-        <a class="btn btn-path" id="p2" data-side="1" data-ir-agendar="mi" href="#agendar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
-               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M7.5 2.5v3M16.5 2.5v3M3.5 9.5h17M5.5 4.5h13a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2Z"/>
-          </svg>
-          Agendar para mí
-        </a>
-      </div>
+      <a href="#agendar" data-sintoma="ronchas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="9" cy="8.8" r="3.1"/><circle cx="16.2" cy="13" r="2.2"/><circle cx="8.6" cy="16.4" r="1.8"/>
+        </svg>
+        <span>Ronchas o comezón<small>brotes que van y vienen</small></span>
+      </a>
 
-      <div class="switch">
-        <span class="k1">Para mis hijos</span>
-        <div class="track" id="track" role="slider" tabindex="0"
-             aria-label="Elegir para quién es la consulta"
-             aria-valuemin="0" aria-valuemax="2" aria-valuenow="1"
-             aria-valuetext="Para toda la familia">
-          <div class="knob"></div>
-        </div>
-        <span class="k2">Para mí</span>
-      </div>
+      <a href="#agendar" data-sintoma="seca">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+             stroke-linecap="round" aria-hidden="true">
+          <path d="M4 8h5M12.5 8h7.5M4 12.5h9M16.5 12.5h3.5M4 17h6M13.5 17h6.5"/>
+        </svg>
+        <span>Resequedad que vuelve<small>piel áspera, se parte, pica</small></span>
+      </a>
 
-      <div class="trust">
-        <span>Especialidad en el <b>Hospital Infantil de México Federico Gómez</b></span>
-        <span class="sep">·</span>
-        <span><b>Pedro María Anaya 2188</b>, Culiacán</span>
-        <span class="sep">·</span>
-        <span>WhatsApp <b>667 751 2919</b></span>
-      </div>
+      <a href="#agendar" data-sintoma="lunar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/>
+          <circle cx="12" cy="12" r="3.1" fill="currentColor" stroke="none"/>
+        </svg>
+        <span>Un lunar<small>quiero que lo revisen</small></span>
+      </a>
+
+      <a href="#agendar" data-sintoma="acne">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="8.2" cy="8" r="2.1"/><circle cx="15.6" cy="10.2" r="1.4"/>
+          <circle cx="11" cy="15.4" r="2.6"/><circle cx="17.2" cy="16.4" r="1.1"/>
+        </svg>
+        <span>Granos o acné<small>en la cara o en la espalda</small></span>
+      </a>
+
+      <a href="#agendar" data-sintoma="cabello">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+             stroke-linecap="round" aria-hidden="true">
+          <path d="M5.5 4.2c0 6 1.4 9.2 2.9 12.3M11.3 3.6c.5 5.9.2 9.6-.7 13"/>
+          <path d="M17.2 5.6c-.7 3.9-1.1 6-2.8 8.9"/>
+          <path d="M19.4 17.2c-1.7 1-2.7 2.1-3.3 3.2"/>
+        </svg>
+        <span>Se cae el cabello<small>en parches o en general</small></span>
+      </a>
     </div>
 
-    <!-- Para cruzar dos fotos (bata en el lado "niños", saco en el de "adultos"),
-         agrega aqui: data-alt-photo="img/dra-blazer.png" -->
-    <div class="portrait">
-      <div class="halo" aria-hidden="true"></div>
-      <div class="ring" aria-hidden="true"></div>
-      <div class="photo-clip">
-        <div class="photo base" role="img" aria-label="Dra. Silvia Villaman Lugo"></div>
-        <div class="photo alt" aria-hidden="true"></div>
-      </div>
-      <div class="tag t1">Piel, pelo y uñas en niños<small>desde recién nacidos</small></div>
-      <div class="tag t2">Dermocosmética y láser<small>para adultos</small></div>
+    <p class="hero-mas">¿Otra cosa? <a href="#atiende">Mira todo lo que atiende</a>.</p>
+
+    <p class="next-date" id="proxima" hidden></p>
+
+    <div class="trust">
+      <span>Especialidad en el <b>Hospital Infantil de México Federico Gómez</b></span>
+      <span class="sep">·</span>
+      <span><b>Pedro María Anaya 2188</b>, Culiacán</span>
+      <span class="sep">·</span>
+      <span>WhatsApp <b>667 751 2919</b></span>
     </div>
 
   </div>
@@ -539,6 +494,7 @@ html{scroll-behavior:smooth}
     </div>
 
     <div class="card rv">
+      <div class="doc-foto" role="img" aria-label="Dra. Silvia Villaman Lugo"></div>
       <ul class="facts">
         <li><span class="k">Especialidad</span><span class="v">Dermatología pediátrica, clínica y estética</span></li>
         <li><span class="k">Licenciatura</span><span class="v">Médico cirujano — Universidad Autónoma de Sinaloa</span></li>
@@ -834,129 +790,42 @@ html{scroll-behavior:smooth}
 
 <script>
 (function(){
+  /* El hero ya no tiene mecanismo de lados: solo las manchas del fondo derivan
+     con el puntero, lo justo para que no se sienta una lamina pegada. */
   var root = document.documentElement;
   var hero = document.getElementById('inicio');
-  var track = document.getElementById('track');
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var hoverable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (!hero) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-  var target = 0.5, current = 0.5, locked = false, raf = null;
-  var tgtX = 0, curX = 0, tgtY = 0, curY = 0;   /* parallax del retrato */
+  var tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
 
   function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
-  var LADOS = ['ninos','neutro','adultos'];
-  var ETIQUETAS = ['Para mis hijos','Para toda la familia','Para mí'];
-
-  function paint(t){
-    if (!isFinite(t)) t = 0.5;                 /* una sola variable mala rompia el hero entero */
-    var w1 = clamp(1 - 2*t, 0, 1);
-    var w2 = clamp(2*t - 1, 0, 1);
-    root.style.setProperty('--t',  t.toFixed(4));
-    root.style.setProperty('--w1', w1.toFixed(4));
-    root.style.setProperty('--w2', w2.toFixed(4));
-    root.style.setProperty('--wc', clamp(1 - w1 - w2, 0, 1).toFixed(4));
-    hero.style.setProperty('--mx', curX.toFixed(4));
-    hero.style.setProperty('--my', curY.toFixed(4));
-    var n = t < 0.25 ? 0 : (t > 0.75 ? 2 : 1);
-    if (hero.dataset.lado !== LADOS[n]) hero.dataset.lado = LADOS[n];
-    track.setAttribute('aria-valuenow', n);
-    track.setAttribute('aria-valuetext', ETIQUETAS[n]);
-  }
-
-  function arranca(){ if (!raf) raf = requestAnimationFrame(tick); }
-
   function tick(){
-    current += (target - current) * 0.22;
-    curX    += (tgtX - curX) * 0.12;      /* el parallax va mas suelto a proposito */
-    curY    += (tgtY - curY) * 0.12;
-    var quieto = Math.abs(target - current) < 0.002 &&
-                 Math.abs(tgtX - curX) < 0.002 &&
-                 Math.abs(tgtY - curY) < 0.002;
-    if (quieto){ current = target; curX = tgtX; curY = tgtY; raf = null; paint(current); return; }
-    paint(current);
+    cx += (tx - cx) * 0.07;
+    cy += (ty - cy) * 0.07;
+    root.style.setProperty('--mx', cx.toFixed(4));
+    root.style.setProperty('--my', cy.toFixed(4));
+    if (Math.abs(tx - cx) < 0.002 && Math.abs(ty - cy) < 0.002){
+      cx = tx; cy = ty; raf = null; return;
+    }
     raf = requestAnimationFrame(tick);
   }
+  function arranca(){ if (!raf) raf = requestAnimationFrame(tick); }
 
-  function go(t){
-    if (!isFinite(t)) t = 0.5;
-    target = clamp(t, 0, 1);
-    if (reduce){ current = target; paint(current); return; }
+  hero.addEventListener('pointermove', function(e){
+    if (e.pointerType !== 'mouse') return;
+    var r = hero.getBoundingClientRect();
+    if (!r.width || !r.height || r.bottom < 80) return;
+    var x = (e.clientX - r.left) / r.width;
+    var y = (e.clientY - r.top) / r.height;
+    if (!isFinite(x) || !isFinite(y)) return;
+    tx = clamp(x * 2 - 1, -1, 1);
+    ty = clamp(y * 2 - 1, -1, 1);
     arranca();
-  }
-
-  function mover(x, y){
-    if (reduce) return;
-    tgtX = isFinite(x) ? clamp(x, -1, 1) : 0;
-    tgtY = isFinite(y) ? clamp(y, -1, 1) : 0;
-    arranca();
-  }
-
-  /* seguir el cursor dentro del hero, solo en escritorio */
-  if (hoverable && !reduce){
-    hero.addEventListener('pointermove', function(e){
-      if (locked || e.pointerType !== 'mouse') return;
-      var r = hero.getBoundingClientRect();
-      if (!r.width || !r.height || r.bottom < 80) return;   /* ya scrolleaste lejos del hero */
-      var x = (e.clientX - r.left) / r.width;      /* 0..1 */
-      var y = (e.clientY - r.top) / r.height;      /* 0..1 */
-      mover(x * 2 - 1, y * 2 - 1);                 /* -1..1 desde el centro */
-      if (locked) return;
-      go(clamp((x - 0.18) / 0.64, 0, 1));          /* zona muerta en los bordes */
-    });
-    hero.addEventListener('pointerleave', function(){
-      mover(0, 0);
-      if (!locked) go(0.5);
-    });
-  }
-
-  /* los botones mandan al pasar por encima y al enfocar con teclado */
-  [].forEach.call(document.querySelectorAll('.btn-path'), function(b){
-    var side = Number(b.dataset.side);
-    b.addEventListener('pointerenter', function(){ locked = true; go(side); });
-    b.addEventListener('focus',        function(){ locked = true; go(side); });
-    b.addEventListener('pointerleave', function(){ locked = false; });
-    b.addEventListener('blur',         function(){ locked = false; go(0.5); });
   });
-
-  /* control arrastrable: el unico camino en tactil */
-  function fromTrack(clientX){
-    var r = track.getBoundingClientRect();
-    var util = r.width - 32;
-    if (util <= 0) return 0.5;
-    return clamp((clientX - r.left - 16) / util, 0, 1);
-  }
-  var dragging = false;
-  track.addEventListener('pointerdown', function(e){
-    dragging = true; locked = true; track.setPointerCapture(e.pointerId); go(fromTrack(e.clientX));
-  });
-  track.addEventListener('pointermove', function(e){ if (dragging) go(fromTrack(e.clientX)); });
-  track.addEventListener('pointerup', function(e){
-    dragging = false;
-    var t = fromTrack(e.clientX);
-    go(t < 0.25 ? 0 : (t > 0.75 ? 1 : 0.5));       /* iman a los tres estados */
-    track.releasePointerCapture(e.pointerId);
-  });
-  track.addEventListener('keydown', function(e){
-    var step = {ArrowLeft:-0.5, ArrowRight:0.5, Home:-1, End:1}[e.key];
-    if (step === undefined) return;
-    e.preventDefault(); locked = true;
-    go(Math.abs(step) === 1 ? (step < 0 ? 0 : 1) : clamp(target + step, 0, 1));
-  });
-
-  paint(0.5);
-
-  /* la segunda foto solo se pide si esta declarada, y solo se usa si carga */
-  var portrait = document.querySelector('.portrait');
-  var altSrc = portrait.dataset.altPhoto;
-  if (altSrc){
-    var alt = new Image();
-    alt.onload = function(){
-      portrait.style.setProperty('--alt-photo', 'url("' + altSrc + '")');
-      portrait.classList.add('has-alt');
-    };
-    alt.src = altSrc;
-  }
+  hero.addEventListener('pointerleave', function(){ tx = 0; ty = 0; arranca(); });
 })();
 
 /* aparicion al bajar */
@@ -1003,6 +872,17 @@ html{scroll-behavior:smooth}
            'Otro (lo explico en el chat)']
   };
 
+  /* Lo que se elige en el hero es un sintoma, no un motivo: el motivo depende
+     de si la consulta es para un nino o para un adulto, y eso se sabe aqui. */
+  var SINTOMAS = {
+    mancha:  { hijo:'Manchas o lunares',             mi:'Melasma o manchas' },
+    ronchas: { hijo:'Eccema o dermatitis',           mi:'Rosácea o dermatitis' },
+    seca:    { hijo:'Eccema o dermatitis',           mi:'Rosácea o dermatitis' },
+    lunar:   { hijo:'Manchas o lunares',             mi:'Revisión de lunares' },
+    acne:    { hijo:'Acné del adolescente',          mi:'Acné o cicatrices' },
+    cabello: { hijo:'Caída de cabello',              mi:'Caída de cabello' }
+  };
+
   var grid = document.getElementById('calGrid');
   if (!grid) return;
   var title  = document.getElementById('calTitle');
@@ -1029,7 +909,7 @@ html{scroll-behavior:smooth}
   var minFecha = addDays(hoy, DIAS_MINIMOS);
   var maxFecha = addDays(hoy, DIAS_MAXIMOS);
   var vista = mesDe(minFecha);
-  var estado = { quien:'', fecha:null, hora:'', motivo:'' };
+  var estado = { quien:'', fecha:null, hora:'', motivo:'', sintoma:'' };
 
   function disponible(d){
     if (d < minFecha || d > maxFecha) return false;
@@ -1153,7 +1033,11 @@ html{scroll-behavior:smooth}
     [].forEach.call(document.querySelectorAll('#who .chip'), function(c){
       c.setAttribute('aria-pressed', c.dataset.who === w ? 'true' : 'false');
     });
-    pintarMotivos(); actualizar();
+    pintarMotivos();
+    /* si vienes del hero, el sintoma ya elige el motivo de este lado */
+    var m = SINTOMAS[estado.sintoma] && SINTOMAS[estado.sintoma][w];
+    if (m && MOTIVOS[w].indexOf(m) > -1) sMotivo.value = m;
+    actualizar();
   }
 
   document.getElementById('who').addEventListener('click', function(e){
@@ -1161,9 +1045,12 @@ html{scroll-behavior:smooth}
     if (b) elegirQuien(b.dataset.who);
   });
 
-  /* los CTA del hero bajan hasta aqui con el lado ya elegido */
-  [].forEach.call(document.querySelectorAll('[data-ir-agendar]'), function(a){
-    a.addEventListener('click', function(){ elegirQuien(a.dataset.irAgendar); });
+  /* las seis entradas del hero traen el sintoma hasta aqui */
+  [].forEach.call(document.querySelectorAll('[data-sintoma]'), function(a){
+    a.addEventListener('click', function(){
+      estado.sintoma = a.dataset.sintoma;
+      if (estado.quien) elegirQuien(estado.quien);
+    });
   });
 
   /* la primera fecha con espacio, calculada de HORARIOS y escrita en el hero */
