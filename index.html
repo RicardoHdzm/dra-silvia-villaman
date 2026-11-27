@@ -127,9 +127,12 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
    relevo lo disuelve el CSS en 250 ms de reloj, no a lo largo del scroll,
    asi que al detenerte siempre hay exactamente un texto entero. */
 .titular,.parada{position:absolute;top:50%;opacity:0;visibility:hidden;
-  transition:opacity .25s ease, visibility 0s linear .25s}
+  transition:opacity .30s cubic-bezier(.4,0,.6,1), visibility 0s linear .30s}
+/* El que entra espera a que el otro casi termine de irse. Si los dos se
+   cruzaran a la vez se verian encimados; escalonado se lee como un relevo
+   suave y no como un parpadeo. */
 .titular.activa,.parada.activa{opacity:1;visibility:visible;
-  transition:opacity .25s ease, visibility 0s}
+  transition:opacity .42s cubic-bezier(.4,0,.2,1) .22s, visibility 0s}
 .titular{left:50%;width:min(100% - 56px,660px);
   transform:translate(-50%,-50%);text-align:center}
 .parada{left:clamp(28px,7vw,110px);width:min(100% - 56px,560px);
@@ -143,9 +146,9 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
   color:var(--tinta-media)}
 
 .parada .capa{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--luz);margin-bottom:14px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--acento,var(--luz));margin-bottom:14px;
   font-variant-numeric:tabular-nums}
-.parada .capa::before{content:"";width:26px;height:1px;background:var(--luz);opacity:.6}
+.parada .capa::before{content:"";width:26px;height:1px;background:var(--acento,var(--luz));opacity:.7}
 .parada h2{margin:0;font-size:clamp(32px,4.9vw,62px);line-height:1.02;
   letter-spacing:-.035em;font-weight:800;color:var(--tinta-clara)}
 .parada h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
@@ -1086,9 +1089,22 @@ html{scroll-behavior:smooth}
     g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 6.3); g.fill();
   }
 
+  /* Cada anomalia tiene su color. Las ronchas son rojas porque son
+     inflamacion, el pigmento es terroso, la resequedad es fria. Asi cada
+     parada se distingue de un vistazo y no solo por lo que dice el texto. */
+  var COLOR = {
+    seca:    '168,216,232',
+    mancha:  '212,160,112',
+    lunar:   '150,132,245',
+    ronchas: '236,96,106',
+    acne:    '232,158,62',
+    cabello: '196,178,255'
+  };
+  var COLOR_BASE = '167,139,250';
+
   var glifo = {
-    seca: function(g, x, y, k, t){
-      g.save(); g.lineCap = 'round'; g.strokeStyle = 'rgba(199,180,255,.30)';
+    seca: function(g, x, y, k, t, C){
+      g.save(); g.lineCap = 'round'; g.strokeStyle = 'rgba(' + C + ',.40)';
       for (var i = 0; i < 6; i++){
         var ang = i * 1.05 + 0.3, cx = x + Math.cos(ang + 2) * 90 * k, cy = y + Math.sin(ang + 2) * 70 * k;
         g.lineWidth = (1.2 + (i % 2) * .8) * Math.max(1, k * .6);
@@ -1101,49 +1117,46 @@ html{scroll-behavior:smooth}
         g.stroke();
       }
       g.restore();
-      halo(g, x, y, 150 * k, 'rgba(167,139,250,A)', '.10');
+      halo(g, x, y, 170 * k, 'rgba(' + C + ',A)', '.14');
     },
-    mancha: function(g, x, y, k, t){
-      /* Pigmento, no hueco: dibujarla mas oscura que el fondo la volvia
-         invisible justo sobre fondo oscuro. Ahora es una mancha calida que
-         se ve, con el centro mas denso. */
+    mancha: function(g, x, y, k, t, C){
       var lat = 1 + 0.05 * Math.sin(t * 0.0009);
-      halo(g, x, y, 260 * k * lat, 'rgba(154,106,120,A)', '.30');
-      halo(g, x, y, 155 * k * lat, 'rgba(132,88,108,A)', '.34');
-      halo(g, x, y, 72 * k, 'rgba(74,48,62,A)', '.46');
+      halo(g, x, y, 260 * k * lat, 'rgba(' + C + ',A)', '.26');
+      halo(g, x, y, 155 * k * lat, 'rgba(' + C + ',A)', '.30');
+      halo(g, x, y, 72 * k, 'rgba(96,62,44,A)', '.46');
     },
-    lunar: function(g, x, y, k, t){
-      halo(g, x, y, 170 * k, 'rgba(167,139,250,A)', '.30');
-      g.fillStyle = 'rgba(236,232,255,.95)';
+    lunar: function(g, x, y, k, t, C){
+      halo(g, x, y, 180 * k, 'rgba(' + C + ',A)', '.30');
+      g.fillStyle = 'rgba(240,236,255,.95)';
       g.beginPath(); g.arc(x, y, 7 * k, 0, 6.3); g.fill();
-      g.strokeStyle = 'rgba(199,180,255,.45)'; g.lineWidth = Math.max(1, k * .7);
+      g.strokeStyle = 'rgba(' + C + ',.5)'; g.lineWidth = Math.max(1, k * .7);
       for (var m = 1; m <= 3; m++){
         var rr = 30 * m * k * (1 + 0.05 * Math.sin(t * 0.0011 + m));
         g.beginPath(); g.arc(x, y, rr, 0, 6.3); g.stroke();
       }
     },
-    ronchas: function(g, x, y, k, t){
+    ronchas: function(g, x, y, k, t, C){
       for (var i = 0; i < 7; i++){
         var ox = Math.cos(i * 1.9) * 95 * k, oy = Math.sin(i * 2.6) * 68 * k;
         var lat = 1 + 0.14 * Math.sin(t * 0.0013 + i * 1.3);
-        halo(g, x + ox, y + oy, (40 + (i % 3) * 14) * k * lat, 'rgba(199,180,255,A)', '.34');
+        halo(g, x + ox, y + oy, (42 + (i % 3) * 14) * k * lat, 'rgba(' + C + ',A)', '.40');
       }
     },
-    acne: function(g, x, y, k, t){
+    acne: function(g, x, y, k, t, C){
       for (var i = 0; i < 5; i++){
         var ox = (i - 2) * 60 * k, oy = Math.sin(i * 1.4) * 40 * k;
         var lat = 1 + 0.2 * Math.sin(t * 0.0019 + i * 2.1);
-        halo(g, x + ox, y + oy, 38 * k * lat, 'rgba(226,161,60,A)', '.32');
-        g.fillStyle = 'rgba(252,240,214,.9)';
+        halo(g, x + ox, y + oy, 40 * k * lat, 'rgba(' + C + ',A)', '.38');
+        g.fillStyle = 'rgba(254,246,230,.92)';
         g.beginPath(); g.arc(x + ox, y + oy, 3.4 * k, 0, 6.3); g.fill();
       }
     },
-    cabello: function(g, x, y, k, t){
+    cabello: function(g, x, y, k, t, C){
       g.save(); g.lineCap = 'round';
       for (var i = 0; i < 7; i++){
         var ox = (i - 3) * 34 * k, L = (150 + (i % 3) * 64) * k;
         var mece = Math.sin(t * 0.0007 + i * 0.9) * 20 * k;
-        g.strokeStyle = 'rgba(199,180,255,' + (0.16 + (i % 2) * 0.12) + ')';
+        g.strokeStyle = 'rgba(' + C + ',' + (0.18 + (i % 2) * 0.14) + ')';
         g.lineWidth = Math.max(1, (1.2 + (i % 2) * .7) * k * .6);
         g.beginPath(); g.moveTo(x + ox, y + 50 * k);
         g.quadraticCurveTo(x + ox + (i % 2 ? 58 : -58) * k + mece, y - L * 0.4,
@@ -1154,10 +1167,10 @@ html{scroll-behavior:smooth}
     }
   };
 
-  function mira(g, x, y, r, fuerza, t){
+  function mira(g, x, y, r, fuerza, t, C){
     g.save(); g.globalAlpha = fuerza;
     g.translate(x, y); g.rotate(t * 0.00016);
-    g.strokeStyle = 'rgba(199,180,255,.5)'; g.lineWidth = 1;
+    g.strokeStyle = 'rgba(' + C + ',.55)'; g.lineWidth = 1;
     g.beginPath(); g.arc(0, 0, r, 0, 6.3); g.stroke();
     var d = r * 0.09;
     [[0,-1],[0,1],[-1,0],[1,0]].forEach(function(v){
@@ -1232,9 +1245,10 @@ html{scroll-behavior:smooth}
       var ka = F / za;
       ctx.save();
       ctx.globalAlpha = op;
-      glifo[an.tipo](ctx, cx, cy, ka * 1.5, t);
+      var C = COLOR[an.tipo] || COLOR_BASE;
+      glifo[an.tipo](ctx, cx, cy, ka * 1.5, t, C);
       var cerca = 1 - Math.min(1, Math.abs(p - at) / 0.075);
-      if (cerca > 0) mira(ctx, cx, cy, 160 * ka * 1.5, cerca * 0.8, t);
+      if (cerca > 0) mira(ctx, cx, cy, 160 * ka * 1.5, cerca * 0.8, t, C);
       ctx.restore();
     }
 
@@ -1264,9 +1278,17 @@ html{scroll-behavior:smooth}
       var d = Math.abs(p - parseFloat(b.dataset.at));
       if (d < mejorD){ mejorD = d; cercano = b; }
     });
-    bloques.forEach(function(b){ b.classList.toggle('activa', b === cercano); });
+    bloques.forEach(function(b){
+      var on = b === cercano;
+      b.classList.toggle('activa', on);
+      if (on && b.dataset.sintoma && COLOR[b.dataset.sintoma]){
+        b.style.setProperty('--acento', 'rgb(' + COLOR[b.dataset.sintoma] + ')');
+      }
+    });
     paradas.forEach(function(b, i){
-      puntos[i].classList.toggle('on', Math.abs(p - parseFloat(b.dataset.at)) < 0.075);
+      var on = b === cercano;
+      puntos[i].classList.toggle('on', on);
+      puntos[i].style.background = on ? 'rgb(' + (COLOR[b.dataset.sintoma] || COLOR_BASE) + ')' : '';
     });
     baja.style.opacity = p > 0.03 ? 0 : 1;
     var mm = milimetros(p);

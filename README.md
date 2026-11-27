@@ -38,6 +38,16 @@ verdad y el número coincide con el que dice la parada, porque sale de la misma
 tabla de anclas (`ANCLAS` interpola entre ellas). Cuando el recorrido era
 lateral, la profundidad era decorativa.
 
+**Cada anomalía tiene su color**, en la constante `COLOR` del motor: hielo la
+resequedad, terroso el pigmento, violeta el nevo, **rojo las ronchas** porque
+son inflamación, ámbar el acné, plata la raíz del pelo. El color tiñe el
+gráfico, la mira que lo encuadra, la etiqueta de la parada y su punto en el
+riel, así que cada parada se distingue de un vistazo y no solo por el texto.
+
+**El relevo del texto está escalonado**: el que sale se va en 300 ms y el que
+entra espera 220 antes de aparecer en 420. Si se cruzaran a la vez se verían
+encimados; escalonado se lee como un relevo y no como un parpadeo.
+
 **El scroll se ancla en cada parada.** Hay siete `.ancla` invisibles colocadas
 en el punto exacto del recorrido donde cada parada queda centrada, con
 `scroll-snap-align`. Un movimiento corto regresa a la parada actual y uno
