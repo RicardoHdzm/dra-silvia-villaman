@@ -111,7 +111,7 @@ nav a:hover{color:var(--ink);border-color:var(--lav)}
    como una malla de nodos y aristas, y las lesiones como anomalias del campo.
    La base es el azul marino del propio logo, no un verde petroleo, que seria
    meterse justo en el terreno de la referencia. */
-.viaje{position:relative;height:380vh;--rango:280vh;
+.viaje{position:relative;height:380vh;
   --noche:#0E1A30; --noche2:#16233F;
   --luz:#A78BFA; --tinta-clara:#EDEAF9; --tinta-media:#A7B1CE}
 .stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate;
@@ -195,8 +195,13 @@ html{scroll-snap-type:y proximity}
    un movimiento mas te deja en ella y no en los 100vh muertos que tarda el
    escenario en despegarse. Con proximity esto no atrapa. */
 #doctora{scroll-snap-align:start;scroll-snap-stop:always}
+/* El sitio de cada ancla lo calcula el JS, no el CSS. Expresarlo en vh estaba
+   mal: el alto pegajoso real es la seccion menos el escenario, y el escenario
+   mide 100svh, que en movil no es 100vh. Cuando no coinciden, las ultimas
+   anclas caen fuera de la zona pegajosa y ahi el scroll mueve la pagina
+   entera en vez de avanzar el recorrido. */
 .ancla{position:absolute;left:0;width:1px;height:1px;pointer-events:none;
-  top:calc(var(--at) * var(--rango));scroll-snap-align:start;scroll-snap-stop:always}
+  scroll-snap-align:start;scroll-snap-stop:always}
 
 /* Salida siempre a la vista: el recorrido es bonito pero no todo el mundo
    viene a verlo, y quien llega con una urgencia no deberia tener que
@@ -283,7 +288,7 @@ body{padding-top:76px}
 @media (max-width:620px){ .probe{grid-template-columns:1fr} .ops{grid-template-columns:1fr} }
 @media (max-width:900px){
   nav{display:none}
-  .viaje{height:320vh;--rango:220vh}
+  .viaje{height:320vh}
   .parada{top:63%;left:28px;right:28px;width:auto}
   .parada p{font-size:17px}
   /* la niebla tambien es oscura: la version clara de antes lavaba el hero
@@ -1357,12 +1362,25 @@ html{scroll-behavior:smooth}
   });
   addEventListener('scroll', arranca, {passive:true});
 
+  /* El rango util es la seccion menos lo que mide el escenario pegado. Es la
+     misma cuenta que usa avanza() para el progreso, asi que ancla y parada
+     caen siempre en el mismo punto. */
+  function colocaAnclas(){
+    var total = sec.getBoundingClientRect().height - window.innerHeight;
+    if (total <= 0) return;
+    [].forEach.call(sec.querySelectorAll('.ancla'), function(a){
+      var at = parseFloat(getComputedStyle(a).getPropertyValue('--at')) || 0;
+      a.style.top = Math.round(at * total) + 'px';
+    });
+  }
+
   function mide(){
     var dpr = Math.min(2, window.devicePixelRatio || 1);
     vw = cv.clientWidth; vh = cv.clientHeight;
     cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     siembra();
+    colocaAnclas();
     ultimoP = -1;
     cuadro(performance.now());
   }
