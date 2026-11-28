@@ -179,13 +179,18 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
       rgba(var(--velo),.44) 54%, rgba(var(--velo),.70) 72%,
       rgba(var(--velo),.62) 82%, rgba(var(--velo),0) 100%),
     linear-gradient(to bottom,
-      rgba(245,241,251,0) 78%, rgba(245,241,251,.55) 92%,
-      var(--bg) 100%)}
+      rgba(255,255,255,0) 76%, rgba(255,255,255,.55) 90%,
+      #fff 100%)}
 
 /* Grano. Textura de pelicula, pero sobre todo rompe el escalonado en franjas
    que hace un degradado oscuro y amplio en pantallas de 8 bits. */
+/* El grano se apaga antes del borde de abajo. Cubria el escenario pero no
+   lo que hay debajo de el, asi que el ultimo pixel del hero llevaba un 7% de
+   ruido que el fondo del sitio no tenia: justo ahi se veia la linea. */
 .grano{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.07;
   mix-blend-mode:overlay;
+  -webkit-mask-image:linear-gradient(to bottom,#000 72%,transparent 96%);
+  mask-image:linear-gradient(to bottom,#000 72%,transparent 96%);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
 /* Capa de contenido: se desvanece cuando el escenario sale, para que su
@@ -290,7 +295,11 @@ body{padding-top:76px}
 /* Visible siempre, no solo como respaldo. Quien navega con teclado o lector
    de pantalla nunca llega a ver las paradas del recorrido, asi que el menu
    completo de sintomas tiene que existir tambien fuera de el. */
-.entradas{display:block;padding:70px 0 10px}
+/* El sitio arranca en blanco y sube al lavanda. El hero termina en blanco,
+   asi que entre los dos no hay ningun escalon que ver: el degradado sigue
+   donde lo dejo el hero. */
+.entradas{display:block;padding:70px 0 10px;
+  background:linear-gradient(to bottom,#fff 0, var(--bg) clamp(160px,26vh,300px))}
 .sin-viaje .viaje{display:none}
 
 .entradas .eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:12.5px;
