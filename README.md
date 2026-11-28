@@ -426,9 +426,18 @@ consecuencias que no son opcionales:
 - Hay una sola `.bruma`, no una por ancho.
 ## Opciones de hero
 
-El hero actual de `index.html` (recorrido por la piel, oscuro, con la malla
-de tejido) es la **opción A**. Al cliente no le terminó de convencer, así que
-se mantiene como una de dos.
+**El sitio usa ahora el hero de color.** La **opción A** (recorrido por la
+piel, con la malla de tejido) fue la primera versión y vive en el historial
+de git; `hero-color.html` se queda como la página aislada con la que se
+probó esta, por si hace falta comparar sin el resto del sitio alrededor.
+
+Al portarlo a `index.html` hubo que conservar tres cosas que la página de
+prueba no tenía: el `data-sintoma` de los enlaces de cada parada (que el
+módulo del calendario lee para preseleccionar el motivo), la caída a la
+banda de entradas cuando hay `prefers-reduced-motion`, y el enlace
+`Baja para entrar`. Las etiquetas de parada dejan de ser profundidades
+(`Epidermis · 0.10 mm`) y pasan a ser el motivo: sin piel que medir, los
+milímetros no decían nada.
 
 **Opción B — `hero-color.html`.** Mismo recorrido y mismas paradas, sin
 referencia figurativa a la piel. El fondo son seis manchas de color que
