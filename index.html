@@ -311,8 +311,12 @@ header.posado{background:rgba(245,241,251,.86);backdrop-filter:blur(12px);
    borde. scroll-margin-top en las secciones lo corrige, y de paso arregla
    todos los enlaces del menu, que tenian el mismo problema.
    Va en las secciones y NO como scroll-padding-top en el html a proposito:
-   ahi afectaria tambien al anclaje del hero y desplazaria las paradas. */
-section[id]{scroll-margin-top:88px}
+   ahi afectaria tambien al anclaje del hero y desplazaria las paradas.
+   70 y no 88: la cabecera termina en 75, asi que con 88 asomaban los
+   ultimos 12 px del hero entre la cabecera y la seccion. Con 70 el borde
+   del hero queda por debajo de la cabecera y no se ve. El aire del texto
+   lo pone el padding de la propia seccion, no este margen. */
+section[id]{scroll-margin-top:70px}
 
 body{padding-top:76px}
 .viaje{margin-top:-76px}
