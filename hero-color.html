@@ -55,27 +55,33 @@ header.posado{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
 
 /* El lienzo aisla la mezcla: sin isolation, el multiply de las manchas se
    comeria tambien lo que hay detras del hero. */
+/* El fondo lo tine la parada. Antes era papel casi blanco y, como las
+   manchas lejanas son pequenas, quedaba media pantalla vacia. Ahora nunca
+   hay hueco sin color: las manchas anaden variacion sobre una base que ya
+   esta tenida. */
 .lienzo{position:absolute;inset:0;z-index:-2;overflow:hidden;
-  background:var(--papel);isolation:isolate}
+  background:var(--fondo,#FBF9FC);isolation:isolate;
+  transition:background-color 1.5s ease}
 
 /* Una mancha. La forma la da el border-radius, que respira en bucle: es lo
    que la hace organica en vez de un circulo. La profundidad la pone el JS
    en --s (tamano), --dx/--dy (cuanto se ha abierto) y --o (opacidad). El
    color lo pone la parada, con transicion larga para que el cambio de tono
    se lea como un viraje y no como un corte. */
-.mancha{position:absolute;left:50%;top:50%;width:34vmax;height:34vmax;
+.mancha{position:absolute;left:50%;top:50%;width:46vmax;height:46vmax;
   mix-blend-mode:multiply;filter:blur(var(--blur));
   background:var(--col,#9B7BE8);opacity:var(--o,0);
   transform:translate(-50%,-50%) translate(var(--dx,0px),var(--dy,0px)) scale(var(--s,.2));
   transition:background-color 1.5s ease;
   will-change:transform,opacity;
-  animation:respira var(--dur,22s) ease-in-out infinite alternate}
+  animation:respira var(--dur,12s) ease-in-out infinite alternate}
 @keyframes respira{
   from{border-radius:44% 56% 62% 38% / 48% 40% 60% 52%}
   to  {border-radius:60% 40% 34% 66% / 64% 58% 42% 36%}
 }
-.m1{--dur:19s} .m2{--dur:23s;animation-delay:-4s} .m3{--dur:27s;animation-delay:-9s}
-.m4{--dur:21s;animation-delay:-13s} .m5{--dur:25s;animation-delay:-6s} .m6{--dur:29s;animation-delay:-17s}
+.m1{--dur:9s}  .m2{--dur:11s;animation-delay:-3s} .m3{--dur:13s;animation-delay:-6s}
+.m4{--dur:10s;animation-delay:-8s} .m5{--dur:12s;animation-delay:-4s} .m6{--dur:15s;animation-delay:-11s}
+.m7{--dur:14s;animation-delay:-2s} .m8{--dur:10.5s;animation-delay:-9s}
 
 /* Velo: cama clara solo detras del texto. No lava media pantalla, porque
    entonces el campo de color se quedaba sin la mitad de abajo. */
@@ -83,8 +89,8 @@ header.posado{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
   background:
     radial-gradient(64% 24% at 50% 64%, rgba(255,255,255,.90) 0%,
       rgba(255,255,255,.58) 54%, rgba(255,255,255,0) 100%),
-    linear-gradient(to bottom, rgba(255,255,255,.52) 0%, rgba(255,255,255,0) 13%,
-      rgba(255,255,255,0) 88%, rgba(255,255,255,.42) 100%)}
+    linear-gradient(to bottom, rgba(255,255,255,.40) 0%, rgba(255,255,255,0) 11%,
+      rgba(255,255,255,0) 92%, rgba(255,255,255,.26) 100%)}
 
 /* capa de contenido: se desvanece cuando el escenario sale, para no
    cruzarse con la cabecera (mismo motivo que en index.html) */
@@ -155,7 +161,7 @@ body{padding-top:76px}
 @media (max-width:900px){
   :root{--blur:48px}
   .viaje{height:320vh}
-  .mancha{width:46vmax;height:46vmax}
+  .mancha{width:62vmax;height:62vmax}
   .parada p{font-size:17px}
   .riel{right:14px;gap:11px}
   .cuenta{left:18px;bottom:16px}
@@ -186,6 +192,8 @@ body{padding-top:76px}
       <div class="mancha m4"></div>
       <div class="mancha m5"></div>
       <div class="mancha m6"></div>
+      <div class="mancha m7"></div>
+      <div class="mancha m8"></div>
     </div>
     <div class="velo" aria-hidden="true"></div>
 
@@ -279,12 +287,12 @@ body{padding-top:76px}
      tornasol, porque donde se cruzan dos manchas sale un tercer color que
      no esta pintado en ningun sitio. */
   var TONOS = [
-    { ac:'#5B3FB5', c:['#9B7BE8','#B98FF0','#7E6BE0','#C9A4F2','#8AA6F0','#A87FE0'] },
-    { ac:'#8A2E9E', c:['#A86BD8','#D472B5','#8C5FD6','#E39FD4','#B07FE8','#C76FC0'] },
-    { ac:'#0F6F6A', c:['#3FBFB0','#45A8CC','#7AD8C0','#3C92C4','#9FE2D2','#5FC8B8'] },
-    { ac:'#246B3F', c:['#6CC56A','#A5D45C','#40B07C','#C6E07C','#8FD99F','#58BE8A'] },
-    { ac:'#8A5A08', c:['#F2B33D','#F5D24E','#E8923C','#F7E08A','#EDC25A','#E0A14A'] },
-    { ac:'#A83A48', c:['#F2887A','#EF6F8E','#F7B08A','#E06A86','#F9C3A8','#EC8396'] }
+    { ac:'#5B3FB5', bg:'#EFE9FB', c:['#9B7BE8','#B98FF0','#7E6BE0','#C9A4F2','#8AA6F0','#A87FE0','#8E7CEC','#C2A0EE'] },
+    { ac:'#8A2E9E', bg:'#F6E8F6', c:['#A86BD8','#D472B5','#8C5FD6','#E39FD4','#B07FE8','#C76FC0','#9B63D0','#DE8CC8'] },
+    { ac:'#0F6F6A', bg:'#E4F4F1', c:['#3FBFB0','#45A8CC','#7AD8C0','#3C92C4','#9FE2D2','#5FC8B8','#4FB6C4','#86DCCB'] },
+    { ac:'#246B3F', bg:'#E9F5E4', c:['#6CC56A','#A5D45C','#40B07C','#C6E07C','#8FD99F','#58BE8A','#7ACD63','#B4DB70'] },
+    { ac:'#8A5A08', bg:'#FBF0DC', c:['#F2B33D','#F5D24E','#E8923C','#F7E08A','#EDC25A','#E0A14A','#F0C048','#F3D672'] },
+    { ac:'#A83A48', bg:'#FBEAE6', c:['#F2887A','#EF6F8E','#F7B08A','#E06A86','#F9C3A8','#EC8396','#F09A84','#EE7F92'] }
   ];
 
   var puntos = bloques.map(function(){
@@ -294,6 +302,7 @@ body{padding-top:76px}
   function pintaParada(i){
     var t = TONOS[Math.min(i, TONOS.length - 1)];
     document.documentElement.style.setProperty('--acento', t.ac);
+    document.documentElement.style.setProperty('--fondo', t.bg);
     for (var j = 0; j < manchas.length; j++){
       manchas[j].style.setProperty('--col', t.c[j % t.c.length]);
     }
@@ -304,7 +313,11 @@ body{padding-top:76px}
      avanzar el recorrido todas se acercan: crecen, se abren hacia los lados
      y se apagan al pasarte. Las de atras ocupan su lugar. Es el mismo
      efecto de adentrarse que daban los anillos, pero con manchas. */
-  var CICLOS = 2.6, DERIVA = 0.000045;
+  /* DERIVA es lo que avanza el campo por si solo, sin scroll. Estaba tan
+     bajo (una vuelta cada 6 minutos) que el fondo parecia una imagen fija.
+     VAIVEN es un balanceo lateral encima, para que el movimiento se note
+     tambien cuando una mancha esta lejos y apenas crece. */
+  var CICLOS = 2.6, DERIVA = 0.00016, VAIVEN = 0.00045;
   var sitios = manchas.map(function(_, i){
     return { base: i / manchas.length, ang: i * 2.399 };   /* angulo de oro */
   });
@@ -315,15 +328,24 @@ body{padding-top:76px}
       var s = sitios[i];
       var z = (s.base - p * CICLOS - t * DERIVA) % 1; if (z < 0) z += 1;
       var cerca = 1 - z;
-      var esc = 0.16 + cerca * cerca * 2.8;
-      var op = Math.min(1, cerca * 5) * Math.min(1, z / 0.22) * 0.9;
-      var r = Math.pow(cerca, 1.6) * 0.42 * vmin;
-      var ang = s.ang + t * 0.00002;
+      /* la escala arranca mas alta: con 0.16 las lejanas eran puntos y
+         dejaban la pantalla vacia */
+      var esc = 0.45 + cerca * cerca * 2.6;
+      /* y pasan mas tiempo encendidas, por el mismo motivo */
+      /* 0.42 y no 0.92: en multiply cada mancha que se solapa oscurece a la
+         anterior, y con ocho encima el campo se cerraba tanto que el parrafo
+         dejaba de leerse. Llenar la pantalla se consigue con la base tenida,
+         no subiendo las manchas. */
+      var op = Math.min(1, cerca * 3.2) * Math.min(1, z / 0.14) * 0.42;
+      var r = Math.pow(cerca, 1.5) * 0.40 * vmin;
+      var ang = s.ang + t * 0.00006;
+      var vx = Math.sin(t * VAIVEN + s.ang) * 0.07 * vmin;
+      var vy = Math.cos(t * VAIVEN * 0.78 + s.ang * 1.7) * 0.06 * vmin;
       var e = manchas[i].style;
       e.setProperty('--s', esc.toFixed(3));
       e.setProperty('--o', op.toFixed(3));
-      e.setProperty('--dx', Math.round(Math.cos(ang) * r) + 'px');
-      e.setProperty('--dy', Math.round(Math.sin(ang) * r) + 'px');
+      e.setProperty('--dx', Math.round(Math.cos(ang) * r + vx) + 'px');
+      e.setProperty('--dy', Math.round(Math.sin(ang) * r + vy) + 'px');
     }
   }
 
