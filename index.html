@@ -184,12 +184,17 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
    oscurecer .saltar y .baja, que sobre blanco quedan invisibles. */
 .velo{position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
+    /* Un radial enorme en vez de una rampa con escalones. El perfil anterior
+       subia y bajaba dos veces (oscuro arriba, claro al 21%, oscuro al 52%,
+       claro al 90%) y cada inversion dibujaba un canto horizontal que se leia
+       como una banda rectangular en medio del hero. Este es mas ancho que la
+       pantalla, asi que sus bordes caen fuera y no hay canto que ver. */
+    radial-gradient(135% 78% at 50% 54%,
+      rgba(var(--velo),.60) 0%, rgba(var(--velo),.40) 42%,
+      rgba(var(--velo),.12) 76%, rgba(var(--velo),0) 100%),
+    /* y una caida suave arriba, solo para la cabecera */
     linear-gradient(to bottom,
-      rgba(var(--velo),.56) 0%, rgba(var(--velo),.14) 11%,
-      rgba(var(--velo),0) 21%,
-      rgba(var(--velo),.40) 35%, rgba(var(--velo),.66) 52%,
-      rgba(var(--velo),.58) 70%, rgba(var(--velo),.16) 83%,
-      rgba(var(--velo),0) 90%)}
+      rgba(var(--velo),.42) 0%, rgba(var(--velo),0) 24%)}
 
 /* Grano. Textura de pelicula, pero sobre todo rompe el escalonado en franjas
    que hace un degradado oscuro y amplio en pantallas de 8 bits. */
