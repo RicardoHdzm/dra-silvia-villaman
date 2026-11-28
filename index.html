@@ -149,8 +149,8 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
 .lienzo{position:absolute;inset:0;z-index:-3;overflow:hidden;
   background:var(--fondo,#241B47);isolation:isolate;
   transition:background-color 1.5s ease;
-  -webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent 96%);
-  mask-image:linear-gradient(to bottom,#000 80%,transparent 96%)}
+  -webkit-mask-image:linear-gradient(to bottom,#000 92%,transparent 99%);
+  mask-image:linear-gradient(to bottom,#000 92%,transparent 99%)}
 
 /* screen y no multiply: sobre fondo oscuro, multiply solo ensucia. screen
    suma luz, asi que donde se cruzan dos manchas sale un color mas luminoso
@@ -192,8 +192,8 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
       rgba(var(--velo),.58) 70%, rgba(var(--velo),.16) 83%,
       rgba(var(--velo),0) 90%),
     linear-gradient(to bottom,
-      rgba(255,255,255,0) 82%, rgba(255,255,255,.62) 92%,
-      #fff 97%, #fff 100%)}
+      rgba(255,255,255,0) 93%, rgba(255,255,255,.45) 97%,
+      #fff 99%, #fff 100%)}
 
 /* Grano. Textura de pelicula, pero sobre todo rompe el escalonado en franjas
    que hace un degradado oscuro y amplio en pantallas de 8 bits. */
@@ -202,8 +202,8 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
    ruido que el fondo del sitio no tenia: justo ahi se veia la linea. */
 .grano{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.07;
   mix-blend-mode:overlay;
-  -webkit-mask-image:linear-gradient(to bottom,#000 76%,transparent 93%);
-  mask-image:linear-gradient(to bottom,#000 76%,transparent 93%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 89%,transparent 97%);
+  mask-image:linear-gradient(to bottom,#000 89%,transparent 97%);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
 /* Capa de contenido: se desvanece cuando el escenario sale, para que su
