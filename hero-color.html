@@ -65,7 +65,7 @@ header.posado{background:rgba(26,20,48,.72);backdrop-filter:blur(12px);
    manchas lejanas son pequenas, quedaba media pantalla vacia. Ahora nunca
    hay hueco sin color: las manchas anaden variacion sobre una base que ya
    esta tenida. */
-.lienzo{position:absolute;inset:0;z-index:-2;overflow:hidden;
+.lienzo{position:absolute;inset:0;z-index:-3;overflow:hidden;
   background:var(--fondo,#FBF9FC);isolation:isolate;
   transition:background-color 1.5s ease}
 
@@ -81,7 +81,8 @@ header.posado{background:rgba(26,20,48,.72);backdrop-filter:blur(12px);
 .mancha{position:absolute;left:50%;top:50%;width:46vmax;height:46vmax;
   mix-blend-mode:screen;filter:blur(var(--blur));
   background:var(--col,#9B7BE8);opacity:var(--o,0);
-  transform:translate(-50%,-50%) translate(var(--dx,0px),var(--dy,0px)) scale(var(--s,.2));
+  transform:translate(-50%,-50%) translate(var(--dx,0px),var(--dy,0px))
+    rotate(var(--rot,0deg)) scale(var(--s,.2));
   transition:background-color 1.5s ease;
   will-change:transform,opacity;
   animation:respira var(--dur,12s) ease-in-out infinite alternate}
@@ -89,9 +90,9 @@ header.posado{background:rgba(26,20,48,.72);backdrop-filter:blur(12px);
   from{border-radius:44% 56% 62% 38% / 48% 40% 60% 52%}
   to  {border-radius:60% 40% 34% 66% / 64% 58% 42% 36%}
 }
-.m1{--dur:9s}  .m2{--dur:11s;animation-delay:-3s} .m3{--dur:13s;animation-delay:-6s}
-.m4{--dur:10s;animation-delay:-8s} .m5{--dur:12s;animation-delay:-4s} .m6{--dur:15s;animation-delay:-11s}
-.m7{--dur:14s;animation-delay:-2s} .m8{--dur:10.5s;animation-delay:-9s}
+.m1{--dur:6s}  .m2{--dur:7.5s;animation-delay:-2s} .m3{--dur:9s;animation-delay:-4s}
+.m4{--dur:6.5s;animation-delay:-5s} .m5{--dur:8s;animation-delay:-3s} .m6{--dur:10s;animation-delay:-7s}
+.m7{--dur:9.5s;animation-delay:-1s} .m8{--dur:7s;animation-delay:-6s}
 
 /* Velo: cama clara solo detras del texto. No lava media pantalla, porque
    entonces el campo de color se quedaba sin la mitad de abajo. */
@@ -99,6 +100,21 @@ header.posado{background:rgba(26,20,48,.72);backdrop-filter:blur(12px);
    encima de las manchas; la rampa no tiene borde que el ojo pueda recortar.
    Y el tinte ya no es blanco sino el tono profundo de la parada, asi que
    oscurece para asentar el texto claro en vez de lavar el color. */
+/* Polvo en suspension: puntos de luz a distintas profundidades que vienen
+   con el mismo flujo que las manchas. Dan escala al campo (sin algo pequeno
+   cerca, una mancha enorme y una pequena se ven igual) y cuestan casi nada
+   porque son arcos de un pixel. */
+#polvo{position:absolute;inset:0;z-index:-2;width:100%;height:100%;display:block;
+  pointer-events:none}
+
+/* Grano. Ademas de dar textura de pelicula, resuelve algo real: un degradado
+   oscuro y amplio se escalona en franjas visibles en pantallas de 8 bits, y
+   en el telefono se nota bastante. El ruido rompe esas franjas. Es estatico
+   a proposito: animarlo cuesta y aqui el movimiento ya lo ponen las manchas. */
+.grano{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.07;
+  mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
 .velo{position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
     linear-gradient(to bottom,
@@ -214,7 +230,9 @@ body{padding-top:76px}
       <div class="mancha m7"></div>
       <div class="mancha m8"></div>
     </div>
+    <canvas id="polvo" aria-hidden="true"></canvas>
     <div class="velo" aria-hidden="true"></div>
+    <div class="grano" aria-hidden="true"></div>
 
     <div class="capas">
       <div class="titular" data-at="0">
@@ -350,7 +368,61 @@ body{padding-top:76px}
      bajo (una vuelta cada 6 minutos) que el fondo parecia una imagen fija.
      VAIVEN es un balanceo lateral encima, para que el movimiento se note
      tambien cuando una mancha esta lejos y apenas crece. */
-  var CICLOS = 2.6, DERIVA = 0.00016, VAIVEN = 0.00045;
+  var CICLOS = 2.6, DERIVA = 0.00030, VAIVEN = 0.00075;
+
+  /* ---------------- polvo ----------------
+     Mismo flujo de profundidad que las manchas, para que todo viaje junto. */
+  var cv = document.getElementById('polvo');
+  var ctx = cv && cv.getContext ? cv.getContext('2d') : null;
+  var vw = 0, vh = 0, motas = [], luz = '244,241,250';
+
+  function siembraPolvo(){
+    motas = [];
+    var n = vw < 760 ? 54 : 90;
+    for (var i = 0; i < n; i++){
+      motas.push({
+        base: (i * 0.6180339887) % 1,          /* repartidas sin agruparse */
+        ang: (i * 2.399) % 6.2832,
+        rad: 0.08 + ((i * 37) % 100) / 100 * 0.92,
+        giro: ((i * 53) % 100) / 100 * 0.6
+      });
+    }
+  }
+
+  function midePolvo(){
+    if (!ctx) return;
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    vw = cv.clientWidth; vh = cv.clientHeight;
+    cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    siembraPolvo();
+  }
+
+  function polvo(p, t){
+    if (!ctx) return;
+    ctx.clearRect(0, 0, vw, vh);
+    var cx = vw * 0.5, cy = vh * 0.46;
+    var diag = Math.sqrt(vw * vw + vh * vh) * 0.62;
+    for (var i = 0; i < motas.length; i++){
+      var m = motas[i];
+      var z = (m.base - p * CICLOS - t * DERIVA) % 1; if (z < 0) z += 1;
+      var cerca = 1 - z;
+      /* se alejan del centro conforme se acercan: es la misma perspectiva */
+      var r = Math.pow(cerca, 1.9) * diag * m.rad;
+      var ang = m.ang + m.giro * cerca + t * 0.00004;
+      var x = cx + Math.cos(ang) * r;
+      var y = cy + Math.sin(ang) * r * 0.86;
+      if (x < -20 || x > vw + 20 || y < -20 || y > vh + 20) continue;
+      var op = Math.min(1, cerca * 4) * Math.min(1, z / 0.12) * 0.55;
+      if (op <= 0.02) continue;
+      ctx.globalAlpha = op;
+      ctx.fillStyle = 'rgb(' + luz + ')';
+      ctx.beginPath();
+      ctx.arc(x, y, Math.max(0.6, 2.6 * cerca), 0, 6.2832);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
   var sitios = manchas.map(function(_, i){
     return { base: i / manchas.length, ang: i * 2.399 };   /* angulo de oro */
   });
@@ -372,13 +444,14 @@ body{padding-top:76px}
       var op = Math.min(1, cerca * 3.2) * Math.min(1, z / 0.14) * 0.42;
       var r = Math.pow(cerca, 1.5) * 0.40 * vmin;
       var ang = s.ang + t * 0.00006;
-      var vx = Math.sin(t * VAIVEN + s.ang) * 0.07 * vmin;
-      var vy = Math.cos(t * VAIVEN * 0.78 + s.ang * 1.7) * 0.06 * vmin;
+      var vx = Math.sin(t * VAIVEN + s.ang) * 0.10 * vmin;
+      var vy = Math.cos(t * VAIVEN * 0.78 + s.ang * 1.7) * 0.085 * vmin;
       var e = manchas[i].style;
       e.setProperty('--s', esc.toFixed(3));
       e.setProperty('--o', op.toFixed(3));
       e.setProperty('--dx', Math.round(Math.cos(ang) * r + vx) + 'px');
       e.setProperty('--dy', Math.round(Math.sin(ang) * r + vy) + 'px');
+      e.setProperty('--rot', ((s.ang * 40 + t * 0.006) % 360).toFixed(1) + 'deg');
     }
   }
 
@@ -424,7 +497,9 @@ body{padding-top:76px}
     var total = r.height - window.innerHeight;
     var p = total > 0 ? Math.max(0, Math.min(1, -r.top / total)) : 0;
     estado(p);
-    hondo(p, quieto ? 0 : (ts || 0));
+    var reloj = quieto ? 0 : (ts || 0);
+    hondo(p, reloj);
+    polvo(p, reloj);
     if (enPantalla && !document.hidden) raf = requestAnimationFrame(cuadro);
   }
   function arranca(){ if (!raf) raf = requestAnimationFrame(cuadro); }
@@ -439,9 +514,13 @@ body{padding-top:76px}
   addEventListener('scroll', arranca, {passive:true});
 
   var tm;
-  addEventListener('resize', function(){ clearTimeout(tm); tm = setTimeout(colocaAnclas, 120); });
+  addEventListener('resize', function(){
+    clearTimeout(tm);
+    tm = setTimeout(function(){ colocaAnclas(); midePolvo(); }, 120);
+  });
 
   colocaAnclas();
+  midePolvo();
   pintaParada(0);
   arranca();
 })();
