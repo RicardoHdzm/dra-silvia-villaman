@@ -235,9 +235,6 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
 .riel span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.26);
   transition:background .35s ease, transform .25s ease}
 .riel span.on{background:var(--acento);transform:scale(1.55)}
-.cuenta{position:absolute;left:28px;bottom:26px;z-index:2;font-size:11px;font-weight:700;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--tinta-media);
-  font-variant-numeric:tabular-nums}
 
 /* Anclaje blando a proposito. Con "mandatory" la pagina se quedaba clavada
    en la primera seccion de abajo y no llegaba al pie, y apagarlo desde JS no
@@ -255,6 +252,16 @@ html{scroll-snap-type:y proximity}
   font-weight:700;letter-spacing:.03em;color:var(--tinta-clara);
   border-bottom:1px solid rgba(255,255,255,.34);padding-bottom:3px;transition:.2s}
 .saltar:hover{border-color:#fff}
+
+/* Puente entre el hero y el sitio. El escenario terminaba en un corte seco
+   de color profundo a lavanda claro y la salida se sentia como un golpe.
+   Esta franja arranca en el tono de la parada que este en pantalla y se
+   disuelve en el fondo de la pagina. Va FUERA de .viaje: dentro sumaria su
+   alto al de la seccion pegajosa y descuadraria las anclas. Por eso --fondo
+   se pone en el html y no en la seccion, para que el puente lo alcance. */
+.puente{height:clamp(90px,14vh,170px);
+  background:linear-gradient(to bottom, var(--fondo,#332A16), var(--bg))}
+@media (prefers-reduced-motion:reduce){ .puente{display:none} }
 
 .baja{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;
@@ -341,7 +348,6 @@ body{padding-top:76px}
   .mancha{width:62vmax;height:62vmax}
   .parada p{font-size:17px}
   .riel{right:14px;gap:11px}
-  .cuenta{left:18px;bottom:16px}
   .baja{display:none}   /* chocaba con la barra de escala */
   .logo-texto small{display:none}
   /* Sin nav visible ya no hay nada que lo empuje: el auto pasa aqui. En
@@ -658,8 +664,8 @@ html{scroll-behavior:smooth}
     <div class="capas">
 
     <div class="titular" data-at="0">
-      <h1>Cuatro milímetros, <em>y todo pasa ahí</em></h1>
-      <p>Es lo que mide la piel de tu hijo. Soy dermatóloga pediátrica certificada y atiendo en Culiacán.</p>
+      <h1>Cada piel cuenta <em>algo distinto</em></h1>
+      <p>Soy dermatóloga pediátrica certificada y atiendo en Culiacán. Elige lo que estás viendo y empezamos por ahí.</p>
       <div class="credencial">
         <span>Hice la especialidad en el <b>Hospital Infantil de México Federico Gómez</b></span>
         <span class="sep">·</span>
@@ -672,28 +678,28 @@ html{scroll-behavior:smooth}
     <div class="parada" data-at="0.18" data-sintoma="seca" hidden>
       <div class="capa">Resequedad</div>
       <h2>Se reseca y <em>se vuelve a partir</em></h2>
-      <p>Pasa en la capa de más afuera. Trato la aspereza, la descamación y la piel que pica.</p>
+      <p>La que vuelve casi siempre tiene causa, no solo falta de crema. Trato la aspereza, la descamación y la piel que pica.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="seca">Pedir cita por esto</a>
     </div>
 
     <div class="parada" data-at="0.36" data-sintoma="mancha" hidden>
       <div class="capa">Manchas y lunares</div>
       <h2>Una mancha <em>que cambió</em></h2>
-      <p>Aquí vive el pigmento. Reviso manchas, lunares y melasma, y te digo cuáles hay que seguir.</p>
+      <p>Reviso manchas, lunares y melasma. Te digo cuáles hay que seguir y cuáles no.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="mancha">Pedir cita por esto</a>
     </div>
 
     <div class="parada" data-at="0.54" data-sintoma="ronchas" hidden>
       <div class="capa">Ronchas y comezón</div>
       <h2>Ronchas que van <em>y vienen</em></h2>
-      <p>Se ven arriba, pero ocurren aquí, en los vasos. Dar con lo que las dispara es buena parte del tratamiento.</p>
+      <p>Se ven en la superficie pero empiezan más abajo. Dar con lo que las dispara es buena parte del tratamiento.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="ronchas">Pedir cita por esto</a>
     </div>
 
     <div class="parada" data-at="0.72" data-sintoma="acne" data-sintoma2="cabello" hidden>
       <div class="capa">Acné y caída</div>
       <h2>Granos, y <em>pelo que se cae</em></h2>
-      <p>Los dos empiezan en el folículo. Por eso el acné no mejora tallando, y la caída se trata desde la raíz.</p>
+      <p>Los dos empiezan en el mismo sitio, el folículo. Por eso el acné no mejora tallando, y la caída se trata desde la raíz.</p>
       <a class="btn btn-path" href="#agendar" data-sintoma="acne">Pedir cita por esto</a>
     </div>
 
@@ -704,7 +710,6 @@ html{scroll-behavior:smooth}
       <a class="btn btn-path" href="#agendar">Agendar cita</a>
     </div>
 
-    <div class="cuenta" id="cuenta" aria-hidden="true">01 / 06</div>
     <div class="riel" id="riel" aria-hidden="true"></div>
     <div class="baja" id="baja">Baja para entrar</div>
     <a class="saltar" href="#agendar">Saltar al calendario &rarr;</a>
@@ -718,6 +723,8 @@ html{scroll-behavior:smooth}
     <div class="ancla" style="--at:0.72" aria-hidden="true"></div>
     <div class="ancla" style="--at:0.90" aria-hidden="true"></div>
 </main>
+
+<div class="puente" aria-hidden="true"></div>
 
 <section class="entradas" id="entradas">
   <div class="wrap">
@@ -1155,7 +1162,6 @@ html{scroll-behavior:smooth}
   var bloques = [].slice.call(document.querySelectorAll('.titular,.parada'));
   var manchas = [].slice.call(document.querySelectorAll('.mancha'));
   var riel = document.getElementById('riel');
-  var cuenta = document.getElementById('cuenta');
   var baja = document.getElementById('baja');
   var cabecera = document.querySelector('header');
   if (!sec || !bloques.length){ document.documentElement.className += ' sin-viaje'; return; }
@@ -1192,7 +1198,7 @@ html{scroll-behavior:smooth}
   function pintaParada(i){
     var t = TONOS[Math.min(i, TONOS.length - 1)];
     sec.style.setProperty('--acento', t.ac);
-    sec.style.setProperty('--fondo', t.bg);
+    document.documentElement.style.setProperty('--fondo', t.bg);
     sec.style.setProperty('--velo', t.velo);
     for (var j = 0; j < manchas.length; j++){
       manchas[j].style.setProperty('--col', t.c[j % t.c.length]);
@@ -1306,7 +1312,6 @@ html{scroll-behavior:smooth}
     if (idx !== ultimo){
       ultimo = idx;
       pintaParada(idx);
-      cuenta.textContent = ('0' + (idx + 1)).slice(-2) + ' / 0' + bloques.length;
     }
     if (baja) baja.style.opacity = p > 0.03 ? 0 : 1;
   }
