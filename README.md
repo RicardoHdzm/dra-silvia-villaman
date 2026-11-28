@@ -424,3 +424,45 @@ consecuencias que no son opcionales:
 
 - La escala del glifo se ata al alto, no al ancho (ver la sección anterior).
 - Hay una sola `.bruma`, no una por ancho.
+
+## Opciones de hero
+
+El hero actual de `index.html` (recorrido por la piel, oscuro, con la malla
+de tejido) es la **opción A**. Al cliente no le terminó de convencer, así que
+se mantiene como una de dos.
+
+**Opción B — `hero-color.html`.** Mismo recorrido y mismas paradas, pero sin
+referencia figurativa a la piel: el fondo es color en movimiento, cuatro
+orbes muy desenfocados a la deriva, y cada parada cambia la paleta.
+
+Lo que comparte con la A, a propósito, para que la comparación sea justa:
+el anclaje por paradas, el relevo de textos, la composición (gráfico arriba,
+texto centrado abajo) y el desvanecido de salida.
+
+Lo que cambia además del fondo:
+
+- La etiqueta de cada parada ya no es una profundidad (`Epidermis · 0.10 mm`)
+  sino el motivo (`Manchas y lunares`). Sin piel que medir, los milímetros no
+  significaban nada.
+- Registro claro en vez de oscuro.
+
+### Tres paletas, un selector temporal
+
+Abajo a la izquierda hay un selector con tres familias: **malva**, **champán**
+y **nácar**. Es solo para elegir: cuando se decida una, se borran las otras
+dos y el selector entero.
+
+### Dos cosas que no se pueden tocar sin medir
+
+- **El fondo del lienzo se queda en el tono más claro de la paleta y no se
+  mueve.** En la primera versión la ventana de color también lo arrastraba, y
+  al llegar a las paradas profundas el párrafo quedaba en 1.76 de contraste
+  (hacen falta 4.5). Ahora el cambio de parada se lee en los orbes, que viven
+  arriba, y el texto conserva su cama clara.
+- **Los orbes usan los tonos profundos de la paleta.** Sobre un fondo casi
+  blanco, los claros no se veían: el primer intento de arreglar el contraste
+  dejó el hero lavado.
+
+Medido sobre el fondo del lienzo: título 10.8, párrafo 6.8, etiqueta 6.0. El
+valor real es algo menor porque bajo el velo quedan los orbes, pero el margen
+es amplio.
