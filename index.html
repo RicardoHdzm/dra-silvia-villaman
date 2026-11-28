@@ -124,7 +124,7 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
    lavanda, azul, verde azulado, musgo) y reserva un solo calido para la
    ultima parada, la del boton de agendar.
    El hero de la piel vive en el historial de git si hace falta volver. */
-.viaje{position:relative;height:380vh;--blur:64px;
+.viaje{position:relative;height:380vh;--blur:50px;
   --tinta-clara:#F4F1FA; --tinta-media:#CDC6E0; --sobre-claro:#241B47;
   --velo:20,16,40; --acento:#C3B0FF}
 /* dvh y no svh. En el telefono la barra del navegador se encoge en cuanto
@@ -148,26 +148,30 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
 /* screen y no multiply: sobre fondo oscuro, multiply solo ensucia. screen
    suma luz, asi que donde se cruzan dos manchas sale un color mas luminoso
    que las dos. De ahi el tornasol. */
+/* Sin will-change. Promovia cada mancha a su propia capa de composicion y
+   el desenfoque se rasterizaba dentro de una caja de tamano fijo: el canto
+   de esa caja se veia como un rectangulo mas oscuro en medio del hero, y
+   solo en pantallas anchas. Comprobado por descarte: con filter:none el
+   rectangulo desaparece, y con will-change:auto tambien.
+
+   Sin animacion de border-radius tampoco. Era lo mas caro de todo el hero:
+   cambiar la FORMA de un elemento desenfocado obliga a rehacer el
+   desenfoque entero en cada cuadro, y aqui son varias manchas de miles de
+   pixeles de lado. Mover, girar o escalar no cuesta lo mismo, porque eso el
+   compositor lo resuelve con la textura ya rasterizada. El bamboleo lo da
+   ahora el giro, que ya estaba, y cada mancha lleva su propia forma fija. */
 .mancha{position:absolute;left:50%;top:50%;width:46vmax;height:46vmax;
   mix-blend-mode:screen;filter:blur(var(--blur));
   background:var(--col,#6B4FD6);opacity:var(--o,0);
   transform:translate(-50%,-50%) translate(var(--dx,0px),var(--dy,0px))
     rotate(var(--rot,0deg)) scale(var(--s,.2));
-  transition:background-color 1.5s ease;
-  /* Sin will-change. Promovia cada mancha a su propia capa de composicion y
-     el desenfoque se rasterizaba dentro de una caja de tamano fijo: el canto
-     de esa caja se veia como un rectangulo mas oscuro en medio del hero, y
-     solo en pantallas anchas, que es cuando la mancha escalada se sale de su
-     caja. Comprobado por descarte: con filter:none el rectangulo desaparece,
-     y con will-change:auto tambien. */
-  animation:respira var(--dur,8s) ease-in-out infinite alternate}
-@keyframes respira{
-  from{border-radius:44% 56% 62% 38% / 48% 40% 60% 52%}
-  to  {border-radius:60% 40% 34% 66% / 64% 58% 42% 36%}
-}
-.m1{--dur:6s}  .m2{--dur:7.5s;animation-delay:-2s} .m3{--dur:9s;animation-delay:-4s}
-.m4{--dur:6.5s;animation-delay:-5s} .m5{--dur:8s;animation-delay:-3s} .m6{--dur:10s;animation-delay:-7s}
-.m7{--dur:9.5s;animation-delay:-1s} .m8{--dur:7s;animation-delay:-6s}
+  transition:background-color 1.5s ease}
+.m1{border-radius:44% 56% 62% 38% / 48% 40% 60% 52%}
+.m2{border-radius:60% 40% 34% 66% / 64% 58% 42% 36%}
+.m3{border-radius:38% 62% 55% 45% / 56% 44% 56% 44%}
+.m4{border-radius:55% 45% 42% 58% / 40% 62% 38% 60%}
+.m5{border-radius:48% 52% 66% 34% / 58% 36% 64% 42%}
+.m6{border-radius:62% 38% 48% 52% / 44% 58% 42% 56%}
 
 /* Polvo en suspension: da escala al campo. Sin algo pequeno y definido
    cerca, una mancha enorme y una pequena se ven igual, porque las dos estan
@@ -360,7 +364,7 @@ body{padding-top:76px}
      cuando solo habia un <nav> en la pagina; al darle uno propio al pie,
      esa regla se lo llevaba por delante en el telefono. */
   header nav{display:none}
-  .viaje{height:320vh;--blur:48px}
+  .viaje{height:320vh;--blur:34px}
   .mancha{width:62vmax;height:62vmax}
   .parada p{font-size:17px}
   .riel{right:14px;gap:11px}
@@ -398,7 +402,7 @@ section{position:relative;padding:94px 0}
    unico que delataria que hay un rectangulo. El encuadre se detiene al 90% de
    ancho porque del 93.6% en adelante empieza el texto del fondo. */
 .doc-foto{position:relative;aspect-ratio:456/753;width:min(100%,430px);justify-self:center;
-  background-image:url("img/dra-retrato.png");
+  background-image:url("img/dra-retrato.webp");
   background-size:119% auto;background-position:37.5% 27.3%;background-repeat:no-repeat;
   mix-blend-mode:multiply;
   -webkit-mask-image:linear-gradient(to bottom, #000 72%, transparent 97%);
@@ -670,8 +674,6 @@ html{scroll-behavior:smooth}
       <div class="mancha m4"></div>
       <div class="mancha m5"></div>
       <div class="mancha m6"></div>
-      <div class="mancha m7"></div>
-      <div class="mancha m8"></div>
     </div>
     <canvas id="polvo" aria-hidden="true"></canvas>
     <div class="velo" aria-hidden="true"></div>
@@ -1196,13 +1198,21 @@ html{scroll-behavior:smooth}
      llegar, el color cambia de temperatura y eso senala el final.
      Dentro de cada parada los ocho tonos son vecinos distintos, no el mismo
      aclarado: eso es lo que hace el tornasol al mezclarse en screen. */
+  /* Toda la familia en morado, a peticion del cliente. El arco anterior
+     (violeta, azul, verde azulado, musgo, oro) recorria medio circulo
+     cromatico; esto se queda dentro del morado y avanza de indigo a
+     orquidea, ganando luz en cada parada. El cambio es mas sutil que el del
+     arco, asi que la progresion la lleva la luminosidad y no el tono: si se
+     igualan los bg, las paradas dejan de distinguirse.
+     Dentro de cada parada los ocho tonos siguen siendo vecinos distintos,
+     que es lo que da el tornasol al mezclarse en screen. */
   var TONOS = [
-    { ac:'#C3B0FF', bg:'#241B47', velo:'18,12,38', c:['#6B4FD6','#8363E8','#5B46C2','#9A7BF0','#6E5CE0','#7A5AD8','#5340B4','#8E72EA'] },
-    { ac:'#B4C0FF', bg:'#1C2450', velo:'12,16,42', c:['#4A5CC8','#5E6FE0','#3D4FB0','#7281EC','#4E63D4','#6274DE','#3647A4','#6A7AE6'] },
-    { ac:'#9CD4F2', bg:'#10304A', velo:'8,22,38',  c:['#2C6E9E','#3A84B8','#245C86','#4F9CCC','#317AA8','#4290C0','#1E5078','#4895C6'] },
-    { ac:'#86DECC', bg:'#0C3330', velo:'6,24,24',  c:['#1F7A70','#2A9086','#176058','#39A89A','#248A7E','#30A092','#145550','#34A496'] },
-    { ac:'#C0DB9E', bg:'#1D3320', velo:'13,24,12', c:['#3F7A3C','#4F8C43','#345F32','#639E4C','#468444','#57923F','#2A5428','#5C9846'] },
-    { ac:'#E8D3A0', bg:'#332A16', velo:'24,18,8',  c:['#7E6B2E','#927D38','#6B5A26','#A58E45','#887434','#9B853E','#5C4D20','#A08941'] }
+    { ac:"#B3A6FF", bg:"#1E1A42", velo:"14,11,34", c:["#5B4FC8","#6E5FDC","#4C41B0","#8272EC","#5F55D2","#6B5CD6","#43399C","#7A6AE4"] },
+    { ac:"#C3B0FF", bg:"#241B47", velo:"18,12,38", c:["#6B4FD6","#8363E8","#5B46C2","#9A7BF0","#6E5CE0","#7A5AD8","#5340B4","#8E72EA"] },
+    { ac:"#D2AEFF", bg:"#2A1B4E", velo:"20,12,40", c:["#7B4FD6","#9163E8","#6A44C2","#A87BF0","#8056E0","#8C5AD8","#5F38B4","#9E72EA"] },
+    { ac:"#E2AEF5", bg:"#311A4A", velo:"24,12,38", c:["#8E4AC8","#A35CDC","#7B3FB2","#B877E6","#9450D2","#A05ED6","#6C3399","#AE6EE2"] },
+    { ac:"#EBB6EE", bg:"#351846", velo:"26,11,36", c:["#9C45B8","#B257CC","#8838A2","#C472D8","#A24CC2","#AE5CC8","#78308C","#BA68D2"] },
+    { ac:"#EED0FF", bg:"#3C1F52", velo:"28,14,40", c:["#A862D8","#BB78E6","#9450C2","#CC92F0","#AE6CDE","#B978E2","#8445AC","#C486EA"] }
   ];
 
   var puntos = bloques.map(function(){
@@ -1257,7 +1267,9 @@ html{scroll-behavior:smooth}
 
   function siembraPolvo(){
     motas = [];
-    var n = vw < 760 ? 54 : 90;
+    /* en el telefono el lienzo se sube entero a la GPU en cada cuadro:
+       menos motas es menos trabajo en el unico sitio donde se nota */
+    var n = vw < 760 ? 30 : 70;
     for (var i = 0; i < n; i++){
       motas.push({
         base: (i * 0.6180339887) % 1,
