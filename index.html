@@ -124,7 +124,12 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
    lavanda, azul, verde azulado, musgo) y reserva un solo calido para la
    ultima parada, la del boton de agendar.
    El hero de la piel vive en el historial de git si hace falta volver. */
-.viaje{position:relative;height:380vh;--blur:64px;
+/* Fondo blanco propio: la seccion mide 380vh y el escenario pegajoso solo
+   100dvh, asi que por debajo de el asomaba el lavanda del body. Con alturas
+   fraccionarias eso dejaba una hebra de color justo en el borde, que es lo
+   que se seguia viendo como corte. Blanco porque es donde termina el hero y
+   donde empieza la seccion siguiente. */
+.viaje{position:relative;height:380vh;background:#fff;--blur:64px;
   --tinta-clara:#F4F1FA; --tinta-media:#CDC6E0; --sobre-claro:#241B47;
   --velo:20,16,40; --acento:#C3B0FF}
 /* dvh y no svh. En el telefono la barra del navegador se encoge en cuanto
@@ -136,9 +141,16 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
 
 /* El lienzo aisla la mezcla: sin isolation, el screen de las manchas se
    comeria tambien lo que hay detras del hero. */
+/* La capa de color se desvanece antes del borde de abajo. Las ocho manchas
+   se mezclan en screen dentro de un grupo aislado, y ese grupo lo recorta el
+   escenario: el canto del grupo compuesto se veia como una hebra justo en la
+   union con la seccion siguiente, incluso con los dos lados en blanco. Si la
+   capa ya no llega al borde, no hay canto que recortar. */
 .lienzo{position:absolute;inset:0;z-index:-3;overflow:hidden;
   background:var(--fondo,#241B47);isolation:isolate;
-  transition:background-color 1.5s ease}
+  transition:background-color 1.5s ease;
+  -webkit-mask-image:linear-gradient(to bottom,#000 70%,transparent 93%);
+  mask-image:linear-gradient(to bottom,#000 70%,transparent 93%)}
 
 /* screen y no multiply: sobre fondo oscuro, multiply solo ensucia. screen
    suma luz, asi que donde se cruzan dos manchas sale un color mas luminoso
@@ -177,10 +189,10 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
       rgba(var(--velo),.58) 0%, rgba(var(--velo),.14) 12%,
       rgba(var(--velo),0) 32%,
       rgba(var(--velo),.44) 54%, rgba(var(--velo),.70) 72%,
-      rgba(var(--velo),.62) 82%, rgba(var(--velo),0) 100%),
+      rgba(var(--velo),.46) 82%, rgba(var(--velo),0) 90%),
     linear-gradient(to bottom,
-      rgba(255,255,255,0) 76%, rgba(255,255,255,.55) 90%,
-      #fff 100%)}
+      rgba(255,255,255,0) 72%, rgba(255,255,255,.70) 88%,
+      #fff 95%, #fff 100%)}
 
 /* Grano. Textura de pelicula, pero sobre todo rompe el escalonado en franjas
    que hace un degradado oscuro y amplio en pantallas de 8 bits. */
@@ -189,8 +201,8 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
    ruido que el fondo del sitio no tenia: justo ahi se veia la linea. */
 .grano{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.07;
   mix-blend-mode:overlay;
-  -webkit-mask-image:linear-gradient(to bottom,#000 72%,transparent 96%);
-  mask-image:linear-gradient(to bottom,#000 72%,transparent 96%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 68%,transparent 88%);
+  mask-image:linear-gradient(to bottom,#000 68%,transparent 88%);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
 /* Capa de contenido: se desvanece cuando el escenario sale, para que su
@@ -260,14 +272,16 @@ html{scroll-snap-type:y proximity}
 
 /* Salida siempre a la vista: quien llega con una urgencia no deberia tener
    que atravesar el recorrido entero para encontrar como pedir cita. */
+/* Tinta oscura, no clara: estos dos viven a 26 px del borde de abajo, que
+   ahora es la franja blanca de salida. En claro quedaban invisibles. */
 .saltar{position:absolute;right:28px;bottom:26px;z-index:3;font-size:12.5px;
-  font-weight:700;letter-spacing:.03em;color:var(--tinta-clara);
-  border-bottom:1px solid rgba(255,255,255,.34);padding-bottom:3px;transition:.2s}
-.saltar:hover{border-color:#fff}
+  font-weight:700;letter-spacing:.03em;color:#4A4458;
+  border-bottom:1px solid rgba(74,68,88,.34);padding-bottom:3px;transition:.2s}
+.saltar:hover{color:#2F2A3A;border-color:#2F2A3A}
 
 .baja{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--tinta-media);transition:opacity .4s ease}
+  color:#6A6480;transition:opacity .4s ease}
 
 /* la cabecera flota sobre el hero mientras el hero esta en pantalla */
 header{position:fixed;top:0;left:0;right:0;z-index:40;padding:18px 0;
