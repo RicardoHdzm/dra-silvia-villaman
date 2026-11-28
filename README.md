@@ -426,10 +426,14 @@ consecuencias que no son opcionales:
 - Hay una sola `.bruma`, no una por ancho.
 ## Opciones de hero
 
-**El sitio usa ahora el hero de color.** La **opción A** (recorrido por la
-piel, con la malla de tejido) fue la primera versión y vive en el historial
-de git; `hero-color.html` se queda como la página aislada con la que se
-probó esta, por si hace falta comparar sin el resto del sitio alrededor.
+**El sitio usa el hero de color.** Hubo dos opciones: la **A** era el
+recorrido por la piel, con la malla de tejido, y la **B** el campo de color.
+Ganó la B y es la que lleva `index.html`.
+
+Las dos viven en el historial de git. La B se probó en un `hero-color.html`
+aparte, que se borró al adoptarla el sitio: mantener dos copias del mismo
+hero era garantía de que una se quedara atrás. Si hace falta verla aislada,
+está en el historial.
 
 Al portarlo a `index.html` hubo que conservar tres cosas que la página de
 prueba no tenía: el `data-sintoma` de los enlaces de cada parada (que el
@@ -439,14 +443,14 @@ banda de entradas cuando hay `prefers-reduced-motion`, y el enlace
 (`Epidermis · 0.10 mm`) y pasan a ser el motivo: sin piel que medir, los
 milímetros no decían nada.
 
-**Opción B — `hero-color.html`.** Mismo recorrido y mismas paradas, sin
-referencia figurativa a la piel. El fondo son seis manchas de color que
+**Cómo es.** Mismo recorrido y mismas paradas que la A, sin referencia
+figurativa a la piel. El fondo son seis manchas de color que
 vienen desde el fondo, crecen, se abren hacia los lados y se van; las de
 atrás ocupan su lugar. Eso es lo que da la sensación de adentrarse.
 
-Comparte con la A, a propósito, para que la comparación sea justa: el
-anclaje por paradas, el relevo de textos, la composición (texto centrado
-abajo) y el desvanecido de salida.
+Heredó de la A, intacto, el mecanismo: el anclaje por paradas, el relevo de
+textos, la composición (texto centrado abajo) y el desvanecido de salida.
+Solo cambió lo que se ve.
 
 ### El color es el contenido de esta opción
 
