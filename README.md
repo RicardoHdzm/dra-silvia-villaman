@@ -432,8 +432,17 @@ de tejido) es la **opción A**. Al cliente no le terminó de convencer, así que
 se mantiene como una de dos.
 
 **Opción B — `hero-color.html`.** Mismo recorrido y mismas paradas, pero sin
-referencia figurativa a la piel: el fondo es color en movimiento, cuatro
-orbes muy desenfocados a la deriva, y cada parada cambia la paleta.
+referencia figurativa a la piel. Dos capas:
+
+- **Color**: cuatro orbes muy desenfocados a la deriva, en CSS. Cada parada
+  cambia la paleta.
+- **Profundidad**: anillos concéntricos en lienzo, con la misma proyección
+  que usa la opción A (`escala = F / z`). Vienen del punto de fuga, crecen y
+  se van por los bordes; al llegar al final del túnel vuelven a entrar por
+  detrás. `CICLOS` controla cuántas veces se recorre el túnel entero a lo
+  largo del hero: con uno solo el avance no se notaba.
+
+El color dice en qué parada estás; los anillos, que te estás adentrando.
 
 Lo que comparte con la A, a propósito, para que la comparación sea justa:
 el anclaje por paradas, el relevo de textos, la composición (gráfico arriba,
