@@ -441,10 +441,20 @@ abajo) y el desvanecido de salida.
 
 ### El color es el contenido de esta opción
 
-Cada parada cambia de tono **por completo**, no de matiz: violeta, morado,
-verde azulado, verde, amarillo y coral. Un primer intento usaba tres
-familias (malva, champán, nácar) y dentro de cada una las paradas solo se
-aclaraban u oscurecían: el cambio no se notaba y la idea no se sostenía.
+Cada parada cambia de tono **por completo**, no de matiz, pero dentro de un
+arco y no de la rueda entera: violeta, azul lavanda, azul, verde azulado y
+salvia, mas **un solo calido** reservado para la ultima parada, que es la que
+lleva el boton de agendar. Al llegar, el color cambia de temperatura y eso
+senala el final del recorrido sin decirlo.
+
+Se probaron dos caminos antes:
+
+- **Tres familias** (malva, champan, nacar) donde cada parada solo aclaraba u
+  oscurecia la misma: el cambio no se notaba.
+- **El espectro completo** (morado, verde, amarillo, coral): demostraba bien
+  el cambio, pero seis tonos sin relacion entre si no dejan ningun color
+  asociado a ella, el verde y el amarillo cargan lectura clinica, y no
+  compartia nada con el navy del logo ni con el resto del sitio.
 
 Dentro de cada parada los seis tonos **no** son el mismo color aclarado: son
 vecinos distintos. Mezclados en `mix-blend-mode: multiply`, donde se cruzan

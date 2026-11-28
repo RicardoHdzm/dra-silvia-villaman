@@ -286,13 +286,23 @@ body{padding-top:76px}
      son vecinos distintos. Eso, mezclado en multiply, es lo que da el
      tornasol, porque donde se cruzan dos manchas sale un tercer color que
      no esta pintado en ningun sitio. */
+  /* Un arco, no la rueda entera. El espectro completo (morado, verde,
+     amarillo, coral) demostraba bien que cada parada cambia de color, pero
+     no dejaba ningun tono asociado a ella: seis colores sin relacion entre
+     si no son una marca. Esto recorre violeta, azul lavanda, azul, verde
+     azulado y salvia, que siguen siendo cambios de tono y no matices del
+     mismo, y reserva UN solo calido para la ultima parada, que es la que
+     lleva el boton de agendar: al llegar, el color cambia de temperatura y
+     eso senala el final del recorrido sin decirlo.
+     Dentro de cada parada los ocho tonos son vecinos distintos, no el mismo
+     aclarado: eso es lo que hace el tornasol al mezclarse en multiply. */
   var TONOS = [
-    { ac:'#5B3FB5', bg:'#EFE9FB', c:['#9B7BE8','#B98FF0','#7E6BE0','#C9A4F2','#8AA6F0','#A87FE0','#8E7CEC','#C2A0EE'] },
-    { ac:'#8A2E9E', bg:'#F6E8F6', c:['#A86BD8','#D472B5','#8C5FD6','#E39FD4','#B07FE8','#C76FC0','#9B63D0','#DE8CC8'] },
-    { ac:'#0F6F6A', bg:'#E4F4F1', c:['#3FBFB0','#45A8CC','#7AD8C0','#3C92C4','#9FE2D2','#5FC8B8','#4FB6C4','#86DCCB'] },
-    { ac:'#246B3F', bg:'#E9F5E4', c:['#6CC56A','#A5D45C','#40B07C','#C6E07C','#8FD99F','#58BE8A','#7ACD63','#B4DB70'] },
-    { ac:'#8A5A08', bg:'#FBF0DC', c:['#F2B33D','#F5D24E','#E8923C','#F7E08A','#EDC25A','#E0A14A','#F0C048','#F3D672'] },
-    { ac:'#A83A48', bg:'#FBEAE6', c:['#F2887A','#EF6F8E','#F7B08A','#E06A86','#F9C3A8','#EC8396','#F09A84','#EE7F92'] }
+    { ac:'#5B3FB5', bg:'#EFE9FB', c:['#9B7BE8','#AE8DF0','#8A7CE6','#C0A4F2','#8E9AEE','#A286E4','#7E72E0','#B59AEC'] },
+    { ac:'#3E4FA8', bg:'#E9ECFA', c:['#8294EC','#9AA6F2','#6F85E6','#B0BAF5','#7D9AF0','#8E9EEA','#6478DE','#A3AFF0'] },
+    { ac:'#1A5E86', bg:'#E4F0F7', c:['#5BA7D2','#6FB8DC','#4894C6','#8FCBE6','#5FB4CE','#76AED6','#3E86BC','#96C9E2'] },
+    { ac:'#0F6B68', bg:'#E2F2EF', c:['#46B8AC','#5EC6B6','#38A79E','#86D6C6','#4FBCB2','#63BFAE','#2E948E','#92D9CC'] },
+    { ac:'#3A6B4A', bg:'#EAF2E8', c:['#7CB68A','#8FC296','#6AA87C','#A8CFAE','#86BC92','#96C49C','#5C9A70','#B0D2B4'] },
+    { ac:'#9A5A25', bg:'#FBF0E4', c:['#E8A868','#EFBB7E','#DE9856','#F3CB97','#E6AE72','#EDB778','#D4873F','#F0C68C'] }
   ];
 
   var puntos = bloques.map(function(){
