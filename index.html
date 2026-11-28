@@ -136,9 +136,19 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
   --tinta-clara:#F4F1FA; --tinta-media:#CDC6E0; --sobre-claro:#241B47;
   --velo:18,12,38; --acento:#C3B0FF}
 
-/* El campo. Sin blur y sin mezcla: los radiales ya nacen difusos porque su
-   parada final es transparente. Se dibuja mas grande que la pantalla para
-   que el vaiven no descubra los bordes. */
+/* El campo son DOS capas de radiales, no una.
+   Una sola capa que se traslada se ve como una foto que se desliza: el
+   fondo se mueve pero no CAMBIA. Con dos capas que van en sentidos
+   contrarios y a distinto periodo, lo que cambia es donde se cruzan, y ahi
+   aparece un tono que no esta pintado en ninguna de las dos. Eso es lo que
+   se lee como movimiento de verdad, y es lo que antes daban las manchas
+   desenfocadas, pero sin repintar nada.
+   Las dos siguen siendo degradados rasterizados una sola vez; lo unico que
+   cambia por cuadro es su transform. Sin blur y sin mix-blend-mode: los
+   radiales ya nacen difusos porque su parada final es transparente, y la
+   transparencia basta para que al solaparse den un tercer color.
+   Se dibujan mas grandes que la pantalla para que el vaiven y el giro no
+   descubran los bordes. */
 .campo{position:absolute;left:-10%;top:-10%;width:120%;height:120%;z-index:-3;
   background:
     radial-gradient(58% 48% at 20% 20%, #6B4FD6 0%, rgba(107,79,214,0) 70%),
@@ -148,10 +158,26 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
     radial-gradient(44% 38% at 52% 46%, #7A5AD8 0%, rgba(122,90,216,0) 75%),
     radial-gradient(40% 34% at 8% 58%, #8E72EA 0%, rgba(142,114,234,0) 72%),
     #241B47;
-  animation:vaiven 42s ease-in-out infinite alternate}
+  animation:vaiven 23s ease-in-out infinite alternate}
+
+/* La segunda capa no lleva color de fondo: solo sus radiales, para que la
+   primera se vea por debajo. Gira ademas de trasladarse, asi que necesita
+   mas margen (160% y -30%) o las esquinas entrarian en pantalla. */
+.campo.b{left:-30%;top:-30%;width:160%;height:160%;
+  background:
+    radial-gradient(40% 34% at 32% 30%, rgba(167,134,255,.72) 0%, rgba(167,134,255,0) 70%),
+    radial-gradient(36% 32% at 70% 62%, rgba(104,74,214,.68) 0%, rgba(104,74,214,0) 72%),
+    radial-gradient(44% 36% at 84% 30%, rgba(140,106,245,.55) 0%, rgba(140,106,245,0) 70%),
+    radial-gradient(34% 30% at 18% 70%, rgba(86,62,186,.62) 0%, rgba(86,62,186,0) 72%);
+  animation:deriva 17s ease-in-out infinite alternate}
+
 @keyframes vaiven{
-  from{transform:translate3d(-1.5%,-1%,0) scale(1.03)}
-  to  {transform:translate3d(1.5%,1.2%,0) scale(1.09)}
+  from{transform:translate3d(-3.2%,-2.2%,0) scale(1.04)}
+  to  {transform:translate3d(3.2%,2.6%,0) scale(1.14)}
+}
+@keyframes deriva{
+  from{transform:translate3d(2.8%,1.8%,0) rotate(-6deg) scale(1.02)}
+  to  {transform:translate3d(-2.8%,-2.2%,0) rotate(6deg) scale(1.11)}
 }
 
 /* Polvo en suspension: da escala al campo y es el unico dibujo por cuadro
@@ -200,11 +226,6 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
 
 /* Salida siempre a la vista: quien llega con una urgencia no deberia tener
    que recorrer la pagina para encontrar como pedir cita. */
-.saltar{position:absolute;right:28px;bottom:26px;z-index:3;font-size:12.5px;
-  font-weight:700;letter-spacing:.03em;color:var(--tinta-clara);
-  border-bottom:1px solid rgba(255,255,255,.34);padding-bottom:3px;transition:.2s}
-.saltar:hover{border-color:#fff}
-
 .baja{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;
   color:var(--tinta-media)}
@@ -318,7 +339,7 @@ body{padding-top:76px}
      caia justo debajo del boton de WhatsApp; en el telefono la salida es
      ese boton y el "Agendar cita" de la cabecera, los dos siempre a la
      vista. */
-  .saltar{display:none}
+  /* nada que esconder aqui: el atajo al calendario se quito del hero */
   .logo-texto small{display:none}
   /* Sin nav visible ya no hay nada que lo empuje: el auto pasa aqui. En
      escritorio no, porque alli empuja el nav y dos autos se repartirian el
@@ -488,10 +509,9 @@ section{position:relative;padding:94px 0}
 
 /* pie */
 /* Boton flotante de WhatsApp. Se esconde mientras el hero esta en pantalla:
-   ahi ya hay dos salidas, el boton de la parada y "Saltar al calendario", que
-   vive justo en esa esquina, y un tercero solo las estorbaria. El estado
-   .sobre-noche ya lo lleva el <html> desde el bucle del recorrido, asi que
-   esto no necesita JS propio. */
+   ahi ya esta el boton del titular y la cabecera con "Agendar cita", y un
+   tercero solo los estorbaria. El estado .sobre-noche lo lleva el <html>
+   desde el observador del hero, asi que esto no necesita JS propio. */
 .wa{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));
   z-index:45;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;
   background:#25D366;color:#fff;
@@ -612,6 +632,7 @@ html{scroll-behavior:smooth}
 
 <main class="viaje" id="inicio">
   <div class="campo" aria-hidden="true"></div>
+  <div class="campo b" aria-hidden="true"></div>
   <canvas id="polvo" aria-hidden="true"></canvas>
   <div class="velo" aria-hidden="true"></div>
   <div class="grano" aria-hidden="true"></div>
@@ -630,7 +651,6 @@ html{scroll-behavior:smooth}
   </div>
 
   <div class="baja" id="baja">Desliza</div>
-  <a class="saltar" href="#agendar">Saltar al calendario &rarr;</a>
 </main>
 
 <section id="doctora">
@@ -1087,13 +1107,21 @@ html{scroll-behavior:smooth}
 
   function siembra(){
     motas = [];
-    var n = vw < 760 ? 26 : 56;
+    /* Son arcos de canvas, el dibujo mas barato que hay. El limite no es
+       pintarlos sino que se vean como ruido: pasados unos 150 el campo
+       empieza a leerse sucio en vez de profundo. */
+    var n = vw < 760 ? 64 : 140;
     for (var i = 0; i < n; i++){
       motas.push({
         base: (i * 0.6180339887) % 1,
         ang: (i * 2.399) % 6.2832,
-        rad: 0.10 + ((i * 37) % 100) / 100 * 0.90,
-        giro: ((i * 53) % 100) / 100 * 0.6
+        rad: 0.08 + ((i * 37) % 100) / 100 * 0.94,
+        giro: ((i * 53) % 100) / 100 * 0.7,
+        /* cada mota tiene su propio brillo y su propio bamboleo: si todas
+           van igual, el conjunto se ve como una rueda girando */
+        luz: 0.42 + ((i * 29) % 100) / 100 * 0.58,
+        vaiv: 0.00028 + ((i * 17) % 100) / 100 * 0.00042,
+        fase: (i * 1.7) % 6.2832
       });
     }
   }
@@ -1110,7 +1138,7 @@ html{scroll-behavior:smooth}
   /* Las motas vienen del fondo hacia ti en un ciclo lento. Es lo que da
      escala al campo: sin algo pequeno y definido, un degradado grande no
      dice a que distancia esta. */
-  var CICLO = 0.000018;
+  var CICLO = 0.000042;
 
   function polvo(t){
     if (!ctx) return;
@@ -1122,16 +1150,16 @@ html{scroll-behavior:smooth}
       var z = (m.base - t * CICLO) % 1; if (z < 0) z += 1;
       var cerca = 1 - z;
       var r = Math.pow(cerca, 1.9) * diag * m.rad;
-      var ang = m.ang + m.giro * cerca;
+      var ang = m.ang + m.giro * cerca + Math.sin(t * m.vaiv + m.fase) * 0.14;
       var x = cx + Math.cos(ang) * r;
       var y = cy + Math.sin(ang) * r * 0.86;
       if (x < -20 || x > vw + 20 || y < -20 || y > vh + 20) continue;
-      var op = Math.min(1, cerca * 4) * Math.min(1, z / 0.12) * 0.5;
+      var op = Math.min(1, cerca * 4) * Math.min(1, z / 0.12) * 0.62 * m.luz;
       if (op <= 0.02) continue;
       ctx.globalAlpha = op;
       ctx.fillStyle = 'rgb(244,241,250)';
       ctx.beginPath();
-      ctx.arc(x, y, Math.max(0.6, 2.4 * cerca), 0, 6.2832);
+      ctx.arc(x, y, Math.max(0.5, 2.7 * cerca * (0.6 + m.luz * 0.6)), 0, 6.2832);
       ctx.fill();
     }
     ctx.globalAlpha = 1;

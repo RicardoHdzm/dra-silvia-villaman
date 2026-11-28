@@ -61,18 +61,36 @@ La regla que queda de aquello: **lo que se mueve no lleva blur, y lo que lleva
 blur no se mueve.** Si algún día vuelve a animarse el fondo, hay que medirlo
 antes, no suponerlo.
 
-**El fondo de ahora** es `.campo`: seis degradados radiales morados sobre
-`#241B47`, sin blur y sin mezcla. Un radial ya nace difuso porque su última
-parada es transparente, así que da la misma nube sin costar lo mismo. Se
-dibuja al 120% y desplazado un 10%, para que el vaivén no descubra los bordes.
-El único movimiento es `vaiven`, una traslación lenta del conjunto: transformar
-una capa ya rasterizada es de lo poco que de verdad sale gratis.
+**El fondo de ahora son dos capas de `.campo`**, no una. Degradados radiales
+morados, sin blur y sin mezcla: un radial ya nace difuso porque su última
+parada es transparente, así que da la misma nube sin costar lo mismo.
+
+Dos y no una por una razón concreta: **una sola capa que se traslada se ve
+como una foto que se desliza**. El fondo se mueve pero no cambia, y eso se
+lee como quietud. Con dos capas que van en sentidos contrarios y a distinto
+periodo (`vaiven` a 23s, `deriva` a 17s, esta última girando además 12°), lo
+que cambia es *dónde se cruzan*, y ahí aparece un tono que no está pintado en
+ninguna de las dos. Eso es el tornasol, y es lo que antes daban las manchas
+desenfocadas — pero sin repintar nada.
+
+La segunda capa (`.campo.b`) no lleva color de fondo, solo sus radiales, para
+que la primera se vea por debajo; la transparencia basta para que al solaparse
+den un tercer color, sin `mix-blend-mode`. Como además gira, necesita más
+margen que la primera: 160% y -30%, o las esquinas entrarían en pantalla.
+
+Lo único que cambia por cuadro en las dos es su `transform`. Transformar una
+capa ya rasterizada es de lo poco que de verdad sale gratis.
 
 Encima van tres capas quietas:
 
-- `#polvo`, un canvas con motas que vienen del fondo hacia ti. Es lo único que
-  se dibuja por cuadro, y solo mientras el hero está a la vista. Da escala: sin
-  algo pequeño y definido, un degradado grande no dice a qué distancia está.
+- `#polvo`, un canvas con 140 motas en escritorio y 64 en teléfono que vienen
+  del fondo hacia ti. Es lo único que se dibuja por cuadro, y solo mientras el
+  hero está a la vista. Da escala: sin algo pequeño y definido, un degradado
+  grande no dice a qué distancia está. Cada mota tiene su propio brillo y su
+  propio bamboleo; si todas van igual, el conjunto se ve como una rueda
+  girando en vez de como polvo. El límite no es pintarlas —son arcos de
+  canvas, el dibujo más barato que hay— sino que pasadas unas 150 el campo
+  empieza a leerse sucio en vez de profundo.
 - `.velo`, un radial oscuro que asienta el texto. Es **más ancho que la
   pantalla** a propósito: una rampa que cambia de pendiente dibuja cantos
   horizontales que se leen como bandas, y así sus bordes caen fuera.
@@ -96,9 +114,11 @@ en cada cuadro. Ahora son tres degradados radiales en el propio `.atmos`,
 mismos colores y mismas posiciones, con `isolation:isolate` para que la mezcla
 del grano se quede dentro.
 
-**En el teléfono se ve "Desliza" y no el atajo al calendario.** El atajo caía
-justo debajo del botón de WhatsApp; ahí la salida son ese botón y el "Agendar
-cita" de la cabecera, los dos siempre a la vista. En escritorio se ven los dos.
+**El atajo "Saltar al calendario" se quitó**, del teléfono y del escritorio.
+En el teléfono caía justo debajo del botón de WhatsApp, y en los dos sitios
+competía con el botón del titular. Las salidas del hero son ahora "Elegir lo
+que veo", el "Agendar cita" de la cabecera y el botón de WhatsApp. Debajo del
+titular queda solo "Desliza".
 
 **La marca del menú es siempre texto, nunca `logo.png`.** Ese archivo es navy
 sobre blanco **opaco**: sobre fondo oscuro no hay filtro que lo salve, porque
@@ -330,14 +350,22 @@ El texto es casi blanco (`#F4F1FA`) y el párrafo `#CDC6E0`; el acento es
 `#C3B0FF`. Ninguno cambia, que es lo que permite mover los tonos del fondo sin
 revisar seis contrastes cada vez.
 
-Medido contra el tono **más claro** del campo con el velo encima, que es el
-peor caso donde cae el texto: título **8.51**, párrafo **5.77**, acento
-**4.96**. Contra la base oscura son 15.94, 10.80 y 9.30.
+Medido en el peor caso posible —el radial más claro de la primera capa con el
+más claro de la segunda encima y el velo al 58 %— sale `rgb(79,62,127)`, y
+contra él: título **8.08**, párrafo **5.48**, acento **4.71**. Contra la base
+oscura son 15.94, 10.80 y 9.30.
+
+Es un peor caso conservador: esos dos radiales están en esquinas opuestas y
+nunca llegan a solaparse del todo. Aun así, **al añadir la segunda capa el
+párrafo bajó de 5.77 a 5.48**, y el margen sobre el 4.5 que exige WCAG ya no
+es grande. El acento está en 4.71, pero es texto grande, así que su umbral es
+3.0.
 
 Lo que sostiene esos números es el velo, no el campo: sobre `#9A7BF0` desnudo
-el párrafo cae a **1.97**, muy por debajo del 4.5 que hace falta. Así que si
-se sube el brillo de los radiales o se baja la rampa del velo entre el 54 % y
-el 76 %, lo primero que deja de leerse es el párrafo. Ya pasó dos veces: con
+el párrafo cae a **1.97**. Así que si se sube el brillo de los radiales de
+cualquiera de las dos capas, se sube la opacidad de la segunda o se baja la
+rampa del velo entre el 54 % y el 76 %, lo primero que deja de leerse es el
+párrafo. Queda poco margen: toca medir, no estimar. Ya pasó dos veces: con
 el campo claro llegó a 1.76, y al quitar un halo blanco el párrafo dejó de
 leerse hasta que se oscureció la tinta secundaria.
 
