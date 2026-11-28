@@ -14,7 +14,8 @@ favicon.svg
 robots.txt
 img/  logo.png          marca en azul marino sobre blanco, la que usa el sitio
       logo-blanco.png   marca en blanco sobre verde azulado — sin usar, ver abajo
-      dra-retrato.png   foto de estudio, la de la ficha
+      dra-retrato.webp  foto de estudio, la de la ficha (42 KB, la que carga)
+      dra-retrato.png   el original sin comprimir, material de origen
       dra-flyer.webp    el flyer original, material de origen, ya no se usa
 ```
 
@@ -42,147 +43,83 @@ npx serve .
 
 O cualquier servidor estático.
 
-## El hero: cuatro milímetros hacia adentro
+## El hero: una pantalla
 
-El scroll **mete la cámara en la piel**. Son planos de tejido apilados en
-profundidad que vienen hacia ti y te atraviesan, y cada parada es una anomalía
-que vive a su profundidad real: 0.02 mm la resequedad, 0.10 el pigmento,
-0.30 los nevos, 1 mm la dermis, 2 mm el folículo, 3.5 la raíz del pelo.
+Una sola pantalla de alto, con el titular centrado, el botón que lleva al menú
+de síntomas y la credencial debajo. Nada se mueve con el scroll.
 
-Eso hace que el medidor de la esquina **signifique algo**: marca milímetros de
-verdad y el número coincide con el que dice la parada, porque sale de la misma
-tabla de anclas (`ANCLAS` interpola entre ellas). Cuando el recorrido era
-lateral, la profundidad era decorativa.
+**Por qué es así.** Antes era un recorrido: el scroll pasaba por varias paradas
+y cada una repintaba el fondo. Se quitó porque se trababa en Chrome y en
+teléfono, y no era culpa de las paradas sino del fondo que movían. Eran seis
+elementos grandes con `filter:blur()` y `mix-blend-mode`, recompuestos en cada
+cuadro durante casi cuatro pantallas de scroll. Un `blur` sobre una capa
+grande no se rasteriza una vez y ya: cada vez que algo de esa capa cambia —su
+posición, su color, su `border-radius`— el navegador la vuelve a rasterizar
+entera, y eso no lo hace la GPU gratis.
 
-**Cada anomalía tiene su color**, en la constante `COLOR` del motor: hielo la
-resequedad, terroso el pigmento, violeta el nevo, **rojo las ronchas** porque
-son inflamación, ámbar el acné, plata la raíz del pelo. El color tiñe el
-gráfico, la mira que lo encuadra, la etiqueta de la parada y su punto en el
-riel, así que cada parada se distingue de un vistazo y no solo por el texto.
+La regla que queda de aquello: **lo que se mueve no lleva blur, y lo que lleva
+blur no se mueve.** Si algún día vuelve a animarse el fondo, hay que medirlo
+antes, no suponerlo.
 
-**El relevo del texto está escalonado**: el que sale se va en 300 ms y el que
-entra espera 220 antes de aparecer en 420. Si se cruzaran a la vez se verían
-encimados; escalonado se lee como un relevo y no como un parpadeo.
+**El fondo de ahora** es `.campo`: seis degradados radiales morados sobre
+`#241B47`, sin blur y sin mezcla. Un radial ya nace difuso porque su última
+parada es transparente, así que da la misma nube sin costar lo mismo. Se
+dibuja al 120% y desplazado un 10%, para que el vaivén no descubra los bordes.
+El único movimiento es `vaiven`, una traslación lenta del conjunto: transformar
+una capa ya rasterizada es de lo poco que de verdad sale gratis.
 
-**El scroll se ancla en cada parada.** Hay siete `.ancla` invisibles colocadas
-en el punto exacto del recorrido donde cada parada queda centrada, con
-`scroll-snap-align`. Un movimiento corto regresa a la parada actual y uno
-decidido pasa a la siguiente, así que ya no te quedas en los huecos donde no
-hay texto. Es `proximity` y no `mandatory`, y **fuera del hero no hay anclas**:
-el resto de la página scrollea normal.
+Encima van tres capas quietas:
 
-Hubo un momento en que `#doctora` también era destino, para que al pasar la
-última parada un movimiento te dejara ya en la sección siguiente. Se quitó: el
-salto automático al salir del recorrido se sentía brusco. Si se quiere
-recuperar, es una regla de una línea — pero se probó y no gustó.
+- `#polvo`, un canvas con motas que vienen del fondo hacia ti. Es lo único que
+  se dibuja por cuadro, y solo mientras el hero está a la vista. Da escala: sin
+  algo pequeño y definido, un degradado grande no dice a qué distancia está.
+- `.velo`, un radial oscuro que asienta el texto. Es **más ancho que la
+  pantalla** a propósito: una rampa que cambia de pendiente dibuja cantos
+  horizontales que se leen como bandas, y así sus bordes caen fuera.
+- `.grano`, textura, que de paso rompe el escalonado en franjas que hace un
+  degradado oscuro y amplio en pantallas de 8 bits.
 
-La posición sale de `calc(var(--at) * var(--rango))`, donde `--rango` es la
-altura útil del recorrido (420vh en escritorio, 320vh en móvil, porque la
-sección mide distinto). Si cambias la altura de `.viaje`, cambia `--rango` o
-las anclas dejan de coincidir con las paradas.
+**El estado de la cabecera lo lleva un `IntersectionObserver`**, no un bucle.
+Antes se recalculaba en cada cuadro aunque no hubiera nada que cambiar. La
+cabecera va clara mientras quede hero debajo de ella (`rootMargin` de -90px) y
+se posa en cuanto el hero sale.
 
-La proyección es perspectiva a mano: cada plano se dibuja a `escala = F / z`,
-donde `z` sale de su distancia al progreso actual. Se ven unos 12 a la vez; los
-de atrás llegan tenues y pequeños, los de adelante crecen hasta pasarte por
-encima y desvanecerse. `DELTA` es cuánto se adelanta cada anomalía a su parada:
-cuanto más chico, más cerca y más grande llega.
+**En el teléfono la cabecera posada es color sólido, sin `backdrop-filter`.**
+Desenfocar lo que hay detrás de una barra fija se recalcula en cada cuadro de
+scroll, en toda la pantalla, y es de las cosas más caras que puede hacer una
+página en un teléfono.
 
-El recorrido tiene **cuatro paradas y un remate**, no seis: resequedad,
-pigmento, ronchas y folículo. Se recortó a propósito. Con seis, el visitante
-tenía que atravesar cinco pantallas antes de poder hacer nada, y el hero
-pasaba de ser lo que convertía a ser el obstáculo. Ahora son 3.8 pantallas en
-escritorio y 3.2 en móvil, y hay una **salida visible** —"Saltar al
-calendario"— para quien llega con prisa.
+**La atmósfera del resto de la página** (`.atmos`) siguió el mismo camino: era
+un elemento fijo con tres círculos de 62vw desenfocados a 70px. Estáticos, pero
+una capa fija y desenfocada detrás de una página que se desplaza se recompone
+en cada cuadro. Ahora son tres degradados radiales en el propio `.atmos`,
+mismos colores y mismas posiciones, con `isolation:isolate` para que la mezcla
+del grano se quede dentro.
 
-El **menú completo de los seis síntomas** vive en la banda `.entradas`, que se
-muestra **siempre** debajo del recorrido, no solo como respaldo. Es una
-cuestión de accesibilidad: las paradas ocultas salen del árbol de
-accesibilidad, así que quien navega con teclado o lector de pantalla nunca
-llegaba a ver el camino principal del sitio.
+**En el teléfono se ve "Desliza" y no el atajo al calendario.** El atajo caía
+justo debajo del botón de WhatsApp; ahí la salida son ese botón y el "Agendar
+cita" de la cabecera, los dos siempre a la vista. En escritorio se ven los dos.
 
-Una parada puede mostrar **dos gráficos**: el folículo es de donde sale el pelo
-y donde empieza el acné, y el texto habla de los dos, así que se dibujan ambos
-con su color (`data-sintoma` y `data-sintoma2`).
+**La marca del menú es siempre texto, nunca `logo.png`.** Ese archivo es navy
+sobre blanco **opaco**: sobre fondo oscuro no hay filtro que lo salve, porque
+cualquier inversión pinta la caja entera. Y alternar imagen y texto al pasar el
+hero hacía parpadear la cabecera. El texto solo cambia de color según el fondo.
+Si algún día llega el logo en SVG o PNG transparente, aquí es donde entra.
 
-El recorrido **remata** en una última pantalla que invita a agendar, en vez de
-terminar en seco.
-
-Por qué no es una copia del túnel, aunque ahora también se entre: el de ellos
-es un viaje **por dentro de un tubo**, una sola cavidad recorrida a lo largo,
-y dice "nueve metros, ella cuida el último tramo". Este atraviesa **capas
-apiladas** hacia abajo y dice "todo esto pasa en cuatro milímetros". Comparten
-mecánica, como dos películas comparten el travelling, pero no geometría, ni
-métrica, ni mensaje.
-
-<details><summary>Antes de esto, el recorrido era lateral</summary>
-
-La cámara avanzaba en horizontal sobre un trozo de piel y las lesiones iban
-apareciendo al costado. Se cambió porque la profundidad quedaba decorativa:
-el medidor decía "2 mm de piel" sin que ese número significara nada. Está
-en el historial hasta `a43306e`.
-
-</details>
-
-**El registro es de instrumento, no de ilustración.** Fondo oscuro, la piel
-dibujada como una malla de nodos y aristas, y las lesiones como anomalías de
-ese campo: no se dibuja un lunar, se dibuja lo que un lunar le hace a la malla.
-
-El color base es el **azul marino del propio logo**, no un verde petróleo. Eso
-es deliberado: el verde azulado es el terreno de la referencia, y usarlo sería
-cruzar la línea que todo este trabajo ha tratado de no cruzar.
-
-Lo técnico, en `index.html`:
-
-- La malla es una retícula de nodos con desplazamiento fijo. Cada anomalía
-  deforma los nodos cercanos y los ilumina: `ronchas` y `lunar` los empujan
-  hacia afuera, `mancha` los atrae y los apaga, `seca` los desconecta y deja
-  la malla rota.
-- Se dibuja en **un solo trazo por capa** —todos los segmentos en un `Path2D`
-  y un `stroke`—, y los nodos son `fillRect` y no arcos. Medido: **0.19 ms** por
-  cuadro para 900 segmentos y 320 nodos, o sea 16.5 ms de margen a 60 fps.
-- Dos capas a distinta velocidad y escala hacen la profundidad, más polvo en
-  suspensión que deriva solo.
-- **El zoom enfoca.** Entre paradas la vista va abierta; al llegar a una se
-  cierra sobre ella hasta 1.30×, y se amplía alrededor de la propia anomalía
-  para que no se salga de pantalla al crecer. El fondo se acerca menos que el
-  frente (0.45 del delta), que es lo que da la sensación de profundidad.
-- **Todo respira.** La malla ondula con dos senos desfasados, los nodos de las
-  anomalías laten, los halos se expanden y contraen, los pelos se mecen y la
-  mira gira despacio. La cámara también respira, un 0.8%.
-- El bucle **se apaga** cuando el hero sale de pantalla (`IntersectionObserver`)
-  y cuando la pestaña deja de estar visible. Animar un hero que nadie está
-  viendo es gastar batería ajena.
-- `mide()` pinta un cuadro de inmediato antes de arrancar el bucle: si solo lo
-  agendara, el hero se quedaría en blanco hasta el primer cuadro.
-- `0 KB` de descarga: todo es generado. Para comparar, drailse baja unos 600 KB
-  de three.js solo para su túnel.
-- **La marca del menú es siempre texto, nunca `logo.png`.** Ese archivo es navy
-  sobre blanco **opaco**: sobre fondo oscuro no hay filtro que lo salve, porque
-  cualquier inversión pinta la caja entera. Y alternar imagen y texto al pasar
-  el hero hacía parpadear la cabecera. El texto solo cambia de color según el
-  fondo: claro sobre el hero, navy cuando la cabecera se posa. De paso, la
-  portada ya no descarga `logo.png` (lo sigue usando el aviso de privacidad).
-  Si algún día llega el logo en SVG o PNG transparente, aquí es donde entra.
-- Contrastes medidos sobre el fondo oscuro: título 14.7:1, cuerpo 8.1:1,
-  etiqueta de capa 6.4:1, barra de escala 4.6:1.
-- En pantallas angostas la anomalía se va arriba y el texto baja, porque al
-  lado no caben. **Ojo:** la niebla tiene su propia versión en móvil; si se
-  queda la clara encima del hero oscuro, lava todo y el texto se vuelve
-  ilegible.
-- Con `prefers-reduced-motion` el recorrido no se muestra y en su lugar aparece
-  la banda `.entradas`, que es el hero anterior con las seis tarjetas.
+**El menú de los seis síntomas** vive en la banda `.entradas`, a la que apunta
+el botón del hero. Es la primera decisión que se le pide al visitante y por eso
+no está escondida detrás de nada.
 
 ## Concepto
 
-Lo que el visitante elige, tanto en el recorrido como en la banda de respaldo,
-es un **síntoma**, no un motivo: el motivo depende de si la consulta es para un
+Lo que el visitante elige en la banda `.entradas` es un **síntoma**, no un motivo: el motivo depende de si la consulta es para un
 niño o para un adulto, así que el mapeo (`SINTOMAS`) se resuelve en el módulo de
 agendar, cuando ya se sabe para quién es.
 
 La idea de las dos pieles —una doctora, dos consultas— vive en los dos carriles
 de padecimientos, que es donde es una observación útil y no un acertijo.
 
-En la banda de respaldo hay una línea viva, "Puedes pedir cita desde el viernes
+En esa banda hay una línea viva, "Puedes pedir cita desde el viernes
 27", calculada de la misma constante `HORARIOS`. Dice "pedir", no "reservar",
 porque eso es lo que de verdad hace el sitio.
 
@@ -197,6 +134,18 @@ porque eso es lo que de verdad hace el sitio.
 
 Para no volver a recorrerlos sin querer:
 
+- **Hero de recorrido en color** (el scroll pasaba por paradas y el fondo
+  cambiaba de tono en cada una; manchas desenfocadas, fondo tornasol, paleta
+  morada). Gustó mucho de ver, pero se trababa en Chrome y en teléfono: lo caro
+  era el campo de manchas con `filter:blur()` y `mix-blend-mode` repintado en
+  cada cuadro. Completo en el historial hasta `54731fc`. Si se retoma, el fondo
+  tiene que estar ya rasterizado y lo único que cambie debe ser una
+  transformación.
+- **Hero de recorrido por la piel** (el scroll metía la cámara cuatro
+  milímetros dentro del tejido, con una malla de nodos y una anomalía por
+  parada, y un medidor de profundidad en milímetros de verdad). Se sustituyó
+  porque al cliente no le convenció. En el historial hasta `a43306e` la versión
+  lateral y después la de profundidad.
 - **Hero de "las dos pieles"** (titular en dos líneas que se desteñían con el
   cursor, retrato recortado a la derecha, control deslizante). Descartado: era
   la plantilla de medio gremio médico, pedía hover para dar algo y en reposo era
@@ -204,8 +153,8 @@ Para no volver a recorrerlos sin querer:
 - **Hero de la pregunta** ("¿Qué le ves a la piel?", centrado y tipográfico, con
   las seis entradas en rejilla). No se descartó por malo: el cliente pidió algo
   como drailse.com y entró el recorrido. Sobrevive como la banda `.entradas`,
-  que es lo que se ve cuando el visitante tiene `prefers-reduced-motion`.
-  Completo en el historial hasta `52e14f5`.
+  que hoy es la primera decisión que se le pide al visitante y a la que apunta
+  el botón del hero. Completo en el historial hasta `52e14f5`.
 - **Hero sobre superficie de piel** — rama `hero-piel`, página `hero-piel.html`.
   Ruido celular generado por código en vez del campo lavanda plano. Funciona,
   pesa cero y mide 9.76:1 de contraste, pero se decidió quedarse con el fondo
@@ -345,182 +294,62 @@ a dos columnas encimadas. El aviso está escrito también en el propio CSS.
 
 ## Alturas del hero: cuál unidad va en cada sitio
 
-Son dos alturas distintas y no deben llevar la misma unidad.
+`.viaje` lleva `100svh` y después `100dvh`, en ese orden. El `svh` es el
+respaldo para navegadores que no entienden `dvh`; el que manda es `dvh`,
+porque tiene que medir lo que mide la pantalla *ahora mismo*. En el teléfono
+la barra del navegador se encoge al primer scroll y el viewport crece unos
+100 px: con `svh` a secas el hero se quedaba corto y por abajo asomaba la
+sección siguiente.
 
-- `.stage` (el escenario pegajoso) va en **`dvh`**. Tiene que medir siempre lo
-  que mide la pantalla *ahora mismo*. En el teléfono la barra del navegador se
-  encoge al primer scroll y el viewport crece unos 100 px; con `svh` el
-  escenario se quedaba corto y por abajo asomaba la sección siguiente, que es
-  lo que se siente como que la página se desliza en vez de avanzar el
-  recorrido.
-- `.viaje` (el alto total de la sección) va en **`vh`**, que no cambia. Si
-  también siguiera a la barra, el documento entero cambiaría de alto a media
-  lectura y el scroll daría un salto.
-- Las anclas no llevan unidad: las coloca el JS a partir de
-  `alto de la sección − window.innerHeight`, que es la cuenta real y se
-  recalcula en cada `resize`.
+Esto vale porque el hero es **una** pantalla y no se mueve. Cuando era un
+recorrido de varias pantallas, el alto total tenía que ir en `vh` —que no
+cambia— o el documento entero cambiaba de alto a media lectura y el scroll
+daba un salto. Si alguna vez vuelve a crecer, esa distinción vuelve con él.
 
-## Los glifos de las anomalías tienen que escalar con la ventana
+## Por qué morado y no el espectro completo
 
-`ka = F / za` sale solo de la profundidad, así que un glifo se dibujaba del
-mismo tamaño en píxeles en una pantalla de 1280 y en una de 375. En el
-teléfono eso significaba una roncha de 194–324 px de radio: acababas *dentro*
-de una, viendo su degradado y nada más. Por eso parecía que las anomalías
-desaparecían en móvil, aunque el lienzo tuviera medio millón de píxeles rojos.
+Se probaron tres caminos antes de este:
 
-El factor es `escG = min(1, ancho/1180, alto/820)` y multiplica la escala en
-las tres llamadas que pintan una anomalía (`tipo`, `tipo2` y la mira). De
-1180×820 para arriba vale 1, así que el escritorio quedó igual.
+- **Tres familias** (malva, champán, nácar), cada una solo aclarada u
+  oscurecida: el cambio no se notaba.
+- **El espectro completo** (morado, verde, amarillo, coral): se notaba, pero
+  seis tonos sin relación entre sí no dejan ningún color asociado a ella, el
+  verde y el amarillo cargan lectura clínica, y no compartía nada con el navy
+  del logo.
+- **Un arco** (violeta, lavanda, azul, verde azulado, salvia, más un cálido al
+  final): mejor, pero el cliente pidió quedarse en morados.
 
-Lo mismo aplica si algún día se añade un glifo nuevo: tiene que recibir la
-escala ya multiplicada, no `ka * 1.5` a secas.
+Los seis radiales de `.campo` **no** son el mismo morado aclarado: son vecinos
+distintos, de `#5B46C2` a `#9A7BF0`. Donde se solapan aparece un tercer tono
+que no está pintado en ningún sitio, y eso es lo que da el tornasol. Si se
+igualan, el fondo se vuelve plano.
 
-Relacionado: la bruma abre a propósito una ventana clara centrada en el 50 %
-de ancho y el 30 % de alto, que es donde el JS pone el punto de fuga. Si se
-mueve una, hay que mover la otra.
+## Lo que no se puede subir sin mirar el contraste
 
-Y manda el **alto**, no el ancho. Con el texto centrado debajo del gráfico, el
-hueco limpio que le queda es una banda horizontal cuya altura sale del alto de
-pantalla; el ancho solo entra para pantallas muy angostas. Cuando el hero
-repartía en horizontal (texto a la izquierda, gráfico a la derecha) mandaba el
-ancho, y al centrar hubo que cambiarlo: si no, en escritorio volvía a pasar lo
-de móvil, el glifo no cabía en la banda y se leía como una mancha.
+El texto es casi blanco (`#F4F1FA`) y el párrafo `#CDC6E0`; el acento es
+`#C3B0FF`. Ninguno cambia, que es lo que permite mover los tonos del fondo sin
+revisar seis contrastes cada vez.
 
-## La salida del hero: por qué el desvanecido no va atado al progreso
+Medido contra el tono **más claro** del campo con el velo encima, que es el
+peor caso donde cae el texto: título **8.51**, párrafo **5.77**, acento
+**4.96**. Contra la base oscura son 15.94, 10.80 y 9.30.
 
-Al terminar el recorrido, el escenario pegajoso se suelta y sube. Su contenido
-sube con él, y si sigue opaco acaba cruzándose con la cabecera, que sobre el
-hero es transparente: el párrafo del cierre quedaba encima del nombre de la
-doctora.
+Lo que sostiene esos números es el velo, no el campo: sobre `#9A7BF0` desnudo
+el párrafo cae a **1.97**, muy por debajo del 4.5 que hace falta. Así que si
+se sube el brillo de los radiales o se baja la rampa del velo entre el 54 % y
+el 76 %, lo primero que deja de leerse es el párrafo. Ya pasó dos veces: con
+el campo claro llegó a 1.76, y al quitar un halo blanco el párrafo dejó de
+leerse hasta que se oscureció la tinta secundaria.
 
-El contenido vive en `.capas`, cuya opacidad baja conforme el escenario sale.
-Dos detalles que importan:
+## El velo no puede lavar media pantalla
 
-- **Va atado a la geometría, no a `p`.** La última parada ancla en `0.90` y el
-  escenario se suelta en `1`; ese tramo el anclaje lo salta entero, así que un
-  umbral sobre el progreso no se llega a recorrer nunca. Lo que se mide es
-  cuánto ha subido el escenario: `innerHeight - rect.bottom`.
-- **`.capas` no lleva `transition`.** El valor ya llega suave, uno por cuadro.
-  Ponerle encima una transición solo lo volvería lento — es el mismo error que
-  ya costó una vez con el relevo de textos.
+Cuando lo hacía, el fondo se quedaba sin la mitad de abajo y el color no se
+leía. Es una cama elíptica detrás del texto, más ancha que la pantalla para
+que sus bordes caigan fuera: un degradado cuya pendiente cambia de signo
+dibuja cantos horizontales que se ven como bandas, y ese fue el origen de un
+"rectángulo oscuro" que costó dos intentos encontrar.
 
-El desvanecido de cada parada sigue viviendo en `.activa`, con su propia
-transición, y los dos se multiplican. Cada mecanismo en su sitio: el relevo es
-por reloj, la salida es por scroll.
-
-## Una sola composición del hero
-
-Antes había dos, una por ancho: en escritorio el texto a la izquierda y el
-gráfico corrido al 62 %; en teléfono el texto abajo y el gráfico arriba. El
-corte entre ambas fue fuente de desajustes (en un momento el CSS cambiaba en
-900 px y el JS en 780, y en esa franja el gráfico quedaba fuera de la ventana
-clara).
-
-Ahora es una sola, en todos los anchos: **gráfico arriba y centrado, texto
-centrado debajo**. Se centró a petición del cliente, para alejarse de la
-composición del sitio de referencia y para que el titular y las paradas
-compartan eje. El reparto pasó de horizontal a vertical, y de ahí vienen dos
-consecuencias que no son opcionales:
-
-- La escala del glifo se ata al alto, no al ancho (ver la sección anterior).
-- Hay una sola `.bruma`, no una por ancho.
-## Opciones de hero
-
-**El sitio usa el hero de color.** Hubo dos opciones: la **A** era el
-recorrido por la piel, con la malla de tejido, y la **B** el campo de color.
-Ganó la B y es la que lleva `index.html`.
-
-Las dos viven en el historial de git. La B se probó en un `hero-color.html`
-aparte, que se borró al adoptarla el sitio: mantener dos copias del mismo
-hero era garantía de que una se quedara atrás. Si hace falta verla aislada,
-está en el historial.
-
-Al portarlo a `index.html` hubo que conservar tres cosas que la página de
-prueba no tenía: el `data-sintoma` de los enlaces de cada parada (que el
-módulo del calendario lee para preseleccionar el motivo), la caída a la
-banda de entradas cuando hay `prefers-reduced-motion`, y el enlace
-`Baja para entrar`. Las etiquetas de parada dejan de ser profundidades
-(`Epidermis · 0.10 mm`) y pasan a ser el motivo: sin piel que medir, los
-milímetros no decían nada.
-
-**Cómo es.** Mismo recorrido y mismas paradas que la A, sin referencia
-figurativa a la piel. El fondo son seis manchas de color que
-vienen desde el fondo, crecen, se abren hacia los lados y se van; las de
-atrás ocupan su lugar. Eso es lo que da la sensación de adentrarse.
-
-Heredó de la A, intacto, el mecanismo: el anclaje por paradas, el relevo de
-textos, la composición (texto centrado abajo) y el desvanecido de salida.
-Solo cambió lo que se ve.
-
-### El color es el contenido de esta opción
-
-Cada parada cambia de tono **por completo**, no de matiz, pero dentro de un
-arco y no de la rueda entera: violeta, azul lavanda, azul, verde azulado y
-salvia, mas **un solo calido** reservado para la ultima parada, que es la que
-lleva el boton de agendar. Al llegar, el color cambia de temperatura y eso
-senala el final del recorrido sin decirlo.
-
-Se probaron dos caminos antes:
-
-- **Tres familias** (malva, champan, nacar) donde cada parada solo aclaraba u
-  oscurecia la misma: el cambio no se notaba.
-- **El espectro completo** (morado, verde, amarillo, coral): demostraba bien
-  el cambio, pero seis tonos sin relacion entre si no dejan ningun color
-  asociado a ella, el verde y el amarillo cargan lectura clinica, y no
-  compartia nada con el navy del logo ni con el resto del sitio.
-
-Dentro de cada parada los seis tonos **no** son el mismo color aclarado: son
-vecinos distintos. Mezclados en `mix-blend-mode: multiply`, donde se cruzan
-dos manchas aparece un tercer color que no está pintado en ningún sitio. Eso
-es el tornasol, y es la razón de que las manchas se solapen.
-
-`.lienzo` lleva `isolation: isolate` por eso mismo: sin él, el multiply se
-comería también lo que hay detrás del hero.
-
-### Por qué manchas y no anillos
-
-Hubo una versión con un túnel de anillos concéntricos y costillas
-longitudinales. Funcionaba como profundidad, pero se leía como ondas y no
-convenció. Las manchas dan el mismo avance (crecen y se abren conforme te
-acercas) sin esa lectura.
-
-De esa versión sobrevive una lección: **el velo no puede lavar media
-pantalla**. Cuando lo hacía, el fondo se quedaba sin la mitad de abajo y no
-se sentía que atravesaras nada. Ahora es solo una cama elíptica detrás del
-texto.
-### Registro oscuro: por qué se invirtió
-
-La primera versión era texto oscuro sobre campo claro. Eso obligaba a mantener
-el fondo pálido para que el negro aguantara, y a lavarlo con blanco donde caía
-el texto — primero con un halo elíptico (que se veía como un óvalo pegado
-encima de las manchas) y luego con una rampa blanca. El blanco era un parche
-estructural, no una decisión.
-
-Al invertirlo desaparece: no hay nada que lavar. Texto claro sobre color
-saturado, y el velo tiñe con el tono profundo de la parada en vez de con
-blanco.
-
-Dos consecuencias que no son opcionales:
-
-- **Las manchas pasan de `multiply` a `screen`.** Sobre fondo oscuro, multiply
-  solo ensucia: todo producto con un número bajo da uno más bajo. `screen` suma
-  luz, así que donde se cruzan dos manchas sale un color más luminoso que las
-  dos. El tornasol se consigue igual, pero por arriba en vez de por abajo.
-- **La sección de cierre también va oscura.** Con el hero invertido, una
-  sección blanca debajo partía la página en dos y dejaba la cabecera clara
-  ilegible al llegar.
-
-### Lo que no se puede subir sin mirar el contraste
-
-El texto es casi blanco y no cambia con la parada: es lo que permite que los
-seis tonos funcionen sin revisar seis contrastes distintos. Lo que sí cambia
-es el acento (`--acento`), con una versión luminosa del tono de cada parada.
-
-Medido sobre la base de cada parada: título 12.3, párrafo 8.35, acento 8.86.
-Son contra la base; las manchas la aclaran, y lo que devuelve el margen es la
-rampa del velo entre el 54 % y el 76 %.
-
-Si se sube la opacidad de las manchas, se aclaran los tonos de `bg` o se baja
-esa rampa, lo primero que cae es el párrafo. Ya pasó dos veces: con el campo
-claro llegó a 1.76 de contraste cuando hacen falta 4.5, y al quitar el halo
-el párrafo dejó de leerse hasta que se oscureció la tinta secundaria.
+El otro origen del mismo rectángulo fue `will-change:transform,opacity`: le
+da al elemento una caja de rasterizado de tamaño fijo, y un `blur` que se sale
+de ella aparece **cortado en recto**. No se pone `will-change` sin mirar qué
+hay dentro.

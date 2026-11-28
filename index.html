@@ -74,19 +74,23 @@ a{color:inherit;text-decoration:none}
 .wrap{width:min(100% - 48px,var(--max));margin-inline:auto}
 
 /* ---------- atmosfera ---------- */
-.atmos{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-/* Las manchas derivan con el puntero, cada una distinto. Sin transicion:
-   --mx y --my ya vienen interpolados cuadro por cuadro desde el JS. */
-.blob{position:absolute;border-radius:50%;filter:blur(70px)}
-.blob.a{width:62vw;height:62vw;left:-18vw;top:-22vw;opacity:.9;
-  background:radial-gradient(circle at 40% 40%, rgba(167,196,240,.80), rgba(167,196,240,0) 68%);
-  transform:translate(calc(var(--mx)*-16px), calc(var(--my)*-11px))}
-.blob.b{width:66vw;height:66vw;right:-22vw;bottom:-28vw;opacity:.85;
-  background:radial-gradient(circle at 55% 45%, rgba(146,122,214,.62), rgba(146,122,214,0) 68%);
-  transform:translate(calc(var(--mx)*18px), calc(var(--my)*13px))}
-.blob.c{width:40vw;height:40vw;left:34vw;top:-14vw;opacity:.95;
-  background:radial-gradient(circle at 50% 50%, rgba(226,161,60,.18), rgba(226,161,60,0) 70%);
-  transform:translate(calc(var(--mx)*9px), calc(var(--my)*-7px))}
+/* Fondo de toda la pagina. Era un elemento fijo con tres circulos de 62vw
+   y filter:blur(70px) encima, mas un grano en mix-blend-mode. Estaticos,
+   pero una capa fija y desenfocada detras de una pagina que se desplaza se
+   recompone en cada cuadro en Chrome y en telefono, que es justo donde se
+   notaba el tiron.
+
+   Aqui son tres degradados radiales en el propio .atmos: mismos colores y
+   mismas posiciones, pero un radial ya nace difuso y el navegador lo
+   rasteriza una sola vez. isolation:isolate encierra la mezcla del grano
+   dentro de esta capa, asi el compositor la trata como una sola cosa.
+   Si algun dia vuelve a moverse con el puntero, hay que medir antes. */
+.atmos{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
+  isolation:isolate;
+  background:
+    radial-gradient(42% 38% at 13% 9%, rgba(167,196,240,.72) 0%, rgba(167,196,240,0) 70%),
+    radial-gradient(46% 42% at 88% 92%, rgba(146,122,214,.56) 0%, rgba(146,122,214,0) 70%),
+    radial-gradient(28% 26% at 54% 6%, rgba(226,161,60,.17) 0%, rgba(226,161,60,0) 72%)}
 .grain{position:absolute;inset:0;opacity:.13;mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");}
 
@@ -116,124 +120,71 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
 .btn-top{background:var(--ink);color:#fff;padding:11px 20px;font-size:14.5px}
 .btn-top:hover{background:#16294d}
 
-/* ---------- el recorrido, en color ---------- */
-/* Hero de color (la que fue opcion B). Sustituye
-   al recorrido por la piel: mismo mecanismo de paradas, anclaje, relevo de
-   textos y desvanecido de salida, pero el fondo es color en movimiento y
-   cada parada cambia de tono. El recorrido atraviesa un arco (violeta, azul
-   lavanda, azul, verde azulado, musgo) y reserva un solo calido para la
-   ultima parada, la del boton de agendar.
-   El hero de la piel vive en el historial de git si hace falta volver. */
-.viaje{position:relative;height:380vh;--blur:50px;
+/* ---------- el hero ---------- */
+/* Una sola pantalla. Hubo una version con recorrido de paradas: el scroll
+   recorria seis estados y cada uno repintaba un campo de manchas
+   desenfocadas. Se quito porque se trababa en Chrome y en telefono.
+
+   Lo caro no eran las paradas sino el campo: seis elementos grandes con
+   filter:blur() y mix-blend-mode, recompuestos en cada cuadro durante
+   380vh de scroll. Aqui el fondo es un juego de degradados radiales fijos,
+   que el navegador rasteriza UNA vez, y el unico movimiento es una
+   traslacion lenta del conjunto: transformar una capa ya rasterizada es de
+   lo poco que sale gratis. */
+.viaje{position:relative;height:100svh;height:100dvh;overflow:hidden;
+  isolation:isolate;
   --tinta-clara:#F4F1FA; --tinta-media:#CDC6E0; --sobre-claro:#241B47;
-  --velo:20,16,40; --acento:#C3B0FF}
-/* dvh y no svh. En el telefono la barra del navegador se encoge en cuanto
-   empiezas a scrollear y el viewport crece unos 100 px. Con svh el escenario
-   se quedaba del alto chico y por abajo asomaba la seccion siguiente. El alto
-   de .viaje si se queda en vh, que es estable. */
-.stage{position:sticky;top:0;height:100svh;height:100dvh;overflow:hidden;
-  isolation:isolate}
+  --velo:18,12,38; --acento:#C3B0FF}
 
-/* El lienzo aisla la mezcla: sin isolation, el screen de las manchas se
-   comeria tambien lo que hay detras del hero. */
-/* La capa de color se desvanece antes del borde de abajo. Las ocho manchas
-   se mezclan en screen dentro de un grupo aislado, y ese grupo lo recorta el
-   escenario: el canto del grupo compuesto se veia como una hebra justo en la
-   union con la seccion siguiente, incluso con los dos lados en blanco. Si la
-   capa ya no llega al borde, no hay canto que recortar. */
-.lienzo{position:absolute;inset:0;z-index:-3;overflow:hidden;
-  background:var(--fondo,#241B47);isolation:isolate;
-  transition:background-color 1.5s ease}
+/* El campo. Sin blur y sin mezcla: los radiales ya nacen difusos porque su
+   parada final es transparente. Se dibuja mas grande que la pantalla para
+   que el vaiven no descubra los bordes. */
+.campo{position:absolute;left:-10%;top:-10%;width:120%;height:120%;z-index:-3;
+  background:
+    radial-gradient(58% 48% at 20% 20%, #6B4FD6 0%, rgba(107,79,214,0) 70%),
+    radial-gradient(52% 44% at 80% 16%, #8363E8 0%, rgba(131,99,232,0) 72%),
+    radial-gradient(66% 54% at 72% 76%, #5B46C2 0%, rgba(91,70,194,0) 70%),
+    radial-gradient(48% 40% at 26% 78%, #9A7BF0 0%, rgba(154,123,240,0) 70%),
+    radial-gradient(44% 38% at 52% 46%, #7A5AD8 0%, rgba(122,90,216,0) 75%),
+    radial-gradient(40% 34% at 8% 58%, #8E72EA 0%, rgba(142,114,234,0) 72%),
+    #241B47;
+  animation:vaiven 42s ease-in-out infinite alternate}
+@keyframes vaiven{
+  from{transform:translate3d(-1.5%,-1%,0) scale(1.03)}
+  to  {transform:translate3d(1.5%,1.2%,0) scale(1.09)}
+}
 
-/* screen y no multiply: sobre fondo oscuro, multiply solo ensucia. screen
-   suma luz, asi que donde se cruzan dos manchas sale un color mas luminoso
-   que las dos. De ahi el tornasol. */
-/* Sin will-change. Promovia cada mancha a su propia capa de composicion y
-   el desenfoque se rasterizaba dentro de una caja de tamano fijo: el canto
-   de esa caja se veia como un rectangulo mas oscuro en medio del hero, y
-   solo en pantallas anchas. Comprobado por descarte: con filter:none el
-   rectangulo desaparece, y con will-change:auto tambien.
-
-   Sin animacion de border-radius tampoco. Era lo mas caro de todo el hero:
-   cambiar la FORMA de un elemento desenfocado obliga a rehacer el
-   desenfoque entero en cada cuadro, y aqui son varias manchas de miles de
-   pixeles de lado. Mover, girar o escalar no cuesta lo mismo, porque eso el
-   compositor lo resuelve con la textura ya rasterizada. El bamboleo lo da
-   ahora el giro, que ya estaba, y cada mancha lleva su propia forma fija. */
-.mancha{position:absolute;left:50%;top:50%;width:46vmax;height:46vmax;
-  mix-blend-mode:screen;filter:blur(var(--blur));
-  background:var(--col,#6B4FD6);opacity:var(--o,0);
-  transform:translate(-50%,-50%) translate(var(--dx,0px),var(--dy,0px))
-    rotate(var(--rot,0deg)) scale(var(--s,.2));
-  transition:background-color 1.5s ease}
-.m1{border-radius:44% 56% 62% 38% / 48% 40% 60% 52%}
-.m2{border-radius:60% 40% 34% 66% / 64% 58% 42% 36%}
-.m3{border-radius:38% 62% 55% 45% / 56% 44% 56% 44%}
-.m4{border-radius:55% 45% 42% 58% / 40% 62% 38% 60%}
-.m5{border-radius:48% 52% 66% 34% / 58% 36% 64% 42%}
-.m6{border-radius:62% 38% 48% 52% / 44% 58% 42% 56%}
-
-/* Polvo en suspension: da escala al campo. Sin algo pequeno y definido
-   cerca, una mancha enorme y una pequena se ven igual, porque las dos estan
-   desenfocadas, y la profundidad se pierde. */
+/* Polvo en suspension: da escala al campo y es el unico dibujo por cuadro
+   que queda. Cuesta centesimas de milisegundo. */
 #polvo{position:absolute;inset:0;z-index:-2;width:100%;height:100%;display:block;
   pointer-events:none}
 
-/* El velo tine con el tono profundo de la parada, no con blanco: oscurece
-   para asentar el texto claro en vez de lavar el color. Sin radial, porque
-   un halo eliptico se ve como un ovalo pegado encima de las manchas.
-   El hero termina en color, sin desvanecer a blanco: se probo con degradado
-   de salida y el cliente prefirio el corte limpio. Si alguna vez se vuelve
-   a poner, hay que bajar con el las mascaras del grano y de .lienzo, y
-   oscurecer .saltar y .baja, que sobre blanco quedan invisibles. */
+/* El velo asienta el texto. Un radial mas ancho que la pantalla, para que
+   sus bordes caigan fuera: una rampa con vueltas dibuja cantos
+   horizontales que se leen como bandas. */
 .velo{position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
-    /* Un radial enorme en vez de una rampa con escalones. El perfil anterior
-       subia y bajaba dos veces (oscuro arriba, claro al 21%, oscuro al 52%,
-       claro al 90%) y cada inversion dibujaba un canto horizontal que se leia
-       como una banda rectangular en medio del hero. Este es mas ancho que la
-       pantalla, asi que sus bordes caen fuera y no hay canto que ver. */
     radial-gradient(135% 78% at 50% 54%,
-      rgba(var(--velo),.60) 0%, rgba(var(--velo),.40) 42%,
+      rgba(var(--velo),.58) 0%, rgba(var(--velo),.38) 42%,
       rgba(var(--velo),.12) 76%, rgba(var(--velo),0) 100%),
-    /* y una caida suave arriba, solo para la cabecera */
     linear-gradient(to bottom,
       rgba(var(--velo),.42) 0%, rgba(var(--velo),0) 24%)}
 
-/* Grano. Textura de pelicula, pero sobre todo rompe el escalonado en franjas
-   que hace un degradado oscuro y amplio en pantallas de 8 bits. */
-/* El grano se apaga antes del borde de abajo. Cubria el escenario pero no
-   lo que hay debajo de el, asi que el ultimo pixel del hero llevaba un 7% de
-   ruido que el fondo del sitio no tenia: justo ahi se veia la linea. */
+/* Grano. Textura, y de paso rompe el escalonado en franjas que hace un
+   degradado oscuro y amplio en pantallas de 8 bits. */
 .grano{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.07;
   mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
-/* Capa de contenido: se desvanece cuando el escenario sale, para que su
-   texto no se cruce con la cabecera. */
-.capas{position:absolute;inset:0;opacity:var(--salida,1)}
-
-/* Solo un bloque a la vez. El que entra espera a que el otro casi termine
-   de irse; cruzarlos en la misma posicion no deja leer ninguno. */
-.titular,.parada{position:absolute;top:50%;opacity:0;visibility:hidden;
-  transition:opacity .18s cubic-bezier(.4,0,.6,1), visibility 0s linear .18s}
-.titular.activa,.parada.activa{opacity:1;visibility:visible;
-  transition:opacity .26s cubic-bezier(.4,0,.2,1) .13s, visibility 0s}
-.titular{left:50%;width:min(100% - 56px,680px);transform:translate(-50%,-50%);text-align:center}
-/* A la misma altura que el titular: el recorrido deja de mover el texto de
-   sitio entre la entrada y las paradas. */
-.parada{left:50%;top:50%;width:min(100% - 56px,680px);
-  transform:translate(-50%,-50%);text-align:center}
-
-.titular h1,.parada h2{text-shadow:0 0 24px rgba(var(--velo),.70)}
-.titular p,.parada p,.parada .capa{text-shadow:0 0 16px rgba(var(--velo),.85)}
-
+.titular{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(100% - 56px,700px);text-align:center}
 .titular h1{margin:0 auto;max-width:13ch;font-size:clamp(46px,7.6vw,104px);line-height:.96;
-  letter-spacing:-.042em;font-weight:800;color:var(--tinta-clara)}
+  letter-spacing:-.042em;font-weight:800;color:var(--tinta-clara);
+  text-shadow:0 0 24px rgba(var(--velo),.70)}
 .titular h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
-  font-weight:400;color:var(--acento);font-size:1.04em;transition:color 1.5s ease}
+  font-weight:400;color:var(--acento);font-size:1.04em}
 .titular p{margin:22px auto 0;max-width:42ch;font-size:19px;line-height:1.55;
-  color:var(--tinta-media)}
+  color:var(--tinta-media);text-shadow:0 0 16px rgba(var(--velo),.85)}
 
 .credencial{margin:30px auto 0;padding-top:18px;max-width:620px;
   border-top:1px solid rgba(255,255,255,.18);display:flex;flex-wrap:wrap;
@@ -241,43 +192,14 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
 .credencial b{color:var(--tinta-clara);font-weight:700}
 .credencial .sep{color:rgba(255,255,255,.4)}
 
-.parada .capa{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--acento);margin-bottom:14px;
-  transition:color 1.5s ease}
-.parada .capa::before{content:"";width:26px;height:1px;background:currentColor;opacity:.7}
-/* mismo tamano que el titular: las paradas pesan lo mismo que la entrada */
-.parada h2{margin:0 auto;max-width:15ch;font-size:clamp(46px,7.6vw,104px);line-height:.98;
-  letter-spacing:-.042em;font-weight:800;color:var(--tinta-clara)}
-.parada h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
-  font-weight:400;color:var(--acento);font-size:1.05em;transition:color 1.5s ease}
-.parada p{margin:18px auto 0;max-width:44ch;font-size:19px;line-height:1.5;
-  color:var(--tinta-media)}
-
 /* El boton del hero no es ambar como el resto del sitio: sobre el campo
    oscuro, claro con texto oscuro es lo que destaca. */
-.capas .btn{margin-top:24px;background:var(--tinta-clara);color:var(--sobre-claro);
+.viaje .btn{margin-top:26px;background:var(--tinta-clara);color:var(--sobre-claro);
   border-color:transparent;box-shadow:0 8px 26px rgba(0,0,0,.30)}
-.capas .btn:hover{box-shadow:0 12px 32px rgba(0,0,0,.38)}
-
-/* instrumentacion */
-.riel{position:absolute;right:30px;top:50%;transform:translateY(-50%);z-index:2;
-  display:flex;flex-direction:column;gap:14px;align-items:center}
-.riel span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.26);
-  transition:background .35s ease, transform .25s ease}
-.riel span.on{background:var(--acento);transform:scale(1.55)}
-
-/* Anclaje blando a proposito. Con "mandatory" la pagina se quedaba clavada
-   en la primera seccion de abajo y no llegaba al pie, y apagarlo desde JS no
-   sirve: el navegador corrige el scroll antes de que el codigo reaccione. Lo
-   que impide saltarse una parada es scroll-snap-stop, no la dureza.
-   El sitio de cada ancla lo calcula el JS, no el CSS: el alto pegajoso real
-   es la seccion menos el escenario, y en vh esa cuenta no sale. */
-html{scroll-snap-type:y proximity}
-.ancla{position:absolute;left:0;width:1px;height:1px;pointer-events:none;
-  scroll-snap-align:start;scroll-snap-stop:always}
+.viaje .btn:hover{box-shadow:0 12px 32px rgba(0,0,0,.38)}
 
 /* Salida siempre a la vista: quien llega con una urgencia no deberia tener
-   que atravesar el recorrido entero para encontrar como pedir cita. */
+   que recorrer la pagina para encontrar como pedir cita. */
 .saltar{position:absolute;right:28px;bottom:26px;z-index:3;font-size:12.5px;
   font-weight:700;letter-spacing:.03em;color:var(--tinta-clara);
   border-bottom:1px solid rgba(255,255,255,.34);padding-bottom:3px;transition:.2s}
@@ -285,13 +207,29 @@ html{scroll-snap-type:y proximity}
 
 .baja{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--tinta-media);transition:opacity .4s ease}
+  color:var(--tinta-media)}
+
+/* Al llegar a una seccion por enlace, la cabecera fija se comia sus
+   primeros 76 px. Va en las secciones y no como scroll-padding-top en el
+   html: 70 y no mas, para que el borde del hero quede por debajo de la
+   cabecera y no asome. */
+section[id]{scroll-margin-top:70px}
+
+body{padding-top:76px}
+.viaje{margin-top:-76px}
 
 /* la cabecera flota sobre el hero mientras el hero esta en pantalla */
 header{position:fixed;top:0;left:0;right:0;z-index:40;padding:18px 0;
   transition:background-color .3s ease, box-shadow .3s ease}
 header.posado{background:rgba(245,241,251,.86);backdrop-filter:blur(12px);
   box-shadow:0 1px 0 rgba(27,47,87,.07)}
+/* En telefono, fondo solido y sin backdrop-filter. Desenfocar lo que hay
+   detras de una barra fija se recalcula en CADA cuadro de scroll, en toda
+   su anchura: es de los costes que mas se notan al deslizar en movil, y
+   ahi el efecto practicamente no se aprecia. */
+@media (max-width:900px){
+  header.posado{background:#F5F1FB;backdrop-filter:none}
+}
 /* La marca del menu es siempre texto, nunca la imagen. logo.png es navy sobre
    blanco opaco: sobre el hero oscuro no hay filtro que lo salve y cualquier
    inversion pinta la caja entera. Ademas, alternar imagen y texto al pasar el
@@ -329,7 +267,6 @@ body{padding-top:76px}
    iba justo despues del hero. Ahora es una seccion mas en medio de la
    pagina y usa el mismo ritmo que las demas. */
 .entradas{display:block}
-.sin-viaje .viaje{display:none}
 
 .entradas .eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:12.5px;
   font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--lav-deep);
@@ -375,20 +312,18 @@ body{padding-top:76px}
      cuando solo habia un <nav> en la pagina; al darle uno propio al pie,
      esa regla se lo llevaba por delante en el telefono. */
   header nav{display:none}
-  .viaje{height:320vh;--blur:34px}
-  .mancha{width:62vmax;height:62vmax}
-  .parada p{font-size:17px}
-  .riel{right:14px;gap:11px}
-  .baja{display:none}   /* chocaba con la barra de escala */
+  .titular p{font-size:17px}
+  /* "Desliza" vuelve al telefono: lo escondia la barra de paradas del
+     recorrido, que ya no existe. El atajo al calendario si se va, porque
+     caia justo debajo del boton de WhatsApp; en el telefono la salida es
+     ese boton y el "Agendar cita" de la cabecera, los dos siempre a la
+     vista. */
+  .saltar{display:none}
   .logo-texto small{display:none}
   /* Sin nav visible ya no hay nada que lo empuje: el auto pasa aqui. En
      escritorio no, porque alli empuja el nav y dos autos se repartirian el
      hueco dejando el menu a media barra. */
   .btn-top{margin-left:auto;padding:10px 16px;font-size:13.5px;white-space:nowrap}
-}
-@media (prefers-reduced-motion:reduce){
-  .viaje{display:none}
-  .entradas{display:block}
 }
 /* ---------- secciones ---------- */
 section{position:relative;padding:94px 0}
@@ -656,7 +591,6 @@ html{scroll-behavior:smooth}
 <body>
 
 <div class="atmos" aria-hidden="true">
-  <div class="blob a"></div><div class="blob b"></div><div class="blob c"></div>
   <div class="grain"></div>
 </div>
 
@@ -677,80 +611,26 @@ html{scroll-behavior:smooth}
 </header>
 
 <main class="viaje" id="inicio">
-  <div class="stage">
-    <div class="lienzo" aria-hidden="true">
-      <div class="mancha m1"></div>
-      <div class="mancha m2"></div>
-      <div class="mancha m3"></div>
-      <div class="mancha m4"></div>
-      <div class="mancha m5"></div>
-      <div class="mancha m6"></div>
-    </div>
-    <canvas id="polvo" aria-hidden="true"></canvas>
-    <div class="velo" aria-hidden="true"></div>
-    <div class="grano" aria-hidden="true"></div>
+  <div class="campo" aria-hidden="true"></div>
+  <canvas id="polvo" aria-hidden="true"></canvas>
+  <div class="velo" aria-hidden="true"></div>
+  <div class="grano" aria-hidden="true"></div>
 
-    <div class="capas">
-
-    <div class="titular" data-at="0">
-      <h1>Cada piel cuenta <em>algo distinto</em></h1>
-      <p>Soy dermatóloga pediátrica certificada y atiendo en Culiacán. Elige lo que estás viendo y empezamos por ahí.</p>
-      <div class="credencial">
-        <span>Hice la especialidad en el <b>Hospital Infantil de México Federico Gómez</b></span>
-        <span class="sep">·</span>
-        <span><b>Pedro María Anaya 2188</b>, Culiacán</span>
-        <span class="sep">·</span>
-        <span>WhatsApp <b>667 751 2919</b></span>
-      </div>
-    </div>
-
-    <div class="parada" data-at="0.18" data-sintoma="seca" hidden>
-      <div class="capa">Resequedad</div>
-      <h2>Se reseca y <em>se vuelve a partir</em></h2>
-      <p>La que vuelve casi siempre tiene causa, no solo falta de crema. Trato la aspereza, la descamación y la piel que pica.</p>
-      <a class="btn btn-path" href="#agendar" data-sintoma="seca">Pedir cita por esto</a>
-    </div>
-
-    <div class="parada" data-at="0.36" data-sintoma="mancha" hidden>
-      <div class="capa">Manchas y lunares</div>
-      <h2>Una mancha <em>que cambió</em></h2>
-      <p>Reviso manchas, lunares y melasma. Te digo cuáles hay que seguir y cuáles no.</p>
-      <a class="btn btn-path" href="#agendar" data-sintoma="mancha">Pedir cita por esto</a>
-    </div>
-
-    <div class="parada" data-at="0.54" data-sintoma="ronchas" hidden>
-      <div class="capa">Ronchas y comezón</div>
-      <h2>Ronchas que van <em>y vienen</em></h2>
-      <p>Se ven en la superficie pero empiezan más abajo. Dar con lo que las dispara es buena parte del tratamiento.</p>
-      <a class="btn btn-path" href="#agendar" data-sintoma="ronchas">Pedir cita por esto</a>
-    </div>
-
-    <div class="parada" data-at="0.72" data-sintoma="acne" data-sintoma2="cabello" hidden>
-      <div class="capa">Acné y caída</div>
-      <h2>Granos, y <em>pelo que se cae</em></h2>
-      <p>Los dos empiezan en el mismo sitio, el folículo. Por eso el acné no mejora tallando, y la caída se trata desde la raíz.</p>
-      <a class="btn btn-path" href="#agendar" data-sintoma="acne">Pedir cita por esto</a>
-    </div>
-
-    <div class="parada cierre" data-at="0.90" hidden>
-      <div class="capa">Tu consulta</div>
-      <h2>Todo esto lo <em>veo contigo</em></h2>
-      <p>Soy dermatóloga pediátrica certificada y atiendo en Culiacán. Elige el día que te acomode y te digo si hay espacio.</p>
-      <a class="btn btn-path" href="#agendar">Agendar cita</a>
-    </div>
-
-    <div class="riel" id="riel" aria-hidden="true"></div>
-    <div class="baja" id="baja">Desliza</div>
-    <a class="saltar" href="#agendar">Saltar al calendario &rarr;</a>
+  <div class="titular">
+    <h1>Cada piel cuenta <em>algo distinto</em></h1>
+    <p>Soy dermatóloga pediátrica certificada y atiendo en Culiacán. Elige lo que estás viendo y empezamos por ahí.</p>
+    <a class="btn" href="#entradas">Elegir lo que veo</a>
+    <div class="credencial">
+      <span>Hice la especialidad en el <b>Hospital Infantil de México Federico Gómez</b></span>
+      <span class="sep">·</span>
+      <span><b>Pedro María Anaya 2188</b>, Culiacán</span>
+      <span class="sep">·</span>
+      <span>WhatsApp <b>667 751 2919</b></span>
     </div>
   </div>
 
-    <div class="ancla" style="--at:0" aria-hidden="true"></div>
-    <div class="ancla" style="--at:0.18" aria-hidden="true"></div>
-    <div class="ancla" style="--at:0.36" aria-hidden="true"></div>
-    <div class="ancla" style="--at:0.54" aria-hidden="true"></div>
-    <div class="ancla" style="--at:0.72" aria-hidden="true"></div>
-    <div class="ancla" style="--at:0.90" aria-hidden="true"></div>
+  <div class="baja" id="baja">Desliza</div>
+  <a class="saltar" href="#agendar">Saltar al calendario &rarr;</a>
 </main>
 
 <section id="doctora">
@@ -1174,309 +1054,106 @@ html{scroll-behavior:smooth}
 
 <script>
 (function(){
-  /* Hero de color. El recorrido no entra en la piel: atraviesa color. Cada
-     parada cambia de tono por completo y el campo de manchas viaja hacia ti.
-     El mecanismo (anclaje, relevo de textos, desvanecido de salida) es el
-     mismo que tenia el hero anterior. */
+  /* Hero de una pantalla. Lo unico que se dibuja por cuadro es el polvo, y
+     solo mientras el hero esta a la vista. El estado de la cabecera lo
+     lleva un IntersectionObserver en vez de un bucle: antes se recalculaba
+     en cada cuadro aunque no hubiera nada que cambiar. */
   var sec = document.querySelector('.viaje');
-  var bloques = [].slice.call(document.querySelectorAll('.titular,.parada'));
-  var manchas = [].slice.call(document.querySelectorAll('.mancha'));
-  var riel = document.getElementById('riel');
-  var baja = document.getElementById('baja');
   var cabecera = document.querySelector('header');
-  if (!sec || !bloques.length){ document.documentElement.className += ' sin-viaje'; return; }
-  /* Sin animacion no hay recorrido que valga: se cae a la banda de entradas,
-     que tiene el mismo menu de sintomas en forma de lista. */
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    document.documentElement.className += ' sin-viaje';
-    return;
+  if (!sec || !cabecera) return;
+
+  function estadoCabecera(sobre){
+    document.documentElement.classList.toggle('sobre-noche', sobre);
+    cabecera.classList.toggle('posado', !sobre);
   }
 
-  /* Los bloques nacen con hidden para que no se vean antes de que arranque
-     el JS; a partir de aqui manda la clase .activa. */
-  bloques.forEach(function(b){ b.removeAttribute('hidden'); });
-
-  /* ---------------- color ----------------
-     Un arco, no la rueda entera: violeta, azul lavanda, azul, verde azulado
-     y musgo, mas UN calido para la ultima parada, que es la del boton. Al
-     llegar, el color cambia de temperatura y eso senala el final.
-     Dentro de cada parada los ocho tonos son vecinos distintos, no el mismo
-     aclarado: eso es lo que hace el tornasol al mezclarse en screen. */
-  /* Toda la familia en morado, a peticion del cliente. El arco anterior
-     (violeta, azul, verde azulado, musgo, oro) recorria medio circulo
-     cromatico; esto se queda dentro del morado y avanza de indigo a
-     orquidea, ganando luz en cada parada. El cambio es mas sutil que el del
-     arco, asi que la progresion la lleva la luminosidad y no el tono: si se
-     igualan los bg, las paradas dejan de distinguirse.
-     Dentro de cada parada los ocho tonos siguen siendo vecinos distintos,
-     que es lo que da el tornasol al mezclarse en screen. */
-  var TONOS = [
-    { ac:"#B3A6FF", bg:"#1E1A42", velo:"14,11,34", c:["#5B4FC8","#6E5FDC","#4C41B0","#8272EC","#5F55D2","#6B5CD6","#43399C","#7A6AE4"] },
-    { ac:"#C3B0FF", bg:"#241B47", velo:"18,12,38", c:["#6B4FD6","#8363E8","#5B46C2","#9A7BF0","#6E5CE0","#7A5AD8","#5340B4","#8E72EA"] },
-    { ac:"#D2AEFF", bg:"#2A1B4E", velo:"20,12,40", c:["#7B4FD6","#9163E8","#6A44C2","#A87BF0","#8056E0","#8C5AD8","#5F38B4","#9E72EA"] },
-    { ac:"#E2AEF5", bg:"#311A4A", velo:"24,12,38", c:["#8E4AC8","#A35CDC","#7B3FB2","#B877E6","#9450D2","#A05ED6","#6C3399","#AE6EE2"] },
-    { ac:"#EBB6EE", bg:"#351846", velo:"26,11,36", c:["#9C45B8","#B257CC","#8838A2","#C472D8","#A24CC2","#AE5CC8","#78308C","#BA68D2"] },
-    { ac:"#EED0FF", bg:"#3C1F52", velo:"28,14,40", c:["#A862D8","#BB78E6","#9450C2","#CC92F0","#AE6CDE","#B978E2","#8445AC","#C486EA"] }
-  ];
-
-  var puntos = bloques.map(function(){
-    var s = document.createElement('span'); riel.appendChild(s); return s;
-  });
-
-  function pintaParada(i){
-    var t = TONOS[Math.min(i, TONOS.length - 1)];
-    sec.style.setProperty('--acento', t.ac);
-    document.documentElement.style.setProperty('--fondo', t.bg);
-    sec.style.setProperty('--velo', t.velo);
-    for (var j = 0; j < manchas.length; j++){
-      manchas[j].style.setProperty('--col', t.c[j % t.c.length]);
-    }
-  }
-
-  /* ---------------- profundidad ---------------- */
-  var CICLOS = 2.6, DERIVA = 0.00030, VAIVEN = 0.00075;
-  var sitios = manchas.map(function(_, i){
-    return { base: i / manchas.length, ang: i * 2.399 };   /* angulo de oro */
-  });
-
-  function hondo(p, t){
-    var vmin = Math.min(window.innerWidth, window.innerHeight);
-    for (var i = 0; i < manchas.length; i++){
-      var s = sitios[i];
-      var z = (s.base - p * CICLOS - t * DERIVA) % 1; if (z < 0) z += 1;
-      var cerca = 1 - z;
-      /* la escala arranca alta: con valores bajos las lejanas eran puntos y
-         dejaban la pantalla vacia */
-      var esc = 0.45 + cerca * cerca * 2.6;
-      /* 0.42 y no mas: cada mancha que se solapa aclara a la anterior, y con
-         ocho encima el campo se cierra y el parrafo deja de leerse */
-      var op = Math.min(1, cerca * 3.2) * Math.min(1, z / 0.14) * 0.42;
-      var r = Math.pow(cerca, 1.5) * 0.40 * vmin;
-      var ang = s.ang + t * 0.00006;
-      var vx = Math.sin(t * VAIVEN + s.ang) * 0.10 * vmin;
-      var vy = Math.cos(t * VAIVEN * 0.78 + s.ang * 1.7) * 0.085 * vmin;
-      var e = manchas[i].style;
-      e.setProperty('--s', esc.toFixed(3));
-      e.setProperty('--o', op.toFixed(3));
-      e.setProperty('--dx', Math.round(Math.cos(ang) * r + vx) + 'px');
-      e.setProperty('--dy', Math.round(Math.sin(ang) * r + vy) + 'px');
-      e.setProperty('--rot', ((s.ang * 40 + t * 0.006) % 360).toFixed(1) + 'deg');
-    }
+  var enPantalla = true;
+  if ('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){
+      enPantalla = es[0].isIntersecting;
+      /* la cabecera va clara mientras quede hero debajo de ella */
+      estadoCabecera(es[0].boundingClientRect.bottom > 90);
+      if (enPantalla) arranca();
+    }, { threshold: 0, rootMargin: '-90px 0px 0px 0px' }).observe(sec);
+  } else {
+    estadoCabecera(true);
   }
 
   /* ---------------- polvo ---------------- */
   var cv = document.getElementById('polvo');
   var ctx = cv && cv.getContext ? cv.getContext('2d') : null;
+  var quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var vw = 0, vh = 0, motas = [];
 
-  function siembraPolvo(){
+  function siembra(){
     motas = [];
-    /* en el telefono el lienzo se sube entero a la GPU en cada cuadro:
-       menos motas es menos trabajo en el unico sitio donde se nota */
-    var n = vw < 760 ? 30 : 70;
+    var n = vw < 760 ? 26 : 56;
     for (var i = 0; i < n; i++){
       motas.push({
         base: (i * 0.6180339887) % 1,
         ang: (i * 2.399) % 6.2832,
-        rad: 0.08 + ((i * 37) % 100) / 100 * 0.92,
+        rad: 0.10 + ((i * 37) % 100) / 100 * 0.90,
         giro: ((i * 53) % 100) / 100 * 0.6
       });
     }
   }
 
-  function midePolvo(){
+  function mide(){
     if (!ctx) return;
     var dpr = Math.min(2, window.devicePixelRatio || 1);
     vw = cv.clientWidth; vh = cv.clientHeight;
     cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    siembraPolvo();
+    siembra();
   }
 
-  function polvo(p, t){
+  /* Las motas vienen del fondo hacia ti en un ciclo lento. Es lo que da
+     escala al campo: sin algo pequeno y definido, un degradado grande no
+     dice a que distancia esta. */
+  var CICLO = 0.000018;
+
+  function polvo(t){
     if (!ctx) return;
     ctx.clearRect(0, 0, vw, vh);
     var cx = vw * 0.5, cy = vh * 0.46;
     var diag = Math.sqrt(vw * vw + vh * vh) * 0.62;
     for (var i = 0; i < motas.length; i++){
       var m = motas[i];
-      var z = (m.base - p * CICLOS - t * DERIVA) % 1; if (z < 0) z += 1;
+      var z = (m.base - t * CICLO) % 1; if (z < 0) z += 1;
       var cerca = 1 - z;
       var r = Math.pow(cerca, 1.9) * diag * m.rad;
-      var ang = m.ang + m.giro * cerca + t * 0.00004;
+      var ang = m.ang + m.giro * cerca;
       var x = cx + Math.cos(ang) * r;
       var y = cy + Math.sin(ang) * r * 0.86;
       if (x < -20 || x > vw + 20 || y < -20 || y > vh + 20) continue;
-      var op = Math.min(1, cerca * 4) * Math.min(1, z / 0.12) * 0.55;
+      var op = Math.min(1, cerca * 4) * Math.min(1, z / 0.12) * 0.5;
       if (op <= 0.02) continue;
       ctx.globalAlpha = op;
       ctx.fillStyle = 'rgb(244,241,250)';
       ctx.beginPath();
-      ctx.arc(x, y, Math.max(0.6, 2.6 * cerca), 0, 6.2832);
+      ctx.arc(x, y, Math.max(0.6, 2.4 * cerca), 0, 6.2832);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
   }
 
-  /* El rango util es la seccion menos lo que mide el escenario pegado. */
-  function colocaAnclas(){
-    var total = sec.getBoundingClientRect().height - window.innerHeight;
-    if (total <= 0) return;
-    [].forEach.call(sec.querySelectorAll('.ancla'), function(a){
-      var at = parseFloat(getComputedStyle(a).getPropertyValue('--at')) || 0;
-      a.style.top = Math.round(at * total) + 'px';
-    });
-  }
-
-  var ultimo = -1;
-  function estado(p){
-    var cercano = null, mejor = Infinity, idx = 0;
-    bloques.forEach(function(b, i){
-      var d = Math.abs(p - parseFloat(b.dataset.at));
-      if (d < mejor){ mejor = d; cercano = b; idx = i; }
-    });
-    bloques.forEach(function(b, i){
-      b.classList.toggle('activa', b === cercano);
-      puntos[i].classList.toggle('on', b === cercano);
-    });
-    if (idx !== ultimo){
-      ultimo = idx;
-      pintaParada(idx);
-    }
-    if (baja) baja.style.opacity = p > 0.03 ? 0 : 1;
-  }
-
-  var raf = null, enPantalla = true;
-
+  var raf = null;
   function cuadro(ts){
     raf = null;
-    var r = sec.getBoundingClientRect();
-    var sobre = r.bottom > 90;
-    document.documentElement.classList.toggle('sobre-noche', sobre);
-    cabecera.classList.toggle('posado', !sobre);
-
-    /* Al acabar el recorrido el escenario se suelta y sube, y su texto subia
-       con el hasta cruzarse con la cabecera. Se desvanece conforme sale,
-       atado a la geometria y no al progreso: el tramo final del progreso lo
-       salta el anclaje, asi que un umbral sobre p no se recorre nunca. */
-    var salido = Math.max(0, window.innerHeight - r.bottom);
-    sec.style.setProperty('--salida',
-      (1 - Math.min(1, salido / (window.innerHeight * 0.22))).toFixed(3));
-
-    var total = r.height - window.innerHeight;
-    var p = total > 0 ? Math.max(0, Math.min(1, -r.top / total)) : 0;
-    estado(p);
-    /* Durante el salto no se repinta el campo: son seis manchas
-       desenfocadas y un lienzo de polvo, y ese trabajo compite justo con
-       los cuadros donde la suavidad se nota. El hero se esta yendo, asi que
-       congelarlo no se ve. */
-    if (!saltando){
-      hondo(p, ts || 0);
-      polvo(p, ts || 0);
-    }
-    if (enPantalla && !document.hidden) raf = requestAnimationFrame(cuadro);
+    polvo(ts || 0);
+    if (enPantalla && !document.hidden && !quieto) raf = requestAnimationFrame(cuadro);
   }
-  function arranca(){ if (!raf) raf = requestAnimationFrame(cuadro); }
-
-  if ('IntersectionObserver' in window){
-    new IntersectionObserver(function(es){
-      enPantalla = es[0].isIntersecting;
-      if (enPantalla) arranca();
-    }, {threshold: 0}).observe(sec);
+  function arranca(){
+    if (quieto){ polvo(0); return; }      /* un cuadro y ya */
+    if (!raf) raf = requestAnimationFrame(cuadro);
   }
+
   document.addEventListener('visibilitychange', function(){ if (!document.hidden) arranca(); });
-  addEventListener('scroll', arranca, {passive:true});
 
   var tm;
-  addEventListener('resize', function(){
-    clearTimeout(tm);
-    tm = setTimeout(function(){ colocaAnclas(); midePolvo(); }, 120);
-  });
+  addEventListener('resize', function(){ clearTimeout(tm); tm = setTimeout(mide, 150); });
 
-  /* ---------------- salida del recorrido ----------------
-     Al llegar a la ultima parada, el siguiente gesto hacia abajo lleva
-     directo a la seccion siguiente en vez de recorrer el tramo muerto que
-     queda. Se probo una vez sin suavizar y se sentia como un tiron; con
-     desplazamiento suave el salto se lee como el final del recorrido.
-
-     El anclaje se apaga mientras dura el salto: con scroll-snap activo el
-     navegador tira de vuelta hacia el ancla de 0.90 y pelea con la
-     animacion. Aqui si funciona apagarlo porque lo hacemos ANTES de mover,
-     no reaccionando a un scroll que ya empezo. */
-  /* La primera seccion que haya despues del hero, no un id fijo: el orden
-     de las secciones ya cambio una vez y un id escrito a mano se queda
-     apuntando a la que era primera. */
-  var destino = sec.nextElementSibling;
-  while (destino && destino.tagName !== 'SECTION') destino = destino.nextElementSibling;
-  var saltando = false;
-
-  /* La animacion la lleva el JS y no scrollIntoView({behavior:'smooth'}).
-     El desplazamiento nativo usa una duracion corta y fija: para la
-     distancia que hay del final del hero a la seccion siguiente se sentia
-     como un tiron. Aqui la duracion crece con la distancia y la curva es
-     suave por los dos extremos, que es lo que hace que arranque y frene en
-     vez de saltar. */
-  function desplaza(hasta, ms, alAcabar){
-    var y0 = window.scrollY, dy = hasta - y0, t0 = null;
-    function paso(t){
-      if (t0 === null) t0 = t;
-      var k = Math.min(1, (t - t0) / ms);
-      /* suave al entrar y al salir */
-      var e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-      window.scrollTo(0, Math.round(y0 + dy * e));
-      if (k < 1) requestAnimationFrame(paso); else alAcabar();
-    }
-    requestAnimationFrame(paso);
-  }
-
-  function salta(dir){
-    if (saltando || dir <= 0 || !destino) return;
-    if (ultimo !== bloques.length - 1) return;      /* solo desde la ultima */
-    var r = sec.getBoundingClientRect();
-    var total = r.height - window.innerHeight;
-    var p = total > 0 ? Math.max(0, Math.min(1, -r.top / total)) : 0;
-    if (p < 0.88) return;
-    if (r.bottom <= window.innerHeight + 4) return;  /* ya esta saliendo solo */
-
-    var margen = parseFloat(getComputedStyle(destino).scrollMarginTop) || 0;
-    var hasta = window.scrollY + destino.getBoundingClientRect().top - margen;
-    var dist = Math.abs(hasta - window.scrollY);
-    if (dist < 8) return;
-
-    saltando = true;
-    var raiz = document.documentElement;
-    var snapAntes = raiz.style.scrollSnapType;
-    var compAntes = raiz.style.scrollBehavior;
-    /* el anclaje tira de vuelta hacia la ultima parada, y scroll-behavior
-       smooth del CSS animaria cada paso de la animacion por su cuenta */
-    raiz.style.scrollSnapType = 'none';
-    raiz.style.scrollBehavior = 'auto';
-
-    desplaza(hasta, Math.max(650, Math.min(1100, dist * 0.75)), function(){
-      raiz.style.scrollSnapType = snapAntes;
-      raiz.style.scrollBehavior = compAntes;
-      saltando = false;
-    });
-  }
-
-  addEventListener('wheel', function(e){ salta(e.deltaY); }, {passive:true});
-
-  /* en el telefono el gesto se mide a mano: un arrastre hacia arriba de mas
-     de 24 px cuenta como "siguiente" */
-  var tocoY = null;
-  addEventListener('touchstart', function(e){
-    tocoY = e.touches.length ? e.touches[0].clientY : null;
-  }, {passive:true});
-  addEventListener('touchmove', function(e){
-    if (tocoY === null || !e.touches.length) return;
-    var dy = tocoY - e.touches[0].clientY;
-    if (Math.abs(dy) > 24){ salta(dy); tocoY = null; }
-  }, {passive:true});
-  addEventListener('touchend', function(){ tocoY = null; }, {passive:true});
-
-  colocaAnclas();
-  midePolvo();
-  pintaParada(0);
+  mide();
   arranca();
 })();
 
