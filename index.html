@@ -306,6 +306,14 @@ header.posado{background:rgba(245,241,251,.86);backdrop-filter:blur(12px);
 .sobre-noche header nav a:hover{color:#fff;border-color:var(--luz)}
 .sobre-noche .btn-top{background:rgba(237,234,249,.95);color:#15223C}
 .sobre-noche .btn-top:hover{background:#fff}
+/* Al llegar a una seccion por enlace o por el salto del final del hero, la
+   cabecera fija se comia sus primeros 76 px y el texto quedaba pegado al
+   borde. scroll-margin-top en las secciones lo corrige, y de paso arregla
+   todos los enlaces del menu, que tenian el mismo problema.
+   Va en las secciones y NO como scroll-padding-top en el html a proposito:
+   ahi afectaria tambien al anclaje del hero y desplazaria las paradas. */
+section[id]{scroll-margin-top:88px}
+
 body{padding-top:76px}
 .viaje{margin-top:-76px}
 
