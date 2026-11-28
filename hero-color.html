@@ -326,7 +326,7 @@ body{padding-top:76px}
      con uno solo el movimiento se notaba apenas. */
   var cv = document.getElementById('hondo');
   var ctx = cv && cv.getContext ? cv.getContext('2d') : null;
-  var FOCO = 820, PROF = 4200, CERCA = 70, CICLOS = 3.2;
+  var FOCO = 820, PROF = 4200, CERCA = 70, CICLOS = 5.5, DERIVA = 0.00006;
   var vw = 0, vh = 0, anillos = [], tono = '130,90,120';
   var quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -373,7 +373,7 @@ body{padding-top:76px}
 
     for (var i = 0; i < anillos.length; i++){
       var a = anillos[i];
-      var u = (a.u - p * CICLOS) % 1; if (u < 0) u += 1;
+      var u = (a.u - p * CICLOS - t * DERIVA) % 1; if (u < 0) u += 1;
       var k = FOCO / (u * PROF + CERCA);
       var rx = a.r * k, ry = a.r * a.ex * k;
       if (rx < 1.5 || rx > tope) continue;
