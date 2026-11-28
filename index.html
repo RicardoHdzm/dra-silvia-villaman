@@ -124,12 +124,7 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
    lavanda, azul, verde azulado, musgo) y reserva un solo calido para la
    ultima parada, la del boton de agendar.
    El hero de la piel vive en el historial de git si hace falta volver. */
-/* Fondo blanco propio: la seccion mide 380vh y el escenario pegajoso solo
-   100dvh, asi que por debajo de el asomaba el lavanda del body. Con alturas
-   fraccionarias eso dejaba una hebra de color justo en el borde, que es lo
-   que se seguia viendo como corte. Blanco porque es donde termina el hero y
-   donde empieza la seccion siguiente. */
-.viaje{position:relative;height:380vh;background:#fff;--blur:64px;
+.viaje{position:relative;height:380vh;--blur:64px;
   --tinta-clara:#F4F1FA; --tinta-media:#CDC6E0; --sobre-claro:#241B47;
   --velo:20,16,40; --acento:#C3B0FF}
 /* dvh y no svh. En el telefono la barra del navegador se encoge en cuanto
@@ -148,9 +143,7 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
    capa ya no llega al borde, no hay canto que recortar. */
 .lienzo{position:absolute;inset:0;z-index:-3;overflow:hidden;
   background:var(--fondo,#241B47);isolation:isolate;
-  transition:background-color 1.5s ease;
-  -webkit-mask-image:linear-gradient(to bottom,#000 92%,transparent 99%);
-  mask-image:linear-gradient(to bottom,#000 92%,transparent 99%)}
+  transition:background-color 1.5s ease}
 
 /* screen y no multiply: sobre fondo oscuro, multiply solo ensucia. screen
    suma luz, asi que donde se cruzan dos manchas sale un color mas luminoso
@@ -160,7 +153,13 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
   background:var(--col,#6B4FD6);opacity:var(--o,0);
   transform:translate(-50%,-50%) translate(var(--dx,0px),var(--dy,0px))
     rotate(var(--rot,0deg)) scale(var(--s,.2));
-  transition:background-color 1.5s ease;will-change:transform,opacity;
+  transition:background-color 1.5s ease;
+  /* Sin will-change. Promovia cada mancha a su propia capa de composicion y
+     el desenfoque se rasterizaba dentro de una caja de tamano fijo: el canto
+     de esa caja se veia como un rectangulo mas oscuro en medio del hero, y
+     solo en pantallas anchas, que es cuando la mancha escalada se sale de su
+     caja. Comprobado por descarte: con filter:none el rectangulo desaparece,
+     y con will-change:auto tambien. */
   animation:respira var(--dur,8s) ease-in-out infinite alternate}
 @keyframes respira{
   from{border-radius:44% 56% 62% 38% / 48% 40% 60% 52%}
@@ -179,10 +178,10 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
 /* El velo tine con el tono profundo de la parada, no con blanco: oscurece
    para asentar el texto claro en vez de lavar el color. Sin radial, porque
    un halo eliptico se ve como un ovalo pegado encima de las manchas.
-   La ultima franja es la salida: el propio hero se disuelve en el fondo
-   claro del sitio. Antes esto lo hacia una franja despues del hero, y era
-   peor: el borde del escenario llevaba manchas y polvo encima y la franja
-   era color plano, asi que en vez de quitar el corte se veian dos. */
+   El hero termina en color, sin desvanecer a blanco: se probo con degradado
+   de salida y el cliente prefirio el corte limpio. Si alguna vez se vuelve
+   a poner, hay que bajar con el las mascaras del grano y de .lienzo, y
+   oscurecer .saltar y .baja, que sobre blanco quedan invisibles. */
 .velo{position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
     linear-gradient(to bottom,
@@ -190,10 +189,7 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
       rgba(var(--velo),0) 21%,
       rgba(var(--velo),.40) 35%, rgba(var(--velo),.66) 52%,
       rgba(var(--velo),.58) 70%, rgba(var(--velo),.16) 83%,
-      rgba(var(--velo),0) 90%),
-    linear-gradient(to bottom,
-      rgba(255,255,255,0) 93%, rgba(255,255,255,.45) 97%,
-      #fff 99%, #fff 100%)}
+      rgba(var(--velo),0) 90%)}
 
 /* Grano. Textura de pelicula, pero sobre todo rompe el escalonado en franjas
    que hace un degradado oscuro y amplio en pantallas de 8 bits. */
@@ -202,8 +198,6 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
    ruido que el fondo del sitio no tenia: justo ahi se veia la linea. */
 .grano{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.07;
   mix-blend-mode:overlay;
-  -webkit-mask-image:linear-gradient(to bottom,#000 89%,transparent 97%);
-  mask-image:linear-gradient(to bottom,#000 89%,transparent 97%);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
 /* Capa de contenido: se desvanece cuando el escenario sale, para que su
@@ -275,16 +269,14 @@ html{scroll-snap-type:y proximity}
 
 /* Salida siempre a la vista: quien llega con una urgencia no deberia tener
    que atravesar el recorrido entero para encontrar como pedir cita. */
-/* Tinta oscura, no clara: estos dos viven a 26 px del borde de abajo, que
-   ahora es la franja blanca de salida. En claro quedaban invisibles. */
 .saltar{position:absolute;right:28px;bottom:26px;z-index:3;font-size:12.5px;
-  font-weight:700;letter-spacing:.03em;color:#4A4458;
-  border-bottom:1px solid rgba(74,68,88,.34);padding-bottom:3px;transition:.2s}
-.saltar:hover{color:#2F2A3A;border-color:#2F2A3A}
+  font-weight:700;letter-spacing:.03em;color:var(--tinta-clara);
+  border-bottom:1px solid rgba(255,255,255,.34);padding-bottom:3px;transition:.2s}
+.saltar:hover{border-color:#fff}
 
 .baja{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-  color:#6A6480;transition:opacity .4s ease}
+  color:var(--tinta-media);transition:opacity .4s ease}
 
 /* la cabecera flota sobre el hero mientras el hero esta en pantalla */
 header{position:fixed;top:0;left:0;right:0;z-index:40;padding:18px 0;
@@ -312,16 +304,7 @@ body{padding-top:76px}
 /* Visible siempre, no solo como respaldo. Quien navega con teclado o lector
    de pantalla nunca llega a ver las paradas del recorrido, asi que el menu
    completo de sintomas tiene que existir tambien fuera de el. */
-/* El sitio arranca en blanco y se disuelve. El hero termina en blanco, asi
-   que entre los dos no hay escalon.
-   Acaba en TRANSPARENTE y no en el lavanda del fondo: detras de toda la
-   pagina vive .atmos con sus manchas difuminadas, y un fondo opaco las
-   tapaba dentro de esta seccion. Al reaparecer en la seccion siguiente se
-   veia un corte, que es justo lo que parecia un cambio de fondo. */
-.entradas{display:block;padding:70px 0 10px;
-  background:linear-gradient(to bottom,#fff 0,
-    rgba(255,255,255,.55) clamp(120px,18vh,220px),
-    rgba(255,255,255,0) clamp(260px,38vh,460px))}
+.entradas{display:block;padding:70px 0 10px}
 .sin-viaje .viaje{display:none}
 
 .entradas .eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:12.5px;
