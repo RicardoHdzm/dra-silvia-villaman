@@ -12,12 +12,15 @@
 <style>
 /* ============================================================
    OPCION B del hero. El recorrido, el relevo de textos, el
-   anclaje y el desvanecido de salida son los mismos que ya
-   funcionan en index.html: aqui solo cambia lo que se ve.
-   En vez de una malla de tejido, color puro en movimiento, y
-   cada parada es un cambio de paleta.
-   Las tres paletas conviven para poder elegir; cuando se
-   decida una, se borran las otras dos y el selector.
+   anclaje y el desvanecido de salida son los mismos que en
+   index.html: aqui solo cambia lo que se ve.
+
+   El fondo son manchas de color que vienen desde el fondo,
+   crecen, se abren hacia los lados y se van. Cada parada cambia
+   el tono por completo, no de matiz: morado, verde, amarillo.
+   Se mezclan en multiply, que es lo que da el tornasol: donde
+   se cruzan dos manchas aparece un tercer color que no esta
+   pintado en ningun sitio.
    ============================================================ */
 
 *{box-sizing:border-box}
@@ -27,35 +30,17 @@ body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-ser
 a{color:inherit;text-decoration:none}
 .wrap{width:min(1180px,calc(100% - 48px));margin:0 auto}
 
-/* ---------- paletas ----------
-   Ocho tonos de claro a profundo. Cada parada toma una ventana
-   de cuatro y la corre un paso, asi el hero se va hundiendo en
-   su propio color conforme bajas sin salirse nunca de familia. */
 :root{
-  --tinta:#4A2C43; --tinta-2:#7E6476;
-  --blur:60px;
-}
-body[data-paleta="malva"]{
-  --p0:#FBEFF2; --p1:#F5DCE4; --p2:#E9C2D1; --p3:#D9A3BC;
-  --p4:#C182A4; --p5:#A4648B; --p6:#82496E; --p7:#5E3351;
-  --tinta:#4A2C43; --tinta-2:#6A4A60;
-}
-body[data-paleta="champan"]{
-  --p0:#FCF4EC; --p1:#F5E3D1; --p2:#EBCCB0; --p3:#DCAE91;
-  --p4:#C98D78; --p5:#AE6C63; --p6:#8A5150; --p7:#653B40;
-  --tinta:#5A3A38; --tinta-2:#7A5550;
-}
-body[data-paleta="nacar"]{
-  --p0:#F7F3FB; --p1:#EAE1F4; --p2:#D8C9EC; --p3:#C0AADF;
-  --p4:#A288CC; --p5:#8468B0; --p6:#64498C; --p7:#473268;
-  --tinta:#3C2C63; --tinta-2:#5B4C85;
+  --tinta:#2F2A3A; --tinta-2:#5A5168; --papel:#FBF9FC;
+  --blur:64px;
+  --acento:#5B3FB5;   /* lo cambia cada parada */
 }
 
 /* ---------- cabecera ---------- */
 header{position:fixed;top:0;left:0;right:0;z-index:40;padding:18px 0;
   transition:background-color .3s ease, box-shadow .3s ease}
 header.posado{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
-  box-shadow:0 1px 0 rgba(74,44,67,.08)}
+  box-shadow:0 1px 0 rgba(47,42,58,.08)}
 .bar{display:flex;align-items:center;gap:28px}
 .logo-texto{display:block;line-height:1.1;font-weight:800;font-size:17px;
   letter-spacing:-.025em;color:var(--tinta)}
@@ -68,46 +53,34 @@ header.posado{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
 .viaje{position:relative;height:380vh}
 .stage{position:sticky;top:0;height:100svh;height:100dvh;overflow:hidden;isolation:isolate}
 
-/* el lienzo: cuatro orbes de color, muy desenfocados, a la deriva.
-   No dibujan nada reconocible a proposito; son campo, no figura. */
-/* El fondo se queda en el tono mas claro de la paleta y no se mueve. Si
-   tambien corria la ventana, al llegar a las paradas profundas el texto
-   quedaba en 1.76 de contraste sobre su propio fondo. El cambio de parada
-   se lee en los orbes, que viven arriba. */
-.lienzo{position:absolute;inset:0;z-index:-3;overflow:hidden;background:var(--p0)}
-/* Geometria de profundidad: anillos concentricos que vienen del punto de
-   fuga y pasan de largo. Es lo que convierte el degradado en un recorrido:
-   el color dice en que parada estas, los anillos dicen que te estas
-   adentrando. Van en lienzo y no en CSS porque son dos docenas de formas
-   recalculadas cada cuadro. */
-#hondo{position:absolute;inset:0;z-index:-2;width:100%;height:100%;display:block}
-.orbe{position:absolute;border-radius:50%;filter:blur(var(--blur));
-  opacity:.82;transition:background-color 1.1s ease;will-change:transform}
-.o1{width:64vmax;height:64vmax;left:-20vmax;top:-24vmax;background:var(--c1);
-  animation:deriva1 26s ease-in-out infinite alternate}
-.o2{width:52vmax;height:52vmax;right:-16vmax;top:-12vmax;background:var(--c2);
-  animation:deriva2 31s ease-in-out infinite alternate}
-.o3{width:58vmax;height:58vmax;left:4vmax;bottom:-28vmax;background:var(--c3);
-  animation:deriva3 29s ease-in-out infinite alternate}
-.o4{width:42vmax;height:42vmax;right:-8vmax;bottom:-16vmax;background:var(--c4);
-  animation:deriva4 35s ease-in-out infinite alternate}
-@keyframes deriva1{from{transform:translate3d(0,0,0) scale(1)}
-                   to{transform:translate3d(13vmax,9vmax,0) scale(1.16)}}
-@keyframes deriva2{from{transform:translate3d(0,0,0) scale(1.1)}
-                   to{transform:translate3d(-11vmax,12vmax,0) scale(.92)}}
-@keyframes deriva3{from{transform:translate3d(0,0,0) scale(.95)}
-                   to{transform:translate3d(10vmax,-13vmax,0) scale(1.18)}}
-@keyframes deriva4{from{transform:translate3d(0,0,0) scale(1.05)}
-                   to{transform:translate3d(-14vmax,-8vmax,0) scale(.9)}}
+/* El lienzo aisla la mezcla: sin isolation, el multiply de las manchas se
+   comeria tambien lo que hay detras del hero. */
+.lienzo{position:absolute;inset:0;z-index:-2;overflow:hidden;
+  background:var(--papel);isolation:isolate}
 
-/* velo: aclara la mitad de abajo para que el texto siempre tenga cama
-   clara, y deja respirar el color arriba. Mismo reparto que el hero
-   actual: grafico arriba, texto abajo. */
+/* Una mancha. La forma la da el border-radius, que respira en bucle: es lo
+   que la hace organica en vez de un circulo. La profundidad la pone el JS
+   en --s (tamano), --dx/--dy (cuanto se ha abierto) y --o (opacidad). El
+   color lo pone la parada, con transicion larga para que el cambio de tono
+   se lea como un viraje y no como un corte. */
+.mancha{position:absolute;left:50%;top:50%;width:34vmax;height:34vmax;
+  mix-blend-mode:multiply;filter:blur(var(--blur));
+  background:var(--col,#9B7BE8);opacity:var(--o,0);
+  transform:translate(-50%,-50%) translate(var(--dx,0px),var(--dy,0px)) scale(var(--s,.2));
+  transition:background-color 1.5s ease;
+  will-change:transform,opacity;
+  animation:respira var(--dur,22s) ease-in-out infinite alternate}
+@keyframes respira{
+  from{border-radius:44% 56% 62% 38% / 48% 40% 60% 52%}
+  to  {border-radius:60% 40% 34% 66% / 64% 58% 42% 36%}
+}
+.m1{--dur:19s} .m2{--dur:23s;animation-delay:-4s} .m3{--dur:27s;animation-delay:-9s}
+.m4{--dur:21s;animation-delay:-13s} .m5{--dur:25s;animation-delay:-6s} .m6{--dur:29s;animation-delay:-17s}
+
+/* Velo: cama clara solo detras del texto. No lava media pantalla, porque
+   entonces el campo de color se quedaba sin la mitad de abajo. */
 .velo{position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
-    /* Cama solo detras del texto, no media pantalla. Antes el degradado
-       blanqueaba de la mitad para abajo y el tunel se quedaba sin la otra
-       mitad: por eso no se sentia que atravesaras nada. */
     radial-gradient(64% 24% at 50% 64%, rgba(255,255,255,.90) 0%,
       rgba(255,255,255,.58) 54%, rgba(255,255,255,0) 100%),
     linear-gradient(to bottom, rgba(255,255,255,.52) 0%, rgba(255,255,255,0) 13%,
@@ -128,46 +101,43 @@ header.posado{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
 .titular h1{margin:0 auto;max-width:13ch;font-size:clamp(46px,7.6vw,104px);line-height:.96;
   letter-spacing:-.042em;font-weight:800;color:var(--tinta)}
 .titular h1 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
-  font-weight:400;color:var(--p6);font-size:1.04em}
+  font-weight:400;color:var(--acento);font-size:1.04em;transition:color 1.5s ease}
 .titular p{margin:22px auto 0;max-width:42ch;font-size:19px;line-height:1.55;color:var(--tinta-2)}
 .credencial{margin:30px auto 0;padding-top:18px;max-width:620px;
-  border-top:1px solid rgba(74,44,67,.16);display:flex;flex-wrap:wrap;
+  border-top:1px solid rgba(47,42,58,.16);display:flex;flex-wrap:wrap;
   justify-content:center;gap:8px 18px;font-size:13.5px;color:var(--tinta-2)}
 .credencial b{color:var(--tinta);font-weight:700}
 
-/* La etiqueta ya no es una profundidad de piel: en esta version no hay
-   piel que medir. Nombra el motivo, que es lo que le da sentido al color. */
 .parada .capa{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--p6);margin-bottom:14px}
+  letter-spacing:.18em;text-transform:uppercase;color:var(--acento);margin-bottom:14px;
+  transition:color 1.5s ease}
 .parada .capa::before{content:"";width:26px;height:1px;background:currentColor;opacity:.7}
 .parada h2{margin:0;font-size:clamp(32px,4.9vw,62px);line-height:1.02;
   letter-spacing:-.035em;font-weight:800;color:var(--tinta)}
 .parada h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
-  font-weight:400;color:var(--p6);font-size:1.05em}
+  font-weight:400;color:var(--acento);font-size:1.05em;transition:color 1.5s ease}
 .parada p{margin:18px auto 0;max-width:44ch;font-size:19px;line-height:1.5;color:var(--tinta-2)}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
   font:inherit;font-weight:700;font-size:15px;letter-spacing:-.01em;
   min-width:min(224px,100%);padding:13px 22px;border-radius:999px;border:1.5px solid transparent;
   cursor:pointer;margin-top:24px;background:var(--tinta);color:#fff;
-  box-shadow:0 6px 20px rgba(74,44,67,.18);transition:transform .18s ease, box-shadow .18s ease}
-.btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(74,44,67,.24)}
+  box-shadow:0 6px 20px rgba(47,42,58,.20);transition:transform .18s ease, box-shadow .18s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(47,42,58,.26)}
 
 /* instrumentacion */
 .riel{position:absolute;right:30px;top:50%;transform:translateY(-50%);z-index:2;
   display:flex;flex-direction:column;gap:14px;align-items:center}
-.riel span{width:7px;height:7px;border-radius:50%;background:rgba(74,44,67,.22);
-  transition:background .25s ease, transform .25s ease, box-shadow .25s ease}
-.riel span.on{background:var(--p5);transform:scale(1.55);
-  box-shadow:0 0 0 4px rgba(164,100,139,.18)}
+.riel span{width:7px;height:7px;border-radius:50%;background:rgba(47,42,58,.22);
+  transition:background .35s ease, transform .25s ease}
+.riel span.on{background:var(--acento);transform:scale(1.55)}
 .cuenta{position:absolute;left:28px;bottom:26px;z-index:2;font-size:11px;font-weight:700;
   letter-spacing:.16em;text-transform:uppercase;color:var(--tinta-2);
   font-variant-numeric:tabular-nums}
 .saltar{position:absolute;right:28px;bottom:26px;z-index:3;font-size:12.5px;font-weight:700;
-  color:var(--tinta);border-bottom:1px solid rgba(74,44,67,.3);padding-bottom:3px;transition:.2s}
+  color:var(--tinta);border-bottom:1px solid rgba(47,42,58,.3);padding-bottom:3px;transition:.2s}
 .saltar:hover{border-color:var(--tinta)}
 
-/* anclaje: igual que en el sitio, blando y con parada obligatoria */
 html{scroll-snap-type:y proximity;scroll-behavior:smooth}
 .ancla{position:absolute;left:0;width:1px;height:1px;pointer-events:none;
   scroll-snap-align:start;scroll-snap-stop:always}
@@ -182,35 +152,21 @@ body{padding-top:76px}
 .cierre p{margin:0 auto;max-width:52ch;font-size:16.5px;line-height:1.6;color:var(--tinta-2)}
 .cierre .btn{margin-top:26px}
 
-/* ---------- selector de paleta (solo prototipo) ---------- */
-.paletas{position:fixed;left:18px;bottom:18px;z-index:60;display:flex;align-items:center;gap:8px;
-  padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.88);
-  backdrop-filter:blur(10px);box-shadow:0 6px 24px rgba(74,44,67,.16)}
-.paletas b{font-size:10px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--tinta-2);font-weight:700;margin-right:2px}
-.paletas button{width:26px;height:26px;border-radius:50%;border:2px solid transparent;
-  cursor:pointer;padding:0;transition:transform .16s ease, border-color .16s ease}
-.paletas button:hover{transform:scale(1.12)}
-.paletas button[aria-pressed="true"]{border-color:var(--tinta)}
-.sw-malva{background:linear-gradient(135deg,#F5DCE4,#A4648B)}
-.sw-champan{background:linear-gradient(135deg,#F5E3D1,#AE6C63)}
-.sw-nacar{background:linear-gradient(135deg,#EAE1F4,#8468B0)}
-
 @media (max-width:900px){
-  :root{--blur:44px}
+  :root{--blur:48px}
   .viaje{height:320vh}
+  .mancha{width:46vmax;height:46vmax}
   .parada p{font-size:17px}
   .riel{right:14px;gap:11px}
   .cuenta{left:18px;bottom:16px}
-  .paletas{left:12px;bottom:12px;padding:8px 10px}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .orbe{animation:none}
+  .mancha{animation:none}
 }
 </style>
 </head>
-<body data-paleta="malva">
+<body>
 
 <header>
   <div class="wrap bar">
@@ -224,12 +180,13 @@ body{padding-top:76px}
 <main class="viaje" id="inicio">
   <div class="stage">
     <div class="lienzo" aria-hidden="true">
-      <div class="orbe o1"></div>
-      <div class="orbe o2"></div>
-      <div class="orbe o3"></div>
-      <div class="orbe o4"></div>
+      <div class="mancha m1"></div>
+      <div class="mancha m2"></div>
+      <div class="mancha m3"></div>
+      <div class="mancha m4"></div>
+      <div class="mancha m5"></div>
+      <div class="mancha m6"></div>
     </div>
-    <canvas id="hondo" aria-hidden="true"></canvas>
     <div class="velo" aria-hidden="true"></div>
 
     <div class="capas">
@@ -273,7 +230,7 @@ body{padding-top:76px}
         <a class="btn" href="#cierre">Pedir cita por esto</a>
       </div>
 
-      <div class="parada cierre-parada" data-at="0.90">
+      <div class="parada" data-at="0.90">
         <div class="capa">Tu consulta</div>
         <h2>Todo esto lo <em>veo contigo</em>.</h2>
         <p>Soy dermatóloga pediátrica certificada y atiendo en Culiacán. Elige el día que te acomode y te digo si hay espacio.</p>
@@ -302,141 +259,72 @@ body{padding-top:76px}
   </div>
 </section>
 
-<div class="paletas" role="group" aria-label="Paleta de prueba">
-  <b>Paleta</b>
-  <button type="button" class="sw-malva" data-p="malva" aria-pressed="true" aria-label="Malva"></button>
-  <button type="button" class="sw-champan" data-p="champan" aria-pressed="false" aria-label="Champán"></button>
-  <button type="button" class="sw-nacar" data-p="nacar" aria-pressed="false" aria-label="Nácar"></button>
-</div>
-
 <script>
 (function(){
   var sec = document.querySelector('.viaje');
-  var stage = document.querySelector('.stage');
-  var lienzo = document.querySelector('.lienzo');
   var bloques = [].slice.call(document.querySelectorAll('.titular,.parada'));
-  var paradas = [].slice.call(document.querySelectorAll('.parada'));
+  var manchas = [].slice.call(document.querySelectorAll('.mancha'));
   var riel = document.getElementById('riel');
   var cuenta = document.getElementById('cuenta');
   var cabecera = document.querySelector('header');
   if (!sec) return;
 
-  /* ---------------- profundidad ----------------
-     Misma proyeccion que usa el hero de la opcion A: escala = F / z. Cada
-     anillo tiene su sitio en el tunel (u de 0 a 1); al avanzar el recorrido
-     todos se acercan, crecen y se van por los bordes, y los de atras ocupan
-     su lugar. CICLOS es cuantas veces se repite el tunel en todo el hero:
-     con uno solo el movimiento se notaba apenas. */
-  var cv = document.getElementById('hondo');
-  var ctx = cv && cv.getContext ? cv.getContext('2d') : null;
-  var FOCO = 820, PROF = 4200, CERCA = 70, CICLOS = 5.5, DERIVA = 0.00006;
-  var RBASE = 330, COSTILLAS = 14;
-  var vw = 0, vh = 0, anillos = [], tono = '130,90,120';
-  var quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* ---------------- color ----------------
+     Una parada, un tono distinto de verdad. Las tres paletas de antes eran
+     variaciones del mismo color y el cambio apenas se notaba; aqui el
+     recorrido atraviesa el espectro: violeta, morado, verde azulado, verde,
+     amarillo y coral.
+     Dentro de cada parada los seis tonos NO son el mismo color aclarado:
+     son vecinos distintos. Eso, mezclado en multiply, es lo que da el
+     tornasol, porque donde se cruzan dos manchas sale un tercer color que
+     no esta pintado en ningun sitio. */
+  var TONOS = [
+    { ac:'#5B3FB5', c:['#9B7BE8','#B98FF0','#7E6BE0','#C9A4F2','#8AA6F0','#A87FE0'] },
+    { ac:'#8A2E9E', c:['#A86BD8','#D472B5','#8C5FD6','#E39FD4','#B07FE8','#C76FC0'] },
+    { ac:'#0F6F6A', c:['#3FBFB0','#45A8CC','#7AD8C0','#3C92C4','#9FE2D2','#5FC8B8'] },
+    { ac:'#246B3F', c:['#6CC56A','#A5D45C','#40B07C','#C6E07C','#8FD99F','#58BE8A'] },
+    { ac:'#8A5A08', c:['#F2B33D','#F5D24E','#E8923C','#F7E08A','#EDC25A','#E0A14A'] },
+    { ac:'#A83A48', c:['#F2887A','#EF6F8E','#F7B08A','#E06A86','#F9C3A8','#EC8396'] }
+  ];
 
-  /* Todos los anillos comparten radio: es lo que los convierte en un
-     cilindro y permite unirlos con lineas longitudinales. Con radios
-     distintos cada uno iba por su lado y se leian como circulos sueltos,
-     no como un tunel. La variacion queda en un vaiven minimo. */
-  function siembra(){
-    anillos = [];
-    var n = vw < 760 ? 20 : 28;
-    for (var i = 0; i < n; i++){
-      anillos.push({ u: i / n, w: 0.94 + ((i * 53) % 7) * 0.02 });
-    }
-  }
-
-  /* el color sale de la paleta viva, no esta escrito aqui */
-  function leeTono(){
-    var hex = getComputedStyle(document.body).getPropertyValue('--p6').trim();
-    var m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex);
-    if (m) tono = parseInt(m[1],16) + ',' + parseInt(m[2],16) + ',' + parseInt(m[3],16);
-  }
-
-  function mide(){
-    if (!ctx) return;
-    var dpr = Math.min(2, window.devicePixelRatio || 1);
-    vw = cv.clientWidth; vh = cv.clientHeight;
-    cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    siembra();
-  }
-
-  function hondo(p, t){
-    if (!ctx) return;
-    ctx.clearRect(0, 0, vw, vh);
-    /* El punto de fuga va al centro de la pantalla, no al tercio alto. Donde
-       esta el punto de fuga es hacia donde sientes que avanzas; puesto
-       arriba, el tunel ocupaba media pantalla y parecia un adorno. El texto
-       se queda en el 63% y los anillos le pasan alrededor. */
-    var cx = vw * 0.5 + Math.sin(t * 0.00022) * 8;
-    var cy = vh * 0.50 + Math.cos(t * 0.00018) * 6;
-    var tope = Math.max(vw, vh) * 2.4;
-    var vuelta = t * 0.000035;
-
-    /* donde cae cada anillo este cuadro, de lejos a cerca */
-    var vis = [];
-    for (var i = 0; i < anillos.length; i++){
-      var a = anillos[i];
-      var u = (a.u - p * CICLOS - t * DERIVA) % 1; if (u < 0) u += 1;
-      var k = FOCO / (u * PROF + CERCA);
-      var rx = RBASE * a.w * k;
-      if (rx < 1 || rx > tope) continue;
-      var op = Math.min(1, (1 - u) * 9) * Math.min(1, u / 0.10);
-      if (op <= 0.01) continue;
-      /* el giro crece con la distancia: el tunel se retuerce un poco y eso
-         es lo que delata el avance cuando los anillos aun son pequenos */
-      vis.push({ u: u, rx: rx, ry: rx * 0.84, op: op, k: k, rot: vuelta + u * 0.9 });
-    }
-    if (!vis.length) return;
-    vis.sort(function(A, B){ return B.u - A.u; });
-
-    /* Costillas: unen los anillos de atras a adelante. Son lo que convierte
-       una pila de circulos en un tunel; sin ellas no hay nada que siga el
-       ojo hacia el fondo. */
-    ctx.lineWidth = 1;
-    for (var j = 0; j < COSTILLAS; j++){
-      var ang = (j / COSTILLAS) * 6.2832;
-      ctx.beginPath();
-      for (var m = 0; m < vis.length; m++){
-        var v = vis[m];
-        var x = cx + Math.cos(ang + v.rot) * v.rx;
-        var y = cy + Math.sin(ang + v.rot) * v.ry;
-        if (m === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      ctx.strokeStyle = 'rgba(' + tono + ',.13)';
-      ctx.stroke();
-    }
-
-    /* y los anillos encima */
-    for (var n2 = 0; n2 < vis.length; n2++){
-      var w = vis[n2];
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(w.rot);
-      ctx.strokeStyle = 'rgba(' + tono + ',' + (w.op * 0.38).toFixed(3) + ')';
-      ctx.lineWidth = Math.max(0.7, Math.min(3, 1.3 * w.k));
-      ctx.beginPath();
-      ctx.ellipse(0, 0, w.rx, w.ry, 0, 0, 6.2832);
-      ctx.stroke();
-      ctx.restore();
-    }
-  }
-
-  /* un punto por bloque */
   var puntos = bloques.map(function(){
     var s = document.createElement('span'); riel.appendChild(s); return s;
   });
 
-  /* Cada parada corre la ventana de color un paso: la 0 usa p0..p3 y la
-     ultima p5..p7 mas el fondo. Asi el cambio de parada se lee como un
-     cambio de color sin salirse de la familia. */
   function pintaParada(i){
-    var base = Math.min(i, 3);
-    lienzo.style.setProperty('--c1', 'var(--p' + (base + 2) + ')');
-    lienzo.style.setProperty('--c2', 'var(--p' + (base + 3) + ')');
-    lienzo.style.setProperty('--c3', 'var(--p' + (base + 4) + ')');
-    lienzo.style.setProperty('--c4', 'var(--p' + (base + 3) + ')');
+    var t = TONOS[Math.min(i, TONOS.length - 1)];
+    document.documentElement.style.setProperty('--acento', t.ac);
+    for (var j = 0; j < manchas.length; j++){
+      manchas[j].style.setProperty('--col', t.c[j % t.c.length]);
+    }
+  }
+
+  /* ---------------- profundidad ----------------
+     Cada mancha tiene su sitio en la fila (z de 0 a 1: 1 es el fondo). Al
+     avanzar el recorrido todas se acercan: crecen, se abren hacia los lados
+     y se apagan al pasarte. Las de atras ocupan su lugar. Es el mismo
+     efecto de adentrarse que daban los anillos, pero con manchas. */
+  var CICLOS = 2.6, DERIVA = 0.000045;
+  var sitios = manchas.map(function(_, i){
+    return { base: i / manchas.length, ang: i * 2.399 };   /* angulo de oro */
+  });
+
+  function hondo(p, t){
+    var vmin = Math.min(window.innerWidth, window.innerHeight);
+    for (var i = 0; i < manchas.length; i++){
+      var s = sitios[i];
+      var z = (s.base - p * CICLOS - t * DERIVA) % 1; if (z < 0) z += 1;
+      var cerca = 1 - z;
+      var esc = 0.16 + cerca * cerca * 2.8;
+      var op = Math.min(1, cerca * 5) * Math.min(1, z / 0.22) * 0.9;
+      var r = Math.pow(cerca, 1.6) * 0.42 * vmin;
+      var ang = s.ang + t * 0.00002;
+      var e = manchas[i].style;
+      e.setProperty('--s', esc.toFixed(3));
+      e.setProperty('--o', op.toFixed(3));
+      e.setProperty('--dx', Math.round(Math.cos(ang) * r) + 'px');
+      e.setProperty('--dy', Math.round(Math.sin(ang) * r) + 'px');
+    }
   }
 
   function colocaAnclas(){
@@ -462,18 +350,18 @@ body{padding-top:76px}
     if (idx !== ultimo){
       ultimo = idx;
       pintaParada(idx);
-      cuenta.textContent = String(idx + 1).padStart(2, '0') + ' / 0' + bloques.length;
+      cuenta.textContent = ('0' + (idx + 1)).slice(-2) + ' / 0' + bloques.length;
     }
   }
 
   var raf = null, enPantalla = true;
+  var quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   function cuadro(ts){
     raf = null;
     var r = sec.getBoundingClientRect();
     cabecera.classList.toggle('posado', r.bottom <= 90);
 
-    /* mismo desvanecido de salida que index.html: atado a cuanto ha
-       subido el escenario, no al progreso */
     var salido = Math.max(0, window.innerHeight - r.bottom);
     sec.style.setProperty('--salida',
       (1 - Math.min(1, salido / (window.innerHeight * 0.22))).toFixed(3));
@@ -496,27 +384,11 @@ body{padding-top:76px}
   addEventListener('scroll', arranca, {passive:true});
 
   var tm;
-  addEventListener('resize', function(){
-    clearTimeout(tm);
-    tm = setTimeout(function(){ colocaAnclas(); mide(); }, 120);
-  });
+  addEventListener('resize', function(){ clearTimeout(tm); tm = setTimeout(colocaAnclas, 120); });
 
   colocaAnclas();
-  mide();
-  leeTono();
   pintaParada(0);
   arranca();
-
-  /* selector de paleta: solo para elegir, no va en produccion */
-  [].forEach.call(document.querySelectorAll('.paletas button'), function(b){
-    b.addEventListener('click', function(){
-      document.body.dataset.paleta = b.dataset.p;
-      leeTono();
-      [].forEach.call(document.querySelectorAll('.paletas button'), function(o){
-        o.setAttribute('aria-pressed', o === b ? 'true' : 'false');
-      });
-    });
-  });
 })();
 </script>
 </body>

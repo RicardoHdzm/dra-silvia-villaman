@@ -424,54 +424,55 @@ consecuencias que no son opcionales:
 
 - La escala del glifo se ata al alto, no al ancho (ver la sección anterior).
 - Hay una sola `.bruma`, no una por ancho.
-
-## Opciones de hero
+## Opciones de hero
 
 El hero actual de `index.html` (recorrido por la piel, oscuro, con la malla
 de tejido) es la **opción A**. Al cliente no le terminó de convencer, así que
 se mantiene como una de dos.
 
-**Opción B — `hero-color.html`.** Mismo recorrido y mismas paradas, pero sin
-referencia figurativa a la piel. Dos capas:
+**Opción B — `hero-color.html`.** Mismo recorrido y mismas paradas, sin
+referencia figurativa a la piel. El fondo son seis manchas de color que
+vienen desde el fondo, crecen, se abren hacia los lados y se van; las de
+atrás ocupan su lugar. Eso es lo que da la sensación de adentrarse.
 
-- **Color**: cuatro orbes muy desenfocados a la deriva, en CSS. Cada parada
-  cambia la paleta.
-- **Profundidad**: anillos concéntricos en lienzo, con la misma proyección
-  que usa la opción A (`escala = F / z`). Vienen del punto de fuga, crecen y
-  se van por los bordes; al llegar al final del túnel vuelven a entrar por
-  detrás. `CICLOS` controla cuántas veces se recorre el túnel entero a lo
-  largo del hero: con uno solo el avance no se notaba.
+Comparte con la A, a propósito, para que la comparación sea justa: el
+anclaje por paradas, el relevo de textos, la composición (texto centrado
+abajo) y el desvanecido de salida.
 
-El color dice en qué parada estás; los anillos, que te estás adentrando.
+### El color es el contenido de esta opción
 
-Lo que comparte con la A, a propósito, para que la comparación sea justa:
-el anclaje por paradas, el relevo de textos, la composición (gráfico arriba,
-texto centrado abajo) y el desvanecido de salida.
+Cada parada cambia de tono **por completo**, no de matiz: violeta, morado,
+verde azulado, verde, amarillo y coral. Un primer intento usaba tres
+familias (malva, champán, nácar) y dentro de cada una las paradas solo se
+aclaraban u oscurecían: el cambio no se notaba y la idea no se sostenía.
 
-Lo que cambia además del fondo:
+Dentro de cada parada los seis tonos **no** son el mismo color aclarado: son
+vecinos distintos. Mezclados en `mix-blend-mode: multiply`, donde se cruzan
+dos manchas aparece un tercer color que no está pintado en ningún sitio. Eso
+es el tornasol, y es la razón de que las manchas se solapen.
 
-- La etiqueta de cada parada ya no es una profundidad (`Epidermis · 0.10 mm`)
-  sino el motivo (`Manchas y lunares`). Sin piel que medir, los milímetros no
-  significaban nada.
-- Registro claro en vez de oscuro.
+`.lienzo` lleva `isolation: isolate` por eso mismo: sin él, el multiply se
+comería también lo que hay detrás del hero.
 
-### Tres paletas, un selector temporal
+### Por qué manchas y no anillos
 
-Abajo a la izquierda hay un selector con tres familias: **malva**, **champán**
-y **nácar**. Es solo para elegir: cuando se decida una, se borran las otras
-dos y el selector entero.
+Hubo una versión con un túnel de anillos concéntricos y costillas
+longitudinales. Funcionaba como profundidad, pero se leía como ondas y no
+convenció. Las manchas dan el mismo avance (crecen y se abren conforme te
+acercas) sin esa lectura.
 
-### Dos cosas que no se pueden tocar sin medir
+De esa versión sobrevive una lección: **el velo no puede lavar media
+pantalla**. Cuando lo hacía, el fondo se quedaba sin la mitad de abajo y no
+se sentía que atravesaras nada. Ahora es solo una cama elíptica detrás del
+texto.
 
-- **El fondo del lienzo se queda en el tono más claro de la paleta y no se
-  mueve.** En la primera versión la ventana de color también lo arrastraba, y
-  al llegar a las paradas profundas el párrafo quedaba en 1.76 de contraste
-  (hacen falta 4.5). Ahora el cambio de parada se lee en los orbes, que viven
-  arriba, y el texto conserva su cama clara.
-- **Los orbes usan los tonos profundos de la paleta.** Sobre un fondo casi
-  blanco, los claros no se veían: el primer intento de arreglar el contraste
-  dejó el hero lavado.
+### Lo que no se puede subir sin mirar el contraste
 
-Medido sobre el fondo del lienzo: título 10.8, párrafo 6.8, etiqueta 6.0. El
-valor real es algo menor porque bajo el velo quedan los orbes, pero el margen
-es amplio.
+El texto es casi negro (`#2F2A3A`) a propósito, y la tinta no cambia con la
+parada: es lo que permite que los seis tonos funcionen sin revisar seis
+contrastes distintos. Lo que sí cambia es el acento (`--acento`), que lleva
+una versión profunda del tono de cada parada.
+
+Si se sube la opacidad de las manchas o se baja el velo, lo primero que se
+pierde es el párrafo. Ya pasó una vez en la versión anterior: cayó a 1.76 de
+contraste cuando hacen falta 4.5.
