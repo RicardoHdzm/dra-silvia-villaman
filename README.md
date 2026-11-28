@@ -475,14 +475,39 @@ De esa versión sobrevive una lección: **el velo no puede lavar media
 pantalla**. Cuando lo hacía, el fondo se quedaba sin la mitad de abajo y no
 se sentía que atravesaras nada. Ahora es solo una cama elíptica detrás del
 texto.
+### Registro oscuro: por qué se invirtió
+
+La primera versión era texto oscuro sobre campo claro. Eso obligaba a mantener
+el fondo pálido para que el negro aguantara, y a lavarlo con blanco donde caía
+el texto — primero con un halo elíptico (que se veía como un óvalo pegado
+encima de las manchas) y luego con una rampa blanca. El blanco era un parche
+estructural, no una decisión.
+
+Al invertirlo desaparece: no hay nada que lavar. Texto claro sobre color
+saturado, y el velo tiñe con el tono profundo de la parada en vez de con
+blanco.
+
+Dos consecuencias que no son opcionales:
+
+- **Las manchas pasan de `multiply` a `screen`.** Sobre fondo oscuro, multiply
+  solo ensucia: todo producto con un número bajo da uno más bajo. `screen` suma
+  luz, así que donde se cruzan dos manchas sale un color más luminoso que las
+  dos. El tornasol se consigue igual, pero por arriba en vez de por abajo.
+- **La sección de cierre también va oscura.** Con el hero invertido, una
+  sección blanca debajo partía la página en dos y dejaba la cabecera clara
+  ilegible al llegar.
 
 ### Lo que no se puede subir sin mirar el contraste
 
-El texto es casi negro (`#2F2A3A`) a propósito, y la tinta no cambia con la
-parada: es lo que permite que los seis tonos funcionen sin revisar seis
-contrastes distintos. Lo que sí cambia es el acento (`--acento`), que lleva
-una versión profunda del tono de cada parada.
+El texto es casi blanco y no cambia con la parada: es lo que permite que los
+seis tonos funcionen sin revisar seis contrastes distintos. Lo que sí cambia
+es el acento (`--acento`), con una versión luminosa del tono de cada parada.
 
-Si se sube la opacidad de las manchas o se baja el velo, lo primero que se
-pierde es el párrafo. Ya pasó una vez en la versión anterior: cayó a 1.76 de
-contraste cuando hacen falta 4.5.
+Medido sobre la base de cada parada: título 12.3, párrafo 8.35, acento 8.86.
+Son contra la base; las manchas la aclaran, y lo que devuelve el margen es la
+rampa del velo entre el 54 % y el 76 %.
+
+Si se sube la opacidad de las manchas, se aclaran los tonos de `bg` o se baja
+esa rampa, lo primero que cae es el párrafo. Ya pasó dos veces: con el campo
+claro llegó a 1.76 de contraste cuando hacen falta 4.5, y al quitar el halo
+el párrafo dejó de leerse hasta que se oscureció la tinta secundaria.

@@ -26,16 +26,18 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  background:#fff;color:var(--tinta);-webkit-font-smoothing:antialiased}
+  background:#1A1430;color:var(--tinta);-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 .wrap{width:min(1180px,calc(100% - 48px));margin:0 auto}
 
 :root{
-  /* --tinta-2 estaba en #5A5168, un gris pensado para fondo blanco. Sobre un
-     campo de color medio el parrafo se perdia, y lo tapaba el halo. Sin halo
-     tiene que aguantar solo, asi que baja casi al nivel de la tinta: lo que
-     lo distingue del titulo es el tamano y el peso, no el gris. */
-  --tinta:#2F2A3A; --tinta-2:#39334A; --papel:#FBF9FC;
+  /* Registro oscuro: texto claro sobre campo de color saturado. Antes era al
+     reves y el fondo tenia que mantenerse palido para que el texto negro
+     aguantara, lo que obligaba a lavarlo con blanco. Al invertirlo, el blanco
+     desaparece del diseno: no hay nada que lavar. */
+  --tinta:#F4F1FA; --tinta-2:#CDC6E0; --sobre-claro:#241B47;
+  /* tinte oscuro de la parada, para el velo y el resplandor del texto */
+  --velo:20,16,40;
   --blur:64px;
   --acento:#5B3FB5;   /* lo cambia cada parada */
 }
@@ -43,14 +45,14 @@ a{color:inherit;text-decoration:none}
 /* ---------- cabecera ---------- */
 header{position:fixed;top:0;left:0;right:0;z-index:40;padding:18px 0;
   transition:background-color .3s ease, box-shadow .3s ease}
-header.posado{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
-  box-shadow:0 1px 0 rgba(47,42,58,.08)}
+header.posado{background:rgba(26,20,48,.72);backdrop-filter:blur(12px);
+  box-shadow:0 1px 0 rgba(255,255,255,.10)}
 .bar{display:flex;align-items:center;gap:28px}
 .logo-texto{display:block;line-height:1.1;font-weight:800;font-size:17px;
   letter-spacing:-.025em;color:var(--tinta)}
 .logo-texto small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.11em;
   text-transform:uppercase;color:var(--tinta-2);margin-top:4px}
-.btn-top{margin-left:auto;background:var(--tinta);color:#fff;padding:11px 20px;
+.btn-top{margin-left:auto;background:var(--tinta);color:var(--sobre-claro);padding:11px 20px;
   font-size:14.5px;font-weight:700;border-radius:999px;white-space:nowrap}
 
 /* ---------- el recorrido ---------- */
@@ -72,8 +74,12 @@ header.posado{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
    en --s (tamano), --dx/--dy (cuanto se ha abierto) y --o (opacidad). El
    color lo pone la parada, con transicion larga para que el cambio de tono
    se lea como un viraje y no como un corte. */
+/* screen y no multiply: sobre un fondo oscuro, multiply solo ensucia (todo
+   producto con un numero bajo da un numero mas bajo). screen suma luz, asi
+   que donde se cruzan dos manchas sale un color mas luminoso que las dos.
+   El tornasol se consigue igual, pero por arriba en vez de por abajo. */
 .mancha{position:absolute;left:50%;top:50%;width:46vmax;height:46vmax;
-  mix-blend-mode:multiply;filter:blur(var(--blur));
+  mix-blend-mode:screen;filter:blur(var(--blur));
   background:var(--col,#9B7BE8);opacity:var(--o,0);
   transform:translate(-50%,-50%) translate(var(--dx,0px),var(--dy,0px)) scale(var(--s,.2));
   transition:background-color 1.5s ease;
@@ -89,19 +95,17 @@ header.posado{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
 
 /* Velo: cama clara solo detras del texto. No lava media pantalla, porque
    entonces el campo de color se quedaba sin la mitad de abajo. */
-/* Sin radial. El halo eliptico detras del texto se veia como un ovalo
-   blanco pegado encima de las manchas y rompia la naturalidad del campo.
-   Queda una rampa vertical sin bordes: sube despacio desde el 34% y no
-   tiene forma que el ojo pueda recortar. La legibilidad que perdia el halo
-   la recupera el resplandor blanco del propio texto, que es invisible como
-   mancha porque sigue la silueta de las letras. */
+/* Sin radial y sin blanco. El halo eliptico se veia como un ovalo pegado
+   encima de las manchas; la rampa no tiene borde que el ojo pueda recortar.
+   Y el tinte ya no es blanco sino el tono profundo de la parada, asi que
+   oscurece para asentar el texto claro en vez de lavar el color. */
 .velo{position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
     linear-gradient(to bottom,
-      rgba(255,255,255,.38) 0%, rgba(255,255,255,.06) 12%,
-      rgba(255,255,255,0) 34%,
-      rgba(255,255,255,.30) 54%, rgba(255,255,255,.60) 76%,
-      rgba(255,255,255,.46) 100%)}
+      rgba(var(--velo),.58) 0%, rgba(var(--velo),.14) 12%,
+      rgba(var(--velo),0) 32%,
+      rgba(var(--velo),.44) 54%, rgba(var(--velo),.74) 76%,
+      rgba(var(--velo),.62) 100%)}
 
 /* capa de contenido: se desvanece cuando el escenario sale, para no
    cruzarse con la cabecera (mismo motivo que en index.html) */
@@ -121,7 +125,7 @@ header.posado{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
   font-weight:400;color:var(--acento);font-size:1.04em;transition:color 1.5s ease}
 .titular p{margin:22px auto 0;max-width:42ch;font-size:19px;line-height:1.55;color:var(--tinta-2)}
 .credencial{margin:30px auto 0;padding-top:18px;max-width:620px;
-  border-top:1px solid rgba(47,42,58,.16);display:flex;flex-wrap:wrap;
+  border-top:1px solid rgba(255,255,255,.18);display:flex;flex-wrap:wrap;
   justify-content:center;gap:8px 18px;font-size:13.5px;color:var(--tinta-2)}
 .credencial b{color:var(--tinta);font-weight:700}
 
@@ -129,8 +133,8 @@ header.posado{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
   letter-spacing:.18em;text-transform:uppercase;color:var(--acento);margin-bottom:14px;
   transition:color 1.5s ease}
 .parada .capa::before{content:"";width:26px;height:1px;background:currentColor;opacity:.7}
-.titular h1,.parada h2{text-shadow:0 0 22px rgba(255,255,255,.55)}
-.titular p,.parada p,.parada .capa{text-shadow:0 0 14px rgba(255,255,255,.72)}
+.titular h1,.parada h2{text-shadow:0 0 24px rgba(var(--velo),.70)}
+.titular p,.parada p,.parada .capa{text-shadow:0 0 16px rgba(var(--velo),.85)}
 .parada h2{margin:0;font-size:clamp(32px,4.9vw,62px);line-height:1.02;
   letter-spacing:-.035em;font-weight:800;color:var(--tinta)}
 .parada h2 em{font-family:"Instrument Serif",Georgia,serif;font-style:italic;
@@ -140,21 +144,21 @@ header.posado{background:rgba(255,255,255,.82);backdrop-filter:blur(12px);
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
   font:inherit;font-weight:700;font-size:15px;letter-spacing:-.01em;
   min-width:min(224px,100%);padding:13px 22px;border-radius:999px;border:1.5px solid transparent;
-  cursor:pointer;margin-top:24px;background:var(--tinta);color:#fff;
-  box-shadow:0 6px 20px rgba(47,42,58,.20);transition:transform .18s ease, box-shadow .18s ease}
-.btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(47,42,58,.26)}
+  cursor:pointer;margin-top:24px;background:var(--tinta);color:var(--sobre-claro);
+  box-shadow:0 8px 26px rgba(0,0,0,.30);transition:transform .18s ease, box-shadow .18s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.38)}
 
 /* instrumentacion */
 .riel{position:absolute;right:30px;top:50%;transform:translateY(-50%);z-index:2;
   display:flex;flex-direction:column;gap:14px;align-items:center}
-.riel span{width:7px;height:7px;border-radius:50%;background:rgba(47,42,58,.22);
+.riel span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.26);
   transition:background .35s ease, transform .25s ease}
 .riel span.on{background:var(--acento);transform:scale(1.55)}
 .cuenta{position:absolute;left:28px;bottom:26px;z-index:2;font-size:11px;font-weight:700;
   letter-spacing:.16em;text-transform:uppercase;color:var(--tinta-2);
   font-variant-numeric:tabular-nums}
 .saltar{position:absolute;right:28px;bottom:26px;z-index:3;font-size:12.5px;font-weight:700;
-  color:var(--tinta);border-bottom:1px solid rgba(47,42,58,.3);padding-bottom:3px;transition:.2s}
+  color:var(--tinta);border-bottom:1px solid rgba(255,255,255,.34);padding-bottom:3px;transition:.2s}
 .saltar:hover{border-color:var(--tinta)}
 
 html{scroll-snap-type:y proximity;scroll-behavior:smooth}
@@ -165,7 +169,9 @@ body{padding-top:76px}
 .viaje{margin-top:-76px}
 
 /* ---------- lo que sigue, para que la pagina no corte en seco ---------- */
-.cierre{padding:88px 0 110px;text-align:center;background:#fff}
+/* oscura tambien: con el hero invertido, una seccion blanca debajo cortaba
+   la pagina en dos y dejaba la cabecera clara ilegible al llegar */
+.cierre{padding:88px 0 110px;text-align:center;background:#1A1430}
 .cierre h2{margin:0 auto 16px;max-width:20ch;font-size:clamp(26px,3.4vw,40px);
   line-height:1.1;letter-spacing:-.03em;font-weight:800;color:var(--tinta)}
 .cierre p{margin:0 auto;max-width:52ch;font-size:16.5px;line-height:1.6;color:var(--tinta-2)}
@@ -309,13 +315,16 @@ body{padding-top:76px}
      eso senala el final del recorrido sin decirlo.
      Dentro de cada parada los ocho tonos son vecinos distintos, no el mismo
      aclarado: eso es lo que hace el tornasol al mezclarse en multiply. */
+  /* El mismo arco, en profundo. bg es la base, c son las manchas (que ahora
+     suman luz, asi que van en tono medio y no claro) y velo es el tinte con
+     el que se asienta el texto, siempre mas oscuro que la base. */
   var TONOS = [
-    { ac:'#5B3FB5', bg:'#EFE9FB', c:['#9B7BE8','#AE8DF0','#8A7CE6','#C0A4F2','#8E9AEE','#A286E4','#7E72E0','#B59AEC'] },
-    { ac:'#3E4FA8', bg:'#E9ECFA', c:['#8294EC','#9AA6F2','#6F85E6','#B0BAF5','#7D9AF0','#8E9EEA','#6478DE','#A3AFF0'] },
-    { ac:'#1A5E86', bg:'#E4F0F7', c:['#5BA7D2','#6FB8DC','#4894C6','#8FCBE6','#5FB4CE','#76AED6','#3E86BC','#96C9E2'] },
-    { ac:'#0F6B68', bg:'#E2F2EF', c:['#46B8AC','#5EC6B6','#38A79E','#86D6C6','#4FBCB2','#63BFAE','#2E948E','#92D9CC'] },
-    { ac:'#3A6B4A', bg:'#EAF2E8', c:['#7CB68A','#8FC296','#6AA87C','#A8CFAE','#86BC92','#96C49C','#5C9A70','#B0D2B4'] },
-    { ac:'#9A5A25', bg:'#FBF0E4', c:['#E8A868','#EFBB7E','#DE9856','#F3CB97','#E6AE72','#EDB778','#D4873F','#F0C68C'] }
+    { ac:'#C3B0FF', bg:'#241B47', velo:'18,12,38',  c:['#6B4FD6','#8363E8','#5B46C2','#9A7BF0','#6E5CE0','#7A5AD8','#5340B4','#8E72EA'] },
+    { ac:'#B4C0FF', bg:'#1C2450', velo:'12,16,42',  c:['#4A5CC8','#5E6FE0','#3D4FB0','#7281EC','#4E63D4','#6274DE','#3647A4','#6A7AE6'] },
+    { ac:'#9CD4F2', bg:'#10304A', velo:'8,22,38',   c:['#2C6E9E','#3A84B8','#245C86','#4F9CCC','#317AA8','#4290C0','#1E5078','#4895C6'] },
+    { ac:'#86DECC', bg:'#0C3330', velo:'6,24,24',   c:['#1F7A70','#2A9086','#176058','#39A89A','#248A7E','#30A092','#145550','#34A496'] },
+    { ac:'#A8DCB0', bg:'#17331D', velo:'10,24,14',  c:['#2E7340','#3A8A4E','#245C33','#49A05F','#347E46','#409554','#1E4E2C','#449A5A'] },
+    { ac:'#F5C99A', bg:'#3A2212', velo:'28,14,6',   c:['#9A5A28','#B06C33','#854A1E','#C47F42','#A86230','#BA7338','#74401A','#BF793D'] }
   ];
 
   var puntos = bloques.map(function(){
@@ -326,6 +335,7 @@ body{padding-top:76px}
     var t = TONOS[Math.min(i, TONOS.length - 1)];
     document.documentElement.style.setProperty('--acento', t.ac);
     document.documentElement.style.setProperty('--fondo', t.bg);
+    document.documentElement.style.setProperty('--velo', t.velo);
     for (var j = 0; j < manchas.length; j++){
       manchas[j].style.setProperty('--col', t.c[j % t.c.length]);
     }
