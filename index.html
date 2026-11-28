@@ -325,7 +325,10 @@ body{padding-top:76px}
 /* Visible siempre, no solo como respaldo. Quien navega con teclado o lector
    de pantalla nunca llega a ver las paradas del recorrido, asi que el menu
    completo de sintomas tiene que existir tambien fuera de el. */
-.entradas{display:block;padding:70px 0 10px}
+/* Sin padding propio: lo tenia asimetrico (70 arriba, 10 abajo) de cuando
+   iba justo despues del hero. Ahora es una seccion mas en medio de la
+   pagina y usa el mismo ritmo que las demas. */
+.entradas{display:block}
 .sin-viaje .viaje{display:none}
 
 .entradas .eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:12.5px;
@@ -754,6 +757,31 @@ html{scroll-behavior:smooth}
     <div class="ancla" style="--at:0.90" aria-hidden="true"></div>
 </main>
 
+<section id="doctora">
+  <div class="wrap doc">
+    <div class="doc-foto rv" role="img" aria-label="Dra. Silvia Villaman Lugo"></div>
+
+    <div class="rv">
+      <div class="kicker">Quién te va a atender</div>
+      <div class="sec-head" style="max-width:none;margin-bottom:20px">
+        <h2>Una sola especialista <em>para toda la familia</em></h2>
+      </div>
+      <p class="lead">Soy dermatóloga pediátrica certificada. Atiendo piel, pelo y uñas en niños desde recién nacidos, y consulta dermatológica y estética en adultos.</p>
+      <p>En consulta te explico qué veo, por qué ocurre y qué esperar del tratamiento. Con los niños eso toma algo más de calma, y la cita está pensada para dársela.</p>
+      <p>Estudié medicina en la Universidad Autónoma de Sinaloa e hice la especialidad en el Hospital Infantil de México Federico Gómez. Si no puedes venir al consultorio, te atiendo en línea.</p>
+
+      <ul class="facts">
+        <li><span class="k">Especialidad</span><span class="v">Dermatología pediátrica, clínica y estética</span></li>
+        <li><span class="k">Licenciatura</span><span class="v">Médico cirujano — UAS</span></li>
+        <li><span class="k">Posgrado</span><span class="v">Hospital Infantil de México Federico Gómez</span></li>
+        <li><span class="k">Cédulas</span><span class="v">9532246 · 13824021 · 12820870</span></li>
+        <li><span class="k">Consultorio</span><span class="v">Pedro María Anaya 2188, Culiacán</span></li>
+        <li><span class="k">Pacientes</span><span class="v">Niños desde recién nacidos y adultos</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <section class="entradas" id="entradas">
   <div class="wrap">
     <div class="eyebrow">Dermatóloga pediátrica · Culiacán</div>
@@ -810,31 +838,6 @@ html{scroll-behavior:smooth}
       <span><b>Pedro María Anaya 2188</b>, Culiacán</span>
       <span class="sep">·</span>
       <span>WhatsApp <b>667 751 2919</b></span>
-    </div>
-  </div>
-</section>
-
-<section id="doctora">
-  <div class="wrap doc">
-    <div class="doc-foto rv" role="img" aria-label="Dra. Silvia Villaman Lugo"></div>
-
-    <div class="rv">
-      <div class="kicker">Quién te va a atender</div>
-      <div class="sec-head" style="max-width:none;margin-bottom:20px">
-        <h2>Una sola especialista <em>para toda la familia</em></h2>
-      </div>
-      <p class="lead">Soy dermatóloga pediátrica certificada. Atiendo piel, pelo y uñas en niños desde recién nacidos, y consulta dermatológica y estética en adultos.</p>
-      <p>En consulta te explico qué veo, por qué ocurre y qué esperar del tratamiento. Con los niños eso toma algo más de calma, y la cita está pensada para dársela.</p>
-      <p>Estudié medicina en la Universidad Autónoma de Sinaloa e hice la especialidad en el Hospital Infantil de México Federico Gómez. Si no puedes venir al consultorio, te atiendo en línea.</p>
-
-      <ul class="facts">
-        <li><span class="k">Especialidad</span><span class="v">Dermatología pediátrica, clínica y estética</span></li>
-        <li><span class="k">Licenciatura</span><span class="v">Médico cirujano — UAS</span></li>
-        <li><span class="k">Posgrado</span><span class="v">Hospital Infantil de México Federico Gómez</span></li>
-        <li><span class="k">Cédulas</span><span class="v">9532246 · 13824021 · 12820870</span></li>
-        <li><span class="k">Consultorio</span><span class="v">Pedro María Anaya 2188, Culiacán</span></li>
-        <li><span class="k">Pacientes</span><span class="v">Niños desde recién nacidos y adultos</span></li>
-      </ul>
     </div>
   </div>
 </section>
@@ -1405,7 +1408,11 @@ html{scroll-behavior:smooth}
      navegador tira de vuelta hacia el ancla de 0.90 y pelea con la
      animacion. Aqui si funciona apagarlo porque lo hacemos ANTES de mover,
      no reaccionando a un scroll que ya empezo. */
-  var destino = document.getElementById('entradas');
+  /* La primera seccion que haya despues del hero, no un id fijo: el orden
+     de las secciones ya cambio una vez y un id escrito a mano se queda
+     apuntando a la que era primera. */
+  var destino = sec.nextElementSibling;
+  while (destino && destino.tagName !== 'SECTION') destino = destino.nextElementSibling;
   var saltando = false;
 
   function salta(dir){
