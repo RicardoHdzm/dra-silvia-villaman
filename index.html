@@ -1383,6 +1383,53 @@ html{scroll-behavior:smooth}
     tm = setTimeout(function(){ colocaAnclas(); midePolvo(); }, 120);
   });
 
+  /* ---------------- salida del recorrido ----------------
+     Al llegar a la ultima parada, el siguiente gesto hacia abajo lleva
+     directo a la seccion siguiente en vez de recorrer el tramo muerto que
+     queda. Se probo una vez sin suavizar y se sentia como un tiron; con
+     desplazamiento suave el salto se lee como el final del recorrido.
+
+     El anclaje se apaga mientras dura el salto: con scroll-snap activo el
+     navegador tira de vuelta hacia el ancla de 0.90 y pelea con la
+     animacion. Aqui si funciona apagarlo porque lo hacemos ANTES de mover,
+     no reaccionando a un scroll que ya empezo. */
+  var destino = document.getElementById('entradas');
+  var saltando = false;
+
+  function salta(dir){
+    if (saltando || dir <= 0 || !destino) return;
+    if (ultimo !== bloques.length - 1) return;      /* solo desde la ultima */
+    var r = sec.getBoundingClientRect();
+    var total = r.height - window.innerHeight;
+    var p = total > 0 ? Math.max(0, Math.min(1, -r.top / total)) : 0;
+    if (p < 0.88) return;
+    if (r.bottom <= window.innerHeight + 4) return;  /* ya esta saliendo solo */
+    saltando = true;
+    var raiz = document.documentElement;
+    var antes = raiz.style.scrollSnapType;
+    raiz.style.scrollSnapType = 'none';
+    destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(function(){
+      raiz.style.scrollSnapType = antes;
+      saltando = false;
+    }, 1000);
+  }
+
+  addEventListener('wheel', function(e){ salta(e.deltaY); }, {passive:true});
+
+  /* en el telefono el gesto se mide a mano: un arrastre hacia arriba de mas
+     de 24 px cuenta como "siguiente" */
+  var tocoY = null;
+  addEventListener('touchstart', function(e){
+    tocoY = e.touches.length ? e.touches[0].clientY : null;
+  }, {passive:true});
+  addEventListener('touchmove', function(e){
+    if (tocoY === null || !e.touches.length) return;
+    var dy = tocoY - e.touches[0].clientY;
+    if (Math.abs(dy) > 24){ salta(dy); tocoY = null; }
+  }, {passive:true});
+  addEventListener('touchend', function(){ tocoY = null; }, {passive:true});
+
   colocaAnclas();
   midePolvo();
   pintaParada(0);
