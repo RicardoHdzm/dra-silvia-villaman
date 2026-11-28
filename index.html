@@ -166,14 +166,21 @@ header nav a:hover{color:var(--ink);border-color:var(--lav)}
 
 /* El velo tine con el tono profundo de la parada, no con blanco: oscurece
    para asentar el texto claro en vez de lavar el color. Sin radial, porque
-   un halo eliptico se ve como un ovalo pegado encima de las manchas. */
+   un halo eliptico se ve como un ovalo pegado encima de las manchas.
+   La ultima franja es la salida: el propio hero se disuelve en el fondo
+   claro del sitio. Antes esto lo hacia una franja despues del hero, y era
+   peor: el borde del escenario llevaba manchas y polvo encima y la franja
+   era color plano, asi que en vez de quitar el corte se veian dos. */
 .velo{position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
     linear-gradient(to bottom,
       rgba(var(--velo),.58) 0%, rgba(var(--velo),.14) 12%,
       rgba(var(--velo),0) 32%,
-      rgba(var(--velo),.44) 54%, rgba(var(--velo),.74) 76%,
-      rgba(var(--velo),.62) 100%)}
+      rgba(var(--velo),.44) 54%, rgba(var(--velo),.70) 72%,
+      rgba(var(--velo),.62) 82%, rgba(var(--velo),0) 100%),
+    linear-gradient(to bottom,
+      rgba(245,241,251,0) 78%, rgba(245,241,251,.55) 92%,
+      var(--bg) 100%)}
 
 /* Grano. Textura de pelicula, pero sobre todo rompe el escalonado en franjas
    que hace un degradado oscuro y amplio en pantallas de 8 bits. */
@@ -252,16 +259,6 @@ html{scroll-snap-type:y proximity}
   font-weight:700;letter-spacing:.03em;color:var(--tinta-clara);
   border-bottom:1px solid rgba(255,255,255,.34);padding-bottom:3px;transition:.2s}
 .saltar:hover{border-color:#fff}
-
-/* Puente entre el hero y el sitio. El escenario terminaba en un corte seco
-   de color profundo a lavanda claro y la salida se sentia como un golpe.
-   Esta franja arranca en el tono de la parada que este en pantalla y se
-   disuelve en el fondo de la pagina. Va FUERA de .viaje: dentro sumaria su
-   alto al de la seccion pegajosa y descuadraria las anclas. Por eso --fondo
-   se pone en el html y no en la seccion, para que el puente lo alcance. */
-.puente{height:clamp(90px,14vh,170px);
-  background:linear-gradient(to bottom, var(--fondo,#332A16), var(--bg))}
-@media (prefers-reduced-motion:reduce){ .puente{display:none} }
 
 .baja{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:2;
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;
@@ -723,8 +720,6 @@ html{scroll-behavior:smooth}
     <div class="ancla" style="--at:0.72" aria-hidden="true"></div>
     <div class="ancla" style="--at:0.90" aria-hidden="true"></div>
 </main>
-
-<div class="puente" aria-hidden="true"></div>
 
 <section class="entradas" id="entradas">
   <div class="wrap">
